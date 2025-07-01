@@ -25,7 +25,7 @@ import { DrawingEntity } from './drawings/entities/drawing.entity';
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_DATABASE'),
         entities: [UserEntity, DrawingEntity],
-        synchronize: Boolean(config.get('DB_SYNC')), // 개발 단계에서만 true
+        synchronize: false, // 개발 단계에서만 true
         autoLoadEntities: true, // 자동으로 entity 인식
       }),
       inject: [ConfigService],
