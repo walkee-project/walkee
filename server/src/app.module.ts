@@ -5,8 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/entities/user.entity';
-import { DrawingsModule } from './drawings/drawings.module';
-import { DrawingEntity } from './drawings/entities/drawing.entity';
 
 @Module({
   imports: [
@@ -24,14 +22,13 @@ import { DrawingEntity } from './drawings/entities/drawing.entity';
         username: config.get('DB_USER'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_DATABASE'),
-        entities: [UserEntity, DrawingEntity],
+        entities: [UserEntity],
         synchronize: false, // 개발 단계에서만 true
         autoLoadEntities: true, // 자동으로 entity 인식
       }),
       inject: [ConfigService],
     }),
     UsersModule,
-    DrawingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
