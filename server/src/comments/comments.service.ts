@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentEntity } from './entities/comment.entity';
@@ -18,11 +18,15 @@ export class CommentsService {
   }
 
   async findAll() {
-    return await this.commentRepository.find();
+    return await this.commentRepository.find({
+      where: { commentDeletedAt: IsNull() },
+    });
   }
 
   async findOne(id: number) {
-    return await this.commentRepository.findOne({ where: { commentIdx: id } });
+    return await this.commentRepository.findOne({
+      where: { commentIdx: id, commentDeletedAt: IsNull() },
+    });
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
@@ -31,6 +35,11 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    return await this.commentRepository.delete({ commentIdx: id });
+    return await this.commentRepository.update(
+      { commentIdx: id },
+      {
+        commentDeletedAt: new Date(),
+      },
+    );
   }
 }

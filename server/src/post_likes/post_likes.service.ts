@@ -21,7 +21,7 @@ export class PostLikesService {
   }
 
   async findOne(id: number) {
-    return await this.postLikeRepository.findOne({ where: { postIdx: id } });
+    return await this.postLikeRepository.findOne({ where: { likeIdx: id } });
   }
 
   async remove(id: number) {

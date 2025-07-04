@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { RouteEntity } from './entities/route.entity';
@@ -18,11 +18,15 @@ export class RoutesService {
   }
 
   async findAll() {
-    return await this.routeRepository.find();
+    return await this.routeRepository.find({
+      where: { routeDeletedAt: IsNull() },
+    });
   }
 
   async findOne(id: number) {
-    return await this.routeRepository.findOne({ where: { routeIdx: id } });
+    return await this.routeRepository.findOne({
+      where: { routeIdx: id, routeDeletedAt: IsNull() },
+    });
   }
 
   async update(id: number, updateRouteDto: UpdateRouteDto) {
@@ -31,6 +35,11 @@ export class RoutesService {
   }
 
   async remove(id: number) {
-    return await this.routeRepository.delete({ routeIdx: id });
+    return await this.routeRepository.update(
+      { routeIdx: id },
+      {
+        routeDeletedAt: new Date(),
+      },
+    );
   }
 }
