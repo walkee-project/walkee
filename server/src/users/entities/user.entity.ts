@@ -31,6 +31,11 @@ export class UserEntity {
   })
   userProfile?: string;
 
+  @Column({
+    name: 'user_point',
+  })
+  userPoint: number;
+
   @CreateDateColumn({
     name: 'user_created_at',
   })
