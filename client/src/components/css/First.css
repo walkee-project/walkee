@@ -1,0 +1,87 @@
+.splash-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.5s ease;
+  background-image: url("../../assets/background.png");
+}
+
+.splash-container.shrink {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.7),
+      rgba(255, 255, 255, 0.7)
+    ),
+    url("../../assets/background.png");
+}
+
+.logo-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  transform: translate(-50%, -50%);
+  transition: all 0.8s ease;
+  z-index: 999;
+}
+
+.logo-container.shrink {
+  top: 10%;
+  width: 30%;
+  transform: translateX(-50%);
+}
+
+.logo-img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.after_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  font-weight: 500;
+  text-align: center;
+  opacity: 0; /* 처음엔 투명 */
+  transition: opacity 0.8s ease;
+}
+.after_container.shrink {
+  opacity: 1; /* 불투명 상태 */
+}
+
+.mascot_container {
+  margin-top: 50px;
+}
+.mascot_container > img {
+  display: block;
+  margin: 0 auto;
+}
+
+.button-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  gap: 8px; /* 세로 간격 */
+}
+
+.btn {
+  background: none;
+  padding: 0;
+}
+
+.btn > img {
+  width: 80%;
+  object-fit: contain;
+  border: 1px solid rgba(93, 93, 93, 0.5);
+  border-radius: 20px;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn:active img {
+  border-color: black;
+}

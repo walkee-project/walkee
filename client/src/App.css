@@ -1,5 +1,35 @@
+@font-face {
+  font-family: "Paperlogy-8ExtraBold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Paperlogy";
+}
+
+.btn_one {
+  background-color: white;
+  border: 2px solid #63b6ff;
+  border-radius: 20px;
+}
+
+.btn_two {
+  background-color: #aed9ff;
+  border: 2px solid white;
+  border-radius: 20px;
+}
+
+.btn_one:active {
+  background-color: #aed9ff;
+  border-color: white;
+}
+
+.btn_two:active {
+  background-color: white;
+  border-color: #aed9ff;
 }
