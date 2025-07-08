@@ -1,9 +1,13 @@
-import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   userId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userProvider: string;
 
   @IsString()
   @IsNotEmpty()
@@ -16,4 +20,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   userProfile?: string; // 선택사항이면 ? 붙이기
+
+  @IsOptional()
+  @IsNumber()
+  userPoint?: number;
 }

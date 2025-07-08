@@ -15,12 +15,14 @@ import { PostLikesModule } from './post_likes/post_likes.module';
 import { PostLikeEntity } from './post_likes/entities/post_like.entity';
 import { CommentLikesModule } from './comment_likes/comment_likes.module';
 import { CommentLikeEntity } from './comment_likes/entities/comment_like.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     // ConfigModule 먼저 로드
     ConfigModule.forRoot({
       isGlobal: true, // 전체에서 사용 가능
+      envFilePath: process.cwd() + '/.env', // 절대 경로로 .env 파일 지정
     }),
     // TypeORM 설정에 ConfigService 주입
     TypeOrmModule.forRootAsync({
@@ -46,6 +48,7 @@ import { CommentLikeEntity } from './comment_likes/entities/comment_like.entity'
       inject: [ConfigService],
     }),
     UsersModule,
+    AuthModule,
     RoutesModule,
     PostsModule,
     CommentsModule,

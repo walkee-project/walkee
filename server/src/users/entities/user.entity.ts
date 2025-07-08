@@ -17,6 +17,11 @@ export class UserEntity {
   userId: string;
 
   @Column({
+    name: 'user_provider',
+  })
+  userProvider: string;
+
+  @Column({
     name: 'user_email',
   })
   userEmail: string;
@@ -33,6 +38,7 @@ export class UserEntity {
 
   @Column({
     name: 'user_point',
+    default: 0,
   })
   userPoint: number;
 

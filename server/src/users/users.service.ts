@@ -25,6 +25,15 @@ export class UsersService {
     return await this.userRepository.findOne({ where: { userIdx: id } });
   }
 
+  async findByProviderAndId(provider: string, providerId: string) {
+    return await this.userRepository.findOne({
+      where: {
+        userProvider: provider,
+        userId: providerId,
+      },
+    });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.userRepository.update({ userIdx: id }, updateUserDto);
     return this.findOne(id);
