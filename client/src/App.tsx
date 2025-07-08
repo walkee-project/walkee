@@ -6,10 +6,10 @@ import Home from "./components/Home";
 function App() {
   return (
     <>
-      {/* <First /> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<First />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </>
