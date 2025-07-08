@@ -6,13 +6,52 @@ import homeMap_ex3 from "../assets/homeMap_ex3.png";
 import sun from "../assets/sun.png";
 import arrow_right from "../assets/arrow_right.png";
 import { useDynamicGap } from "./hooks/useDynamicGap";
+import { useState, useEffect } from "react";
+
+interface UserInfo {
+  userIdx: number;
+  userProvider: string;
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userProfile: string;
+  userPoint: number;
+}
 
 function Home() {
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState(true);
   const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
     3,
     10,
     100
   );
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/users/profile", {
+          credentials: "include", // 쿠키 자동 첨부
+        });
+        if (!res.ok) throw new Error("Failed to fetch user info");
+        const userData = await res.json();
+        setUser(userData);
+      } catch {
+        // 인증 실패 처리
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleLogin = () => {
+    window.location.href = "/";
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -25,7 +64,12 @@ function Home() {
     >
       {/* 상단 인사 영역 */}
       <div className="greeting_card" ref={getSectionRef(0)}>
-        <p className="hello_text">Hi, 푸른달걀!</p>
+        <p className="hello_text">Hi, {user ? user.userName : "게스트"}!</p>
+        {!user && (
+          <div style={{ marginBottom: "10px" }}>
+            <button onClick={handleLogin}>로그인</button>
+          </div>
+        )}
         <div className="weather_container">
           <div className="mascot_section">
             <img src={mascot_long} alt="마스코트" className="mascot_img" />
