@@ -10,8 +10,8 @@ import { useDynamicGap } from "./hooks/useDynamicGap";
 function Home() {
   const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
     3,
-    12,
-    40
+    10,
+    100
   );
 
   return (
@@ -20,14 +20,7 @@ function Home() {
       ref={containerRef}
       style={{
         gap: `${gap}px`,
-        paddingTop: `${padding}px`,
-        paddingBottom: `${padding}px`,
-        // 좌우 padding은 별도로 관리 (필요에 따라 조정)
-        paddingLeft: "16px",
-        paddingRight: "16px",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh", // 전체 높이 확보
+        padding: `${padding}px 16px`,
       }}
     >
       {/* 상단 인사 영역 */}
@@ -69,12 +62,16 @@ function Home() {
       {/* 새그리기 / 내그림보기 */}
       <div className="drawing_section" ref={getSectionRef(2)}>
         <div className="drawing_card">
-          <img src={homeMap_ex2} alt="새그리기" />
-          <div className="btn">새그림그리기</div>
+          <div className="drawing_img">
+            <img src={homeMap_ex2} alt="새그리기" />
+          </div>
+          <div className="home_btn">새그림그리기</div>
         </div>
         <div className="drawing_card">
-          <img src={homeMap_ex3} alt="내그림보기" />
-          <div className="btn">내그림보기</div>
+          <div className="drawing_img">
+            <img src={homeMap_ex3} alt="내그림보기" />
+          </div>
+          <div className="home_btn">내그림보기</div>
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
 .main_container {
   background-color: #f9f9f9;
   height: 100dvh; /* ✅ 최신 브라우저에서 안정적으로 사용 */
-  width: 100vw;
+  min-height: 100dvh;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -120,13 +121,23 @@
   box-shadow: 3px 4px 7.8px rgba(0, 0, 0, 0.05);
 }
 
-.drawing_card img {
+.drawing_img {
+  position: relative; /* 기준 컨테이너 */
   width: 100%;
+  height: clamp(20vh, 21vh, 100%);
   border-radius: 8px;
+  overflow: hidden; /* detail이 넘치지 않게 */
   margin-bottom: 15px;
 }
 
-.btn {
+.drawing_card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.home_btn {
   background-color: #f4f4f4;
   border: 1px solid black;
   border-radius: 999px;
