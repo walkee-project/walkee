@@ -20,11 +20,11 @@ export const api = {
     window.location.href = url;
   },
 
-  // 토큰으로 사용자 정보 가져오기
-  getUserInfo: async (token: string) => {
+  // 쿠키로 사용자 정보 가져오기
+  getUserInfo: async () => {
     const response = await fetch(`${API_BASE_URL}/users/profile`, {
+      credentials: "include", // 쿠키 자동 첨부
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -36,23 +36,17 @@ export const api = {
     return response.json();
   },
 
-  // 토큰 저장
-  saveToken: (token: string) => {
-    localStorage.setItem("accessToken", token);
-  },
+  // 로그아웃
+  logout: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  // 토큰 가져오기
-  getToken: () => {
-    return localStorage.getItem("accessToken");
-  },
+    if (!response.ok) {
+      throw new Error("Failed to logout");
+    }
 
-  // 토큰 삭제
-  removeToken: () => {
-    localStorage.removeItem("accessToken");
-  },
-
-  // 로그인 상태 확인
-  isLoggedIn: () => {
-    return !!localStorage.getItem("accessToken");
+    return response.json();
   },
 };

@@ -6,21 +6,13 @@ import homeMap_ex3 from "../assets/homeMap_ex3.png";
 import sun from "../assets/sun.png";
 import arrow_right from "../assets/arrow_right.png";
 import { useDynamicGap } from "./hooks/useDynamicGap";
-import { useState, useEffect } from "react";
-
-interface UserInfo {
-  userIdx: number;
-  userProvider: string;
-  userId: string;
-  userEmail: string;
-  userName: string;
-  userProfile: string;
-  userPoint: number;
-}
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchUser } from "../store/userSlice";
 
 function Home() {
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { user, loading } = useAppSelector((state) => state.user);
   const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
     3,
     12,
@@ -28,22 +20,8 @@ function Home() {
   );
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/users/profile", {
-          credentials: "include", // 쿠키 자동 첨부
-        });
-        if (!res.ok) throw new Error("Failed to fetch user info");
-        const userData = await res.json();
-        setUser(userData);
-      } catch {
-        // 인증 실패 처리
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   const handleLogin = () => {
     window.location.href = "/";
