@@ -28,10 +28,6 @@ function Home() {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  const handleLogin = () => {
-    window.location.href = "/";
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -48,11 +44,6 @@ function Home() {
       {/* 상단 인사 영역 */}
       <div className="greeting_card" ref={getSectionRef(0)}>
         <p className="hello_text">Hi, {user ? user.userName : "게스트"}!</p>
-        {!user && (
-          <div style={{ marginBottom: "10px" }}>
-            <button onClick={handleLogin}>로그인</button>
-          </div>
-        )}
         <div className="weather_container">
           <div className="mascot_section">
             <img src={mascot_long} alt="마스코트" className="mascot_img" />
