@@ -16,7 +16,7 @@ function Home() {
   const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
     3,
     10,
-    100
+    40
   );
   const {
     weather,
