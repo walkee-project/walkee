@@ -40,10 +40,18 @@
 
 .location_weather {
   font-weight: 600;
-  margin: 5px 0;
   display: flex;
   align-items: center;
   gap: 7px;
+}
+
+.weather_icon {
+  height: 5vh;
+}
+
+.location_weather img {
+  height: 100%;
+  object-fit: cover;
 }
 
 .weather_detail {
@@ -74,7 +82,7 @@
 .recommend_img {
   position: relative; /* 기준 컨테이너 */
   width: 100%;
-  height: 30vh;
+  height: 20vh;
   border-radius: 12px;
   overflow: hidden; /* detail이 넘치지 않게 */
 }

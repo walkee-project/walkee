@@ -3,9 +3,9 @@ import mascot_long from "../assets/mascot_long.png";
 import homeMap_ex1 from "../assets/homeMap_ex1.png";
 import homeMap_ex2 from "../assets/homeMap_ex2.png";
 import homeMap_ex3 from "../assets/homeMap_ex3.png";
-import sun from "../assets/sun.png";
 import arrow_right from "../assets/arrow_right.png";
 import { useDynamicGap } from "./hooks/useDynamicGap";
+import { useWeather } from "./hooks/useWeather";
 import { useState, useEffect } from "react";
 
 interface UserInfo {
@@ -26,6 +26,11 @@ function Home() {
     10,
     100
   );
+  const {
+    weather,
+    loading: weatherLoading,
+    error: weatherError,
+  } = useWeather();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -75,12 +80,27 @@ function Home() {
             <img src={mascot_long} alt="마스코트" className="mascot_img" />
           </div>
           <div className="weather_section">
-            <div className="location_weather">
-              <img src={sun} alt="날씨" />
-              <p>대구 동구</p>
-            </div>
-            <p className="weather_detail">현재 온도 : 35도 | 강수량 : 10%</p>
-            <p className="weather_comment">오늘은 자전거타기 좋은 날씨예요!</p>
+            {weatherLoading ? (
+              <p>날씨 정보를 불러오는 중...</p>
+            ) : weatherError ? (
+              <p>{weatherError}</p>
+            ) : weather ? (
+              <>
+                <div className="location_weather">
+                  <div className="weather_icon">
+                    <img src={weather.iconUrl} alt="날씨" />
+                  </div>
+                  <p>{weather.location}</p>
+                </div>
+                <p className="weather_detail">
+                  현재 온도 : {weather.temperature}도 | 강수량 :{" "}
+                  {weather.precipitation}mm
+                </p>
+                <p className="weather_comment">{weather.comment}</p>
+              </>
+            ) : (
+              <p>날씨 정보를 불러오지 못했어요.</p>
+            )}
           </div>
         </div>
       </div>
