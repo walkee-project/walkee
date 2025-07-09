@@ -13,11 +13,8 @@ import { fetchUser } from "../store/userSlice";
 function Home() {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
-  const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
-    3,
-    10,
-    40
-  );
+  const { containerRef, getSectionRef, gap, padding, recalculate } =
+    useDynamicGap(3, 10, 80);
   const {
     weather,
     loading: weatherLoading,
@@ -57,7 +54,11 @@ function Home() {
               <>
                 <div className="location_weather">
                   <div className="weather_icon">
-                    <img src={weather.iconUrl} alt="날씨" />
+                    <img
+                      src={weather.iconUrl}
+                      alt="날씨"
+                      onLoad={recalculate}
+                    />
                   </div>
                   <p>{weather.location}</p>
                 </div>
