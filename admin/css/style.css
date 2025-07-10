@@ -1,8 +1,78 @@
+/* 공통 reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
 body {
-  font-family: sans-serif;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: "Pretendard", sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
   padding: 20px;
 }
 
-h1 {
-  color: #333;
+h1,
+h2 {
+  color: #0a84ff;
+}
+a {
+  color: #0a84ff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h2 {
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+/* 대시보드 카드 스타일 */
+#dashboard p {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 버튼 */
+button {
+  background-color: #0a84ff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #7dc6fd;
+}
+
+/* footer */
+
+#footer,
+.admin-footer {
+  margin-top: auto;
+}
+.admin-footer {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #888;
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
 }
