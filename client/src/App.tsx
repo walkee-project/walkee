@@ -1,18 +1,34 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import First from "./components/First";
 import Home from "./components/Home";
+import Map from "./components/Map";
+import Navigation from "./components/Navigation";
+
+// ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
+function AppContent() {
+  const location = useLocation();
+  const hideNavRoutes = ["/"]; // 네비게이션 숨길 경로
+  const isNavHidden = hideNavRoutes.includes(location.pathname);
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<First />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/map" element={<Map />} />
+      </Routes>
+
+      {!isNavHidden && <Navigation />}
+    </>
+  );
+}
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<First />} />
-          <Route path="/home" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

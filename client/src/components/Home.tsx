@@ -4,7 +4,6 @@ import homeMap_ex1 from "../assets/homeMap_ex1.png";
 import homeMap_ex2 from "../assets/homeMap_ex2.png";
 import homeMap_ex3 from "../assets/homeMap_ex3.png";
 import arrow_right from "../assets/arrow_right.png";
-import { useDynamicGap } from "./hooks/useDynamicGap";
 import { useWeather } from "./hooks/useWeather";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -13,8 +12,6 @@ import { fetchUser } from "../store/userSlice";
 function Home() {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
-  const { containerRef, getSectionRef, gap, padding, recalculate } =
-    useDynamicGap(3, 10, 80);
   const {
     weather,
     loading: weatherLoading,
@@ -30,16 +27,9 @@ function Home() {
   }
 
   return (
-    <div
-      className="main_container"
-      ref={containerRef}
-      style={{
-        gap: `${gap}px`,
-        padding: `${padding}px 16px`,
-      }}
-    >
+    <div className="main_container">
       {/* 상단 인사 영역 */}
-      <div className="greeting_card" ref={getSectionRef(0)}>
+      <div className="greeting_card">
         <p className="hello_text">Hi, {user ? user.userName : "게스트"}!</p>
         <div className="weather_container">
           <div className="mascot_section">
@@ -54,11 +44,7 @@ function Home() {
               <>
                 <div className="location_weather">
                   <div className="weather_icon">
-                    <img
-                      src={weather.iconUrl}
-                      alt="날씨"
-                      onLoad={recalculate}
-                    />
+                    <img src={weather.iconUrl} alt="날씨" />
                   </div>
                   <p>{weather.location}</p>
                 </div>
@@ -76,7 +62,7 @@ function Home() {
       </div>
 
       {/* 추천코스 영역 */}
-      <div className="recommend_section" ref={getSectionRef(1)}>
+      <div className="recommend_section">
         <div className="recommend_title">
           <div>
             오늘의 추천코스 <span>대구 스타디움 동그라미런</span>
@@ -94,7 +80,7 @@ function Home() {
       </div>
 
       {/* 새그리기 / 내그림보기 */}
-      <div className="drawing_section" ref={getSectionRef(2)}>
+      <div className="drawing_section">
         <div className="drawing_card">
           <div className="drawing_img">
             <img src={homeMap_ex2} alt="새그리기" />
