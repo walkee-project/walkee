@@ -64,10 +64,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     super({
       clientID,
       clientSecret,
-      callbackURL: configService.get<string>(
-        'KAKAO_CALLBACK_URL',
-        'http://localhost:3000/auth/kakao/callback',
-      ),
+      callbackURL:
+        'https://trusted-hippo-finally.ngrok-free.app/api/auth/kakao/callback',
     });
   }
 
@@ -81,7 +79,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const user = {
       email: _json.kakao_account?.email || '',
       name: getRandomKoreanName(),
-      picture: 'http://localhost:5173/src/assets/profile.png',
+      picture:
+        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
       provider: 'kakao',
       providerId: profile.id,
     };

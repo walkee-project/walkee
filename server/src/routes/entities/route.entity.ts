@@ -46,6 +46,9 @@ export class RouteEntity {
   @Column({ name: 'route_thumbnail' })
   routeThumbnail?: string;
 
+  @Column({ name: 'route_difficulty' })
+  routeDifficulty: string;
+
   @CreateDateColumn({ name: 'route_created_at' })
   routeCreatedAt: Date;
 

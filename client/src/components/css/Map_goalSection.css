@@ -1,0 +1,76 @@
+.goal_section {
+  width: 100%;
+}
+
+.goal_wrapper {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.goal_label {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+.goal_label::before {
+  content: "";
+  position: absolute;
+  background-color: rgba(118, 191, 255, 0.5);
+  width: 30%;
+  height: 20px;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+/* 드롭다운 스타일 */
+.goal_select {
+  width: 30%;
+  padding: 10px 12px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 23px;
+}
+
+/* 목표 설정 후 input */
+.goal_input {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 8px;
+}
+
+/* 단위가 있는 input 컨테이너 */
+.input_with_unit {
+  display: flex;
+  align-items: center;
+  background-color: #e2e2e2;
+  border-radius: 5px;
+  padding-right: 10px;
+}
+
+.input_field {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-weight: 300;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.unit_label {
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-left: 5px;
+}

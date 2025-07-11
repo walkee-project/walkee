@@ -45,12 +45,11 @@ export class AuthService {
     try {
       const { provider, providerId, email, name, picture } = socialUserData;
 
-      let user = await this.usersService.findByProviderAndId(
-        provider,
-        providerId,
-      );
+      let user = await this.usersService.findByEmail(email);
+
       console.log(user);
       if (!user) {
+        // 이메일이 없으면 새 유저 생성
         user = await this.usersService.create({
           userProvider: provider,
           userId: providerId,
@@ -59,6 +58,14 @@ export class AuthService {
           userProfile: picture,
           userPoint: 0,
         });
+      } else {
+        // 이메일은 있으나 provider 정보가 다를 경우 갱신 (선택 사항)
+        if (user.userProvider !== provider || user.userId !== providerId) {
+          await this.usersService.updateSocialInfo(user.userIdx, {
+            userProvider: provider,
+            userId: providerId,
+          });
+        }
       }
 
       if (!user || typeof user.userIdx !== 'number') {

@@ -16,7 +16,7 @@ interface SocialUser {
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,  // ConfigService 주입
+    private readonly configService: ConfigService, // ConfigService 주입
   ) {}
 
   @Get('google')
@@ -38,9 +38,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect(
-      `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173'}/home`,
-    );
+    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
   }
 
   @Get('kakao')
@@ -59,13 +57,11 @@ export class AuthController {
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
       sameSite: 'lax', // 또는 'none' + secure:true (HTTPS 필수)
-  secure: false, // HTTP면 false로 설정
+      secure: false, // HTTP면 false로 설정
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect(
-      `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173'}/home`,
-    );
+    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
   }
 
   @Get('naver')
@@ -87,9 +83,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect(
-      `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173'}/home`,
-    );
+    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
   }
 
   @Post('logout')

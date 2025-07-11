@@ -6,8 +6,7 @@ import mascot_short from "../assets/mascot_short.png";
 import google_login from "../assets/google_login.png";
 import naver_login from "../assets/naver_login.png";
 import kakao_login from "../assets/kakao_login.png";
-// import axios from "axios";
-// import { api } from "../utils/api";
+import { api } from "../utils/api";
 
 function First() {
   const [shrink, setShrink] = useState(false);
@@ -25,7 +24,7 @@ function First() {
   // 소셜 로그인 핸들러
   const handleSocialLogin = (provider: "google" | "kakao" | "naver") => {
     console.log(`${provider} 로그인 시작`);
-    window.location.href = `http://localhost:3000/auth/${provider}`;
+    api.startSocialLogin(provider);
   };
 
   return (
@@ -77,4 +76,5 @@ function First() {
     </div>
   );
 }
+
 export default First;

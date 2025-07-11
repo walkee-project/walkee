@@ -25,6 +25,12 @@ export class UsersService {
     return await this.userRepository.findOne({ where: { userIdx: id } });
   }
 
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return await this.userRepository.findOne({
+      where: { userEmail: email },
+    });
+  }
+
   async findByProviderAndId(provider: string, providerId: string) {
     return await this.userRepository.findOne({
       where: {
@@ -32,6 +38,11 @@ export class UsersService {
         userId: providerId,
       },
     });
+  }
+
+  async updateSocialInfo(userIdx: number, data: Partial<UserEntity>) {
+    await this.userRepository.update({ userIdx }, data);
+    return this.findOne(userIdx);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
