@@ -1,5 +1,5 @@
-// src/hooks/useWeather.ts
 import { useEffect, useState } from "react";
+import { waitForKakaoSdk } from "./useKakaoSdk";
 
 interface WeatherInfo {
   location: string;
@@ -13,7 +13,13 @@ export function useWeather() {
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const API_KEY = "8bae7c1d7875e2c7ecf2c801c7799338";
+
+  // 기본 위치 (서울)
+  const DEFAULT_LAT = 37.5665;
+  const DEFAULT_LON = 126.978;
+
   useEffect(() => {
     const fetchWeather = async (lat: number, lon: number) => {
       try {
@@ -36,19 +42,54 @@ export function useWeather() {
         const iconCode = data.weather?.[0]?.icon;
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-        setWeather({
-          location: data.name,
-          temperature,
-          precipitation,
-          comment,
-          iconUrl,
-        });
+        // 카카오 좌표 -> 한글 주소
+        const kakao = await waitForKakaoSdk();
+        const geocoder = new kakao.maps.services.Geocoder();
+
+        geocoder.coord2RegionCode(
+          lon,
+          lat,
+          (
+            result: kakao.maps.services.RegionCode[],
+            status: kakao.maps.services.Status
+          ) => {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+              const regionName = result[0].address_name;
+
+              setWeather({
+                location: regionName,
+                temperature,
+                precipitation,
+                comment,
+                iconUrl,
+              });
+            } else {
+              setError("주소 정보를 불러올 수 없습니다.");
+            }
+            setLoading(false);
+          }
+        );
       } catch (err) {
         console.error(err);
         setError("날씨 정보 로딩 실패");
-      } finally {
         setLoading(false);
       }
+    };
+
+    // 위치 정보 지원 여부 확인
+    if (!navigator.geolocation) {
+      console.log(
+        "위치 정보를 지원하지 않습니다. 기본 위치(서울)를 사용합니다."
+      );
+      fetchWeather(DEFAULT_LAT, DEFAULT_LON);
+      return;
+    }
+
+    // 위치 정보 옵션 설정
+    const options = {
+      enableHighAccuracy: true, // 정확도 우선
+      timeout: 10000, // 10초 타임아웃
+      maximumAge: 60000, // 1분간 캐시된 위치 정보 사용
     };
 
     navigator.geolocation.getCurrentPosition(
@@ -58,9 +99,38 @@ export function useWeather() {
       },
       (err) => {
         console.error("위치 정보 오류:", err);
-        setError("위치 정보를 불러오지 못했습니다.");
+
+        // HTTPS 환경에서 위치 정보 접근이 차단된 경우 기본 위치 사용
+        if (err.code === 1 && window.location.protocol === "https:") {
+          console.log(
+            "HTTPS 환경에서 위치 정보 접근이 차단되었습니다. 기본 위치(서울)를 사용합니다."
+          );
+          fetchWeather(DEFAULT_LAT, DEFAULT_LON);
+          return;
+        }
+
+        // 구체적인 오류 메시지 제공
+        let errorMessage = "위치 정보를 불러오지 못했습니다.";
+
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMessage =
+              "위치 정보 접근이 거부되었습니다. 브라우저 설정에서 위치 정보를 허용해주세요.";
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMessage = "위치 정보를 사용할 수 없습니다.";
+            break;
+          case err.TIMEOUT:
+            errorMessage = "위치 정보 요청이 시간 초과되었습니다.";
+            break;
+          default:
+            errorMessage = "알 수 없는 오류가 발생했습니다.";
+        }
+
+        setError(errorMessage);
         setLoading(false);
-      }
+      },
+      options
     );
   }, []);
 

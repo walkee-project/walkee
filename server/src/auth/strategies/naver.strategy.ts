@@ -59,10 +59,8 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     super({
       clientID,
       clientSecret,
-      callbackURL: configService.get<string>(
-        'NAVER_CALLBACK_URL',
-        'http://localhost:3000/auth/naver/callback',
-      ),
+      callbackURL:
+        'https://trusted-hippo-finally.ngrok-free.app/api/auth/naver/callback',
     });
   }
 
@@ -75,11 +73,12 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     const { _json } = profile;
 
     const user = {
-      email: _json.email, // 여기 수정
+      email: _json.email,
       name: getRandomKoreanName(),
-      picture: 'http://localhost:5173/src/assets/profile.png',
+      picture:
+        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
       provider: 'naver',
-      providerId: _json.id, // 여기 수정
+      providerId: _json.id,
     };
 
     done(null, user);

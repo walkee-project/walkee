@@ -44,4 +44,8 @@ export class CreateRouteDto {
   @IsOptional()
   @IsString()
   routeThumbnail?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  routeDifficulty: string;
 }

@@ -57,10 +57,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID,
       clientSecret,
-      callbackURL: configService.get<string>(
-        'GOOGLE_CALLBACK_URL',
-        'http://localhost:3000/auth/google/callback',
-      ),
+      callbackURL:
+        'https://trusted-hippo-finally.ngrok-free.app/api/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -75,7 +73,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const user = {
       email: emails[0]?.value || '',
       name: getRandomKoreanName(),
-      picture: 'http://localhost:5173/src/assets/profile.png',
+      picture:
+        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
       provider: 'google',
       providerId: profile.id,
     };

@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:3000"; // NestJS 서버 주소
+// 모든 환경에서 프록시 사용 (프론트엔드와 백엔드 통합)
+const API_BASE_URL = "/api";
 
 export interface LoginResponse {
   accessToken: string;

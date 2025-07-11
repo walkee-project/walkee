@@ -1,22 +1,14 @@
 import "./css/Home.css";
-import mascot_long from "../assets/mascot_long.png";
-import homeMap_ex1 from "../assets/homeMap_ex1.png";
-import homeMap_ex2 from "../assets/homeMap_ex2.png";
-import homeMap_ex3 from "../assets/homeMap_ex3.png";
-import arrow_right from "../assets/arrow_right.png";
-import { useWeather } from "./hooks/useWeather";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchUser } from "../store/userSlice";
+import WeatherComponent from "./home/WeatherComponent";
+import RecommendCourseComponent from "./home/RecommendCourseComponent";
+import DrawingSectionComponent from "./home/DrawingSectionComponent";
 
 function Home() {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
-  const {
-    weather,
-    loading: weatherLoading,
-    error: weatherError,
-  } = useWeather();
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -31,68 +23,17 @@ function Home() {
       {/* 상단 인사 영역 */}
       <div className="greeting_card">
         <p className="hello_text">Hi, {user ? user.userName : "게스트"}!</p>
-        <div className="weather_container">
-          <div className="mascot_section">
-            <img src={mascot_long} alt="마스코트" className="mascot_img" />
-          </div>
-          <div className="weather_section">
-            {weatherLoading ? (
-              <p>날씨 정보를 불러오는 중...</p>
-            ) : weatherError ? (
-              <p>{weatherError}</p>
-            ) : weather ? (
-              <>
-                <div className="location_weather">
-                  <div className="weather_icon">
-                    <img src={weather.iconUrl} alt="날씨" />
-                  </div>
-                  <p>{weather.location}</p>
-                </div>
-                <p className="weather_detail">
-                  현재 온도 : {weather.temperature}도 | 강수량 :{" "}
-                  {weather.precipitation}mm
-                </p>
-                <p className="weather_comment">{weather.comment}</p>
-              </>
-            ) : (
-              <p>날씨 정보를 불러오지 못했어요.</p>
-            )}
-          </div>
-        </div>
+        <WeatherComponent />
       </div>
 
       {/* 추천코스 영역 */}
-      <div className="recommend_section">
-        <div className="recommend_title">
-          <div>
-            오늘의 추천코스 <span>대구 스타디움 동그라미런</span>
-          </div>
-          <img src={arrow_right} alt="화살표" />
-        </div>
-        <div className="recommend_img">
-          <img src={homeMap_ex1} alt="추천코스" />
-          <div className="recommend_detail">
-            <p>1.5km</p>
-            <p>20분</p>
-            <p>초급난이도</p>
-          </div>
-        </div>
+      <div>
+        <RecommendCourseComponent />
       </div>
 
       {/* 새그리기 / 내그림보기 */}
-      <div className="drawing_section">
-        <div className="drawing_card">
-          <div className="drawing_img">
-            <img src={homeMap_ex2} alt="새그리기" />
-          </div>
-          <div className="home_btn">새그림그리기</div>
-        </div>
-        <div className="drawing_card">
-          <div className="drawing_img">
-            <img src={homeMap_ex3} alt="내그림보기" />
-          </div>
-          <div className="home_btn">내그림보기</div>
-        </div>
+      <div>
+        <DrawingSectionComponent />
       </div>
     </div>
   );

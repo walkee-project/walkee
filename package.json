@@ -6,8 +6,8 @@
   "dependencies": {
     "@woowa-babble/random-nickname": "^1.0.2",
     "axios": "^1.10.0",
+    "cloudflared": "^0.7.0",
     "cookie-parser": "^1.4.7",
-
     "react-router-dom": "^7.6.3"
   }
 }

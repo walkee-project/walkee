@@ -16,8 +16,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe()); // 유효성 검사
   app.enableCors({
-    origin: 'http://localhost:5173',
-    credentials: true, // 쿠키 주고받기 위해 반드시 필요\
+    origin: [
+      'http://192.168.0.82:5173',
+      'http://localhost:5173',
+      'https://trusted-hippo-finally.ngrok-free.app', // 프론트엔드 ngrok
+    ],
+    credentials: true, // 쿠키 주고받기 위해 반드시 필요
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });
