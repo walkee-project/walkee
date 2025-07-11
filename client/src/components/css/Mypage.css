@@ -1,0 +1,97 @@
+.mypage_container {
+  padding: 20px;
+  background-color: #f6f6f6;
+  min-height: calc(100vh - 60px); /* 아래 네비 높이 고려 */
+}
+
+.profile_card {
+  background-color: white;
+  display: flex;
+  padding: 15px;
+  padding-top: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.profile_img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+
+.profile_info {
+  flex: 1;
+}
+
+.nickname_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nickname {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.edit_btn {
+  font-size: 13px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #f6f6f6;
+  cursor: pointer;
+  font-weight: 300;
+}
+
+.join_date {
+  font-size: 13px;
+  color: #5d5d5d;
+  margin-top: 4px;
+  font-weight: 300;
+}
+
+.counts {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 13px;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.menu_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.menu_item {
+  background: white;
+  padding: 18px 18px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+}
+
+.bottom_links {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #5d5d5d;
+  padding: 0 5px;
+}
+
+.logout {
+  color: #0b8dff;
+  cursor: pointer;
+}
