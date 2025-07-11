@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import First from "./components/First";
 import Home from "./components/Home";
 import Map from "./components/Map";
-import Mypage from "./components/Mypage";
+import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트

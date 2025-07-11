@@ -1,13 +1,10 @@
-import "./css/Mypage_main.css";
+import "../css/Mypage_main.css";
 import { useNavigate } from "react-router-dom";
-import profile from "../assets/profile.png";
-import arrow from "../assets/arrow_right.png";
+import type { mypage_props } from "../../types/mypage_type";
+import profile from "../../assets/profile.png";
+import arrow from "../../assets/arrow_right.png";
 
-type Props = {
-  onChangeSection: (section: string) => void;
-};
-
-export default function Mypage_main({ onChangeSection }: Props) {
+export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
 
   return (

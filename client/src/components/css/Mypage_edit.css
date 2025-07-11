@@ -1,0 +1,113 @@
+.edit {
+  position: relative;
+  text-align: center;
+  height: 100%;
+}
+
+.edit_header {
+  width: 100%;
+  text-align: center;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.back_btn {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  width: 5%;
+  height: 5%;
+}
+
+.back_btn img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.edit_section {
+  height: calc(100% - 10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 0;
+}
+
+.profile_section {
+  margin-bottom: 40px;
+}
+
+.profile_img_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.edit_profile_img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #d3eaff;
+}
+
+.camera_div {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  background-color: #5d5d5d;
+  border-radius: 50%;
+}
+
+.camera_icon {
+  width: 100%;
+  object-fit: contain;
+}
+
+.nickname_section {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.nickname_guideDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 10px;
+  margin-bottom: 5px;
+}
+
+.nickname_label {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+.nickname_guide {
+  color: #0b8dff;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.nickname_input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background: #f0f0f0;
+}
+
+.submit_btn {
+  padding: 12px 32px;
+  border: 3px solid white;
+  border-radius: 30px;
+  background: #a4d7ff;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
