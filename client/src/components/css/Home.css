@@ -1,10 +1,11 @@
 .main_container {
   background-color: #f9f9f9;
-  height: 100dvh; /* ✅ 최신 브라우저에서 안정적으로 사용 */
-  min-height: 100dvh;
+  height: calc(100dvh - 60px);
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: clamp(1vh, 1vh + 1%, 80px) 16px;
+  justify-content: space-evenly;
 }
 
 /* 상단 인사 */
@@ -12,7 +13,7 @@
 .recommend_section {
   background: white;
   border-radius: 10px;
-  padding: clamp(2vh, 3.5vh, 5vh) 5%;
+  padding: clamp(2vh, 1vh + 2%, 5vh) 15px;
 }
 
 .hello_text {
@@ -117,7 +118,7 @@
 .drawing_card {
   background: white;
   border-radius: 12px;
-  padding: clamp(2vh, 3.5vh, 5vh) 4%;
+  padding: clamp(2vh, 2vh + 1%, 5vh) 4%;
   width: 48%;
   display: flex;
   flex-direction: column;
@@ -128,7 +129,7 @@
 .drawing_img {
   position: relative; /* 기준 컨테이너 */
   width: 100%;
-  height: clamp(20vh, 21vh, 100%);
+  height: max(10vh, 15vh);
   border-radius: 8px;
   overflow: hidden; /* detail이 넘치지 않게 */
   margin-bottom: 15px;
@@ -137,7 +138,7 @@
 .drawing_card img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
 }
 

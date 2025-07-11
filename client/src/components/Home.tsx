@@ -2,7 +2,6 @@ import "./css/Home.css";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchUser } from "../store/userSlice";
-import { useDynamicGap } from "./hooks/useDynamicGap";
 import WeatherComponent from "./home/WeatherComponent";
 import RecommendCourseComponent from "./home/RecommendCourseComponent";
 import DrawingSectionComponent from "./home/DrawingSectionComponent";
@@ -10,11 +9,6 @@ import DrawingSectionComponent from "./home/DrawingSectionComponent";
 function Home() {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
-  const { containerRef, getSectionRef, gap, padding } = useDynamicGap(
-    3,
-    10,
-    40
-  );
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -25,27 +19,20 @@ function Home() {
   }
 
   return (
-    <div
-      className="main_container"
-      ref={containerRef}
-      style={{
-        gap: `${gap}px`,
-        padding: `${padding}px 16px`,
-      }}
-    >
+    <div className="main_container">
       {/* 상단 인사 영역 */}
-      <div className="greeting_card" ref={getSectionRef(0)}>
+      <div className="greeting_card">
         <p className="hello_text">Hi, {user ? user.userName : "게스트"}!</p>
         <WeatherComponent />
       </div>
 
       {/* 추천코스 영역 */}
-      <div ref={getSectionRef(1)}>
+      <div>
         <RecommendCourseComponent />
       </div>
 
       {/* 새그리기 / 내그림보기 */}
-      <div ref={getSectionRef(2)}>
+      <div>
         <DrawingSectionComponent />
       </div>
     </div>

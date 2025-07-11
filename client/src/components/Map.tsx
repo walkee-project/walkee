@@ -205,6 +205,7 @@ function Map() {
       {/* 기능 버튼들 (네비게이션 바로 위) */}
       <div className="button_section">
         {/* 📍 현재 위치 이동 버튼 (우하단) */}
+
         <button className="gps_button" onClick={moveToCurrentLocation}>
           <img src={gpsBtnIcon} alt="현재위치로이동" />
         </button>
