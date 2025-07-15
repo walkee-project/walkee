@@ -68,3 +68,12 @@
   box-sizing: border-box;
   font-family: "Paperlogy";
 }
+
+.btn_one {
+  background-color: white;
+  border: 2px solid #76bfff;
+  border-radius: 10px;
+}
+.btn_one:active {
+  background-color: #76bfff;
+}
