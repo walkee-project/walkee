@@ -21,6 +21,7 @@ export interface RouteItem {
   distance: string;
   speed: string;
   image: string;
+  who: string;
   isLiked: boolean;
 }
 
