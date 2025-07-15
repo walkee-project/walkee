@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // 모든 환경에서 프록시 사용 (프론트엔드와 백엔드 통합)
       "/api": {
-        target: "https://facilities-monte-ought-decision.trycloudflare.com",
+        target: "https://ta-self-portal-worker.trycloudflare.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
