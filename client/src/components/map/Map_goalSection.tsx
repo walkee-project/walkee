@@ -1,7 +1,7 @@
 import { type ChangeEvent } from "react";
-import "./css/Map_goalSection.css";
-import useGpsTracking from "../utils/useGpsTracking";
-import { formatTime } from "../utils/gpsUtils";
+import "../css/Map_goalSection.css";
+import useGpsTracking from "../../utils/useGpsTracking";
+import { formatTime } from "../../utils/gpsUtils";
 
 interface BasicRunSectionProps {
   goalType: string;

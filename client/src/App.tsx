@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import First from "./components/First";
 import Home from "./components/Home";
-import Map from "./components/Map";
+import Map from "./components/map/Map";
 import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 
