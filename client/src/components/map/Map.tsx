@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../css/Map.css";
 
 // window 객체에 카카오맵 타입 확장
@@ -7,34 +8,19 @@ declare global {
     currentMarker: kakao.maps.Marker;
   }
 }
+function Map() {
+  const [selectedMode, setSelectedMode] =
+    useState<keyof typeof sectionComponents>("");
 
-return (
-  <div className="map_container">
-    <MapComponent markerRef={markerRef} />
-
-    <div className={`button_box ${selectedMode ? "" : "active"}`}>
-      {/* 선택 전: 버튼 보여줌 */}
-      {!selectedMode && (
-        <div className="firstSelect_section">
-          <button
-            className="mapbtn mapbtn_two"
-            onClick={() => handleModeSelect("goalSection")}
-          >
-            달리기 시작
-          </button>
-          <button
-            className="mapbtn mapbtn_two"
-            onClick={() => handleModeSelect("course")}
-          >
-            코스 따라 달리기
-          </button>
-        </div>
-      )}
-
+  const handleModeSelect = (mode: keyof typeof sectionComponents) => {
+    setSelectedMode(mode);
+  };
+  return (
+    <div className="map_container">
       {/* 선택 후: 섹션 보여줌 */}
       {selectedMode && <>{sectionComponents[selectedMode]}</>}
     </div>
-  </div>
-);
+  );
+}
 
 export default Map;
