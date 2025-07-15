@@ -11,9 +11,10 @@ declare global {
 
 interface MapComponentProps {
   onMapReady?: () => void;
+  markerRef?: React.MutableRefObject<kakao.maps.Marker | null>;
 }
 
-function MapComponent({ onMapReady }: MapComponentProps) {
+function MapComponent({ onMapReady, markerRef }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   // 기본 위치 (서울)
@@ -28,7 +29,7 @@ function MapComponent({ onMapReady }: MapComponentProps) {
             const container = mapRef.current!;
             const options = {
               center: new kakao.maps.LatLng(lat, lng),
-              level: 6,
+              level: 3,
               tileSize: 256,
               tileType: 0,
               mapTypeId: kakao.maps.MapTypeId.ROADMAP,
@@ -55,6 +56,9 @@ function MapComponent({ onMapReady }: MapComponentProps) {
                 }
               ),
             });
+            if (markerRef) {
+              markerRef.current = marker;
+            }
 
             // 전역으로 지도 인스턴스와 마커 저장
             window.kakaoMapInstance = map;

@@ -1,10 +1,11 @@
 import "./css/Map.css";
-import { useState, useEffect, type ChangeEvent, type JSX } from "react";
+import { useState, useEffect, useRef, type ChangeEvent, type JSX } from "react";
 import compass_bg from "../assets/compass_bg.png";
 import compass_needle from "../assets/compass_needle.png";
 import gpsBtnIcon from "../assets/gpsBtnIcon.png";
 import Map_goalSection from "./Map_goalSection";
 import MapComponent from "./map/MapComponent";
+import { animateMarker } from "../utils/gpsUtils";
 
 // window 객체에 카카오맵 타입 확장
 declare global {
@@ -14,6 +15,11 @@ declare global {
   }
 }
 
+// kakao.maps.Map에 panTo 메서드 타입을 명시적으로 추가
+interface KakaoMapWithPanTo extends kakao.maps.Map {
+  panTo: (latlng: kakao.maps.LatLng) => void;
+}
+
 function Map() {
   const [goalType, setGoalType] = useState("목표 없음");
   const [distanceGoal, setDistanceGoal] = useState("");
@@ -21,6 +27,7 @@ function Map() {
   const [heading, setHeading] = useState(0);
   const [selectedMode, setSelectedMode] =
     useState<keyof typeof sectionComponents>("");
+  const markerRef = useRef<kakao.maps.Marker | null>(null);
 
   const handleModeSelect = (mode: keyof typeof sectionComponents) => {
     setSelectedMode(mode);
@@ -47,75 +54,13 @@ function Map() {
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          const newPosition = new kakao.maps.LatLng(lat, lng);
-
-          // 지도를 부드럽게 이동시키는 애니메이션
-          if (window.kakaoMapInstance) {
-            const map = window.kakaoMapInstance;
-
-            // 카카오맵에서 부드러운 이동을 위한 내장 메서드 사용
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mapAny = map as any;
-            if (mapAny.panTo) {
-              mapAny.panTo(newPosition);
-            } else {
-              // 내장 메서드가 없으면 수동 애니메이션
-              const duration = 1000;
-              const startTime = Date.now();
-
-              const animate = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                // 매우 부드러운 이징
-                const easeProgress =
-                  progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-
-                const currentLat = newPosition.getLat() * easeProgress;
-                const currentLng = newPosition.getLng() * easeProgress;
-
-                map.setCenter(new kakao.maps.LatLng(currentLat, currentLng));
-
-                if (progress < 1) {
-                  requestAnimationFrame(animate);
-                }
-              };
-
-              requestAnimationFrame(animate);
-            }
+          if (markerRef.current) {
+            animateMarker(markerRef.current, lat, lng, 1000);
           }
-
-          // 마커를 부드럽게 이동시키는 애니메이션
-          if (window.currentMarker) {
-            const startPosition = window.currentMarker.getPosition();
-            const startLat = startPosition.getLat();
-            const startLng = startPosition.getLng();
-            const endLat = newPosition.getLat();
-            const endLng = newPosition.getLng();
-
-            const duration = 1000; // 1초
-            const startTime = Date.now();
-
-            const animateMarker = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-
-              // 이징 함수 (부드러운 움직임)
-              const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-              const currentLat = startLat + (endLat - startLat) * easeProgress;
-              const currentLng = startLng + (endLng - startLng) * easeProgress;
-
-              window.currentMarker.setPosition(
-                new kakao.maps.LatLng(currentLat, currentLng)
-              );
-
-              if (progress < 1) {
-                requestAnimationFrame(animateMarker);
-              }
-            };
-
-            requestAnimationFrame(animateMarker);
+          if (window.kakaoMapInstance) {
+            (window.kakaoMapInstance as KakaoMapWithPanTo).panTo(
+              new window.kakao.maps.LatLng(lat, lng)
+            );
           }
         },
         (error) => {
@@ -140,26 +85,6 @@ function Map() {
       }
     };
 
-    // iOS 13+ 권한 요청 필요 시 활성화 (주석 해제해서 사용)
-    /*
-    if (
-      typeof DeviceOrientationEvent !== "undefined" &&
-      typeof (DeviceOrientationEvent as any).requestPermission === "function"
-    ) {
-      (DeviceOrientationEvent as any)
-        .requestPermission()
-        .then((response: string) => {
-          if (response === "granted") {
-            window.addEventListener("deviceorientation", handleOrientation, true);
-          }
-        })
-        .catch(console.error);
-    } else {
-      window.addEventListener("deviceorientation", handleOrientation, true);
-    }
-    */
-
-    // iOS 권한 요청 없이 테스트하려면 그냥 등록
     window.addEventListener("deviceorientation", handleOrientation, true);
 
     return () => {
@@ -177,6 +102,7 @@ function Map() {
         handleGoalChange={handleGoalChange}
         handleDistanceChange={handleDistanceChange}
         handleTimeChange={handleTimeChange}
+        markerRef={markerRef}
       />
     ),
     course: (
@@ -189,7 +115,7 @@ function Map() {
 
   return (
     <div className="map_page">
-      <MapComponent />
+      <MapComponent markerRef={markerRef} />
 
       {/* 🧭 나침반 (좌상단 고정) */}
       <div className="compass">
