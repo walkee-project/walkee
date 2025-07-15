@@ -14,7 +14,7 @@ export function useWeather() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_KEY = "8bae7c1d7875e2c7ecf2c801c7799338";
+  const API_KEY = process.env.WEATHER_API_KEY;
 
   // 기본 위치 (서울)
   const DEFAULT_LAT = 37.5665;
