@@ -1,7 +1,7 @@
 .mypage_container {
   padding: 20px;
   background-color: #f6f6f6;
-  min-height: calc(100vh - 60px); /* 아래 네비 높이 고려 */
+  height: calc(100vh - 60px); /* 아래 네비 높이 고려 */
 }
 
 .profile_card {
