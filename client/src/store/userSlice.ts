@@ -10,6 +10,7 @@ interface UserInfo {
   userName: string;
   userProfile: string;
   userPoint: number;
+  userCreatedAt: string; // 가입일
 }
 
 interface UserState {

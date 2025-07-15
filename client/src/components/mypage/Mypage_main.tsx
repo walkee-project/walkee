@@ -1,19 +1,50 @@
 import "../css/Mypage_main.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { fetchUser } from "../../store/userSlice";
 import type { mypage_props } from "../../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
 
 export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { user, loading, error } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    // 컴포넌트 마운트 시 사용자 정보 로드
+    if (!user) {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, user]);
+
+  // 로딩 중일 때 표시
+  if (loading) {
+    return <div className="main">로딩 중...</div>;
+  }
+
+  // 에러가 있을 때 표시
+  if (error) {
+    return <div className="main">에러: {error}</div>;
+  }
+
+  // 사용자 정보가 없을 때 표시
+  if (!user) {
+    return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
+  }
 
   return (
     <div className="main">
       <div className="profile_card">
-        <img src={profile} alt="프로필" className="profile_img" />
+        <img
+          src={user.userProfile || profile}
+          alt="프로필"
+          className="profile_img"
+        />
         <div className="profile_info">
           <div className="nickname_row">
-            <span className="nickname">푸른달갈</span>
+            <span className="nickname">{user.userName}</span>
             <button
               className="edit_btn"
               onClick={() => onChangeSection("edit")}
@@ -21,7 +52,19 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
               수정
             </button>
           </div>
-          <div className="join_date">가입일 : 2025.07.08</div>
+          <div className="join_date">
+            가입일 :{" "}
+            {user.userCreatedAt
+              ? new Date(user.userCreatedAt)
+                  .toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                  .replace(/\. /g, ".")
+                  .replace(/\.$/, "")
+              : "-"}
+          </div>
         </div>
         <div className="counts">
           <p>총 12개 경로 |</p>
