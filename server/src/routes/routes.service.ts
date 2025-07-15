@@ -42,4 +42,10 @@ export class RoutesService {
       },
     );
   }
+
+  async countByUser(userId: number) {
+    return this.routeRepository.count({
+      where: { userIdx: userId, routeDeletedAt: IsNull() },
+    });
+  }
 }

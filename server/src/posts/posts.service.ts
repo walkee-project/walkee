@@ -42,4 +42,10 @@ export class PostsService {
       },
     );
   }
+
+  async countByUser(userId: number) {
+    return this.postRepository.count({
+      where: { userIdx: userId, postDeletedAt: IsNull() },
+    });
+  }
 }

@@ -1,16 +1,22 @@
 import "../css/Mypage_main.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { fetchUser } from "../../store/userSlice";
 import type { mypage_props } from "../../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
+import { fetchUserSummary } from "../../utils/api";
 
 export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user, loading, error } = useAppSelector((state) => state.user);
+  const [summary, setSummary] = useState({
+    routeCount: 0,
+    likeCount: 0,
+    postCount: 0,
+  });
 
   useEffect(() => {
     // 컴포넌트 마운트 시 사용자 정보 로드
@@ -18,6 +24,12 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
       dispatch(fetchUser());
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserSummary(user.userIdx).then(setSummary).catch(console.error);
+    }
+  }, [user]);
 
   // 로딩 중일 때 표시
   if (loading) {
@@ -67,9 +79,9 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
           </div>
         </div>
         <div className="counts">
-          <p>총 12개 경로 |</p>
-          <p> 찜 4개 |</p>
-          <p> 게시글 3개</p>
+          <p>총 {summary.routeCount}개 경로 |</p>
+          <p>찜 {summary.likeCount}개 |</p>
+          <p>게시글 {summary.postCount}개</p>
         </div>
       </div>
 

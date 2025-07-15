@@ -13,7 +13,11 @@ export interface LoginResponse {
     userPoint: number;
   };
 }
-
+export async function fetchUserSummary(userId: number) {
+  const res = await fetch(`/api/users/${userId}/summary`);
+  if (!res.ok) throw new Error("유저 요약 정보를 불러올 수 없습니다.");
+  return res.json();
+}
 export const api = {
   // 소셜 로그인 시작 (OAuth 리다이렉트)
   startSocialLogin: (provider: "google" | "kakao" | "naver") => {

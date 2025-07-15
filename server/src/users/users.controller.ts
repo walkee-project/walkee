@@ -11,6 +11,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { RoutesService } from '../routes/routes.service';
+import { PostsService } from '../posts/posts.service';
+import { PostLikesService } from '../post_likes/post_likes.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -29,7 +32,12 @@ interface RequestWithUser extends Request {
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly routesService: RoutesService,
+    private readonly postsService: PostsService,
+    private readonly postLikesService: PostLikesService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -58,6 +66,14 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
+  }
+
+  @Get(':userId/summary')
+  async getUserSummary(@Param('userId') userId: number) {
+    const routeCount = await this.routesService.countByUser(userId);
+    const likeCount = await this.postLikesService.countByUser(userId);
+    const postCount = await this.postsService.countByUser(userId);
+    return { routeCount, likeCount, postCount };
   }
 
   @Patch(':id')

@@ -27,4 +27,8 @@ export class PostLikesService {
   async remove(id: number) {
     return await this.postLikeRepository.delete({ likeIdx: id });
   }
+
+  async countByUser(userId: number) {
+    return this.postLikeRepository.count({ where: { userIdx: userId } });
+  }
 }
