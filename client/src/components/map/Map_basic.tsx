@@ -1,145 +1,64 @@
-import { type ChangeEvent, useEffect, useRef } from "react";
-import "./css/Map_basic.css";
-import useGpsTracking from "../../utils/useGpsTracking";
-import { formatTime } from "../../utils/gpsUtils";
-import { useAppSelector } from "../../store/hooks";
-import { encodePolyline } from "../../utils/encodePolyline";
-import { decodePolyline } from "../../utils/decodePolyline";
-import { captureStaticMapThumbnail } from "../../utils/captureStaticMapThumbnail";
+import { useEffect, useRef, useState } from "react";
+import "../css/Map_basic.css";
+import { useNavigate } from "react-router-dom";
+import MapComponent from "./MapComponent";
+import MapTools from "./MapTools";
 
-interface BasicRunSectionProps {
-  goalType: string;
-  distanceGoal: string;
-  timeGoal: string;
-  handleGoalChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  handleDistanceChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleTimeChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
-}
+export default function Map_basic() {
+  const navigate = useNavigate();
+  const [goalType, setGoalType] = useState("목표 없음");
+  const [distanceGoal, setDistanceGoal] = useState("5");
+  const [timeGoal, setTimeGoal] = useState("30");
 
-export default function Map_basic({
-  goalType,
-  distanceGoal,
-  timeGoal,
-  handleGoalChange,
-  handleDistanceChange,
-  handleTimeChange,
-  markerRef,
-}: BasicRunSectionProps) {
-  // GPS 트래킹 훅 사용
-  const {
-    isTracking,
-    totalDistance,
-    elapsedTime,
-    startTracking,
-    stopTracking,
-    trackedPoints, // useGpsTracking에서 반환하도록 확장 필요
-  } = useGpsTracking(markerRef);
+  const [heading, setHeading] = useState(0);
+  const markerRef = useRef<kakao.maps.Marker | null>(null);
+  const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
 
-  const polylineRef = useRef<kakao.maps.Polyline | null>(null);
+  const handleGoalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setGoalType(e.target.value);
+    setDistanceGoal("");
+    setTimeGoal("");
+  };
 
-  useEffect(() => {
-    if (!window.kakao || !window.kakao.maps) return;
-    if (!markerRef.current) return;
-    const map = markerRef.current.getMap();
-    if (!map) return;
-    if (trackedPoints.length > 1) {
-      if (!polylineRef.current) {
-        polylineRef.current = new window.kakao.maps.Polyline({
-          path: trackedPoints,
-          strokeWeight: 5,
-          strokeColor: "#4285f4",
-          strokeOpacity: 0.8,
-          strokeStyle: "solid",
-        });
-        polylineRef.current.setMap(map);
-      } else {
-        polylineRef.current.setPath(trackedPoints);
-      }
-    }
-  }, [trackedPoints, markerRef]);
+  const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDistanceGoal(e.target.value);
+  };
 
-  const { user } = useAppSelector((state) => state.user);
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTimeGoal(e.target.value);
+  };
 
-  // 경로 저장 함수
-  const saveRoute = async () => {
-    if (!user || !user.userIdx) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-    const routeTitle = prompt(
-      "경로 제목을 입력하세요:",
-      `${new Date().toLocaleDateString()} 런닝`
-    );
-    if (!routeTitle) return;
-    const routeDescription =
-      prompt("경로 설명을 입력하세요 (선택사항):", "") || "";
-    if (!trackedPoints || trackedPoints.length === 0) {
-      alert("경로 데이터가 없습니다.");
-      return;
-    }
-    const originalPoints = trackedPoints.map((pos: kakao.maps.LatLng) => ({
-      lat: pos.getLat(),
-      lng: pos.getLng(),
-    }));
-    const compressedPoints =
-      originalPoints.length > 2 ? originalPoints : originalPoints;
-    const encoded = encodePolyline(compressedPoints);
-    const routeThumbnailUrl = await captureStaticMapThumbnail(encoded);
-    const startPoint = originalPoints[0];
-    console.log(startPoint);
-    const endPoint = originalPoints[originalPoints.length - 1];
-    console.log(endPoint);
-    const totalTimeInSeconds = elapsedTime;
-    const routeData = {
-      userIdx: user.userIdx,
-      routeTitle,
-      routeDescription,
-      routeTotalKm: parseFloat((totalDistance / 1000).toFixed(3)),
-      routeTotalTime: totalTimeInSeconds,
-      routePolyline: encoded,
-      routeStartLat: parseFloat(startPoint.lat.toFixed(7)),
-      routeStartLng: parseFloat(startPoint.lng.toFixed(7)),
-      routeEndLat: parseFloat(endPoint.lat.toFixed(7)),
-      routeEndLng: parseFloat(endPoint.lng.toFixed(7)),
-      routeThumbnail: routeThumbnailUrl,
-      routeDifficulty: "초급",
-    };
-    console.log(routeData);
-
-    // 테스트
-    const polyline = "cz}yEqblpWBJAEAEACC@CACAECD@B@B?H?H?FAHAGB";
-    const coords = decodePolyline(polyline);
-    console.log(coords);
-    try {
-      const token =
-        localStorage.getItem("accessToken") ||
-        sessionStorage.getItem("accessToken");
-      const apiUrl = import.meta.env.VITE_APP_API_URL;
-      const response = await fetch(`${apiUrl}/api/routes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify(routeData),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "서버 오류가 발생했습니다.");
-      }
-      alert("경로가 성공적으로 저장되었습니다!");
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`경로 저장에 실패했습니다. 오류: ${error.message}`);
-      } else {
-        alert("경로 저장에 실패했습니다. 알 수 없는 오류");
-      }
+  // MapComponent에서 onMapReady 콜백으로 mapInstance를 세팅
+  const handleMapReady = () => {
+    if (window.kakaoMapInstance) {
+      setMapInstance(window.kakaoMapInstance);
     }
   };
 
+  useEffect(() => {
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      if (event.alpha !== null) {
+        setHeading(event.alpha);
+      }
+    };
+
+    window.addEventListener("deviceorientation", handleOrientation, true);
+
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
+  }, []);
+
   return (
     <div className="basic_section">
+      <div className="map_container">
+        <MapComponent markerRef={markerRef} onMapReady={handleMapReady} />
+        <MapTools
+          heading={heading}
+          markerRef={markerRef}
+          mapInstance={mapInstance}
+        />
+      </div>
       <div className="goal_wrapper">
         <div className="goal_label">목표 정하기</div>
         <select
@@ -182,7 +101,12 @@ export default function Map_basic({
             )}
           </div>
         )}
-        <button className="mapbtn_one mapbtn" onClick={startTracking}>
+        <button
+          className="mapbtn_one mapbtn"
+          onClick={() => {
+            navigate("/map/ing");
+          }}
+        >
           시작
         </button>
       </div>

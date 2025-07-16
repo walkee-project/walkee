@@ -1,22 +1,19 @@
 import React from "react";
-import { animateMarker, animateMapCenter } from "../utils/gpsUtils";
+import { animateMarker, animateMapCenter } from "../../utils/gpsUtils";
+import compass_bg from "../../assets/compass_bg.png";
+import compass_needle from "../../assets/compass_needle.png";
+import gpsBtnIcon from "../../assets/gpsBtnIcon.png";
 
 interface MapToolsProps {
   heading: number;
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
   mapInstance: kakao.maps.Map | null;
-  compassBg: string;
-  compassNeedle: string;
-  gpsIcon: string;
 }
 
 const MapTools: React.FC<MapToolsProps> = ({
   heading,
   markerRef,
   mapInstance,
-  compassBg,
-  compassNeedle,
-  gpsIcon,
 }) => {
   // 현재 위치로 이동
   const moveToCurrentLocation = () => {
@@ -51,9 +48,9 @@ const MapTools: React.FC<MapToolsProps> = ({
     <>
       {/* 🧭 나침반 (좌상단 고정) */}
       <div className="compass">
-        <img src={compassBg} alt="나침반 배경" className="compass_bg" />
+        <img src={compass_bg} alt="나침반 배경" className="compass_bg" />
         <img
-          src={compassNeedle}
+          src={compass_needle}
           alt="나침반 바늘"
           className="compass_needle"
           style={{ transform: `translate(-50%, -50%) rotate(${heading}deg)` }}
@@ -66,7 +63,7 @@ const MapTools: React.FC<MapToolsProps> = ({
           onClick={moveToCurrentLocation}
           disabled={!mapInstance}
         >
-          <img src={gpsIcon} alt="현재위치로이동" />
+          <img src={gpsBtnIcon} alt="현재위치로이동" />
         </button>
       </div>
     </>
