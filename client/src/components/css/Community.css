@@ -198,9 +198,51 @@
 }
 
 .stats img {
-  width: 12px;
+  width: 15px;
   filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
     brightness(94%) contrast(87%);
+}
+
+/* Stats 컴포넌트 스타일 */
+.stats-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.like-button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.like-button img,
+.like-button span {
+  transition: all 0.2s ease;
+}
+
+/* 기본 회색 필터 */
+.like-button:not(.liked) img {
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+
+.liked-text {
+  color: #0066cc;
+}
+
+/* 좋아요 눌렀을 때 #0B8DFF 색상으로 변경 */
+.like-button.liked img,
+.like-button.liked .liked-text {
+  filter: invert(27%) sepia(98%) saturate(1994%) hue-rotate(201deg)
+    brightness(94%) contrast(107%);
+  color: #0066cc;
+  font-weight: 600;
+}
+
+/* 호버 효과 */
+.like-button:hover {
+  opacity: 0.8;
 }
 
 /* 최근 게시물 영역 */
@@ -272,12 +314,12 @@
   display: flex;
   gap: 15px;
   color: #666;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .recent-post-info img {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
     brightness(94%) contrast(87%);
 }

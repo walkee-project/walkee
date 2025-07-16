@@ -1,0 +1,66 @@
+/* Stats components common styles */
+.stats,
+.recent-post-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #666;
+  font-size: 16px;
+}
+
+.stats img,
+.recent-post-info img {
+  width: 16px;
+  height: 16px;
+  transition: filter 0.2s ease;
+}
+
+/* Default icon color */
+.stats img:not(.liked),
+.recent-post-info img:not(.liked) {
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+
+/* Stats item layout */
+.stats-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Like button specific styles */
+.like-button {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.like-button img {
+  transition: filter 0.2s ease;
+}
+
+/* Liked state - darker blue color #0066CC */
+.like-button.liked img {
+  filter: invert(27%) sepia(98%) saturate(1994%) hue-rotate(201deg)
+    brightness(94%) contrast(107%);
+}
+
+/* Hover effect */
+.like-button:hover {
+  opacity: 0.8;
+}
+
+/* Popular posts variant */
+.stats {
+  justify-content: center;
+}
+
+/* Recent posts variant */
+.recent-post-info {
+  margin-top: 5px;
+}
