@@ -14,7 +14,7 @@ export type mypage_props = {
 
 // 경로 데이터 타입
 export interface RouteItem {
-  id: string;
+  id: number;
   date: string;
   title: string;
   time: string;

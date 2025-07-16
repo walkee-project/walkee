@@ -9,6 +9,7 @@
   background-position: center;
   display: flex;
   align-items: flex-end;
+  z-index: 100;
 }
 .bottom_nav::before {
   width: 100%;

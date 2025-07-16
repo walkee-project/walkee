@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../css/Map.css";
 import Map_basic from "./Map_basic";
 import Map_course from "./Map_course";
+import { useLocation } from "react-router-dom";
 
 // // window 객체에 카카오맵 타입 확장
 // declare global {
@@ -11,8 +12,15 @@ import Map_course from "./Map_course";
 //   }
 // }
 
-function Map() {
-  const [activeTab, setActiveTab] = useState("basic");
+function Map({ routeId }: { routeId: number }) {
+  const location = useLocation();
+  const state = location.state as {
+    tab?: "basic" | "course";
+  } | null;
+
+  const [activeTab, setActiveTab] = useState<"basic" | "course">(
+    state?.tab === "course" ? "course" : "basic"
+  );
 
   return (
     <div className="map_container">
@@ -31,7 +39,9 @@ function Map() {
       </div>
       <div className="section_container">
         {activeTab === "basic" && <Map_basic />}
-        {activeTab === "course" && <Map_course />}
+        {activeTab === "course" && (
+          <Map_course isActive={activeTab === "course"} routeId={routeId} />
+        )}
       </div>
     </div>
   );
