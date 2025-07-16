@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { fetchUser } from "../../store/userSlice";
-import type { mypage_props } from "../../types/mypage_type";
+import type { mypage_props } from "../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
 import { fetchUserSummary } from "../../utils/api";

@@ -2,11 +2,8 @@ import { useState } from "react";
 import Mypage_main from "./Mypage_main";
 import Mypage_edit from "./Mypage_edit";
 import Mypage_course from "./Mypage_course";
-import { isSection } from "../../types/mypage_type";
-import type {
-  mypage_section,
-  course_section_type,
-} from "../../types/mypage_type";
+import { isSection } from "../types/mypage_type";
+import type { mypage_section, course_section_type } from "../types/mypage_type";
 import { useLocation } from "react-router-dom";
 
 function Mypage() {

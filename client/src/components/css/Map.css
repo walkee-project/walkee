@@ -6,6 +6,41 @@
   background-color: #f0f0f0;
 }
 
+.tab_container {
+  width: 100%;
+  display: flex;
+  position: fixed;
+  text-align: center;
+  background-color: white;
+  height: 3em;
+  box-shadow: 0px 4px 4.5px rgba(0, 0, 0, 0.15);
+  align-items: center;
+}
+
+.tab_container > div {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab_container .tab_border {
+  position: absolute;
+  height: 3px;
+  width: 50%;
+  background-color: #0b8dff;
+  bottom: 0;
+  transition: all 0.35s ease-in-out;
+}
+
+/* 가운데 구분선 */
+.tab_container .tab_divider {
+  width: 1px;
+  height: 60%; /* 상자보다 짧게 */
+  background-color: #5d5d5d;
+}
+
 /* 🧭 나침반 - 좌상단 */
 .compass {
   position: absolute;

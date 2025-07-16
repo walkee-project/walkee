@@ -1,10 +1,14 @@
-.goal_section {
+.basic_section {
+  position: relative;
+  height: 100%;
   width: 100%;
 }
 
 .goal_wrapper {
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  margin-bottom: 30px;
+  padding: 30px 10px;
 }
 
 .goal_label {

@@ -1,7 +1,7 @@
 import React from "react";
 import RouteCard from "./RouteCard.tsx";
-import type { course_section_type } from "../../types/mypage_type";
-import type { RouteItem } from "../../types/mypage_type.ts";
+import type { course_section_type } from "../types/mypage_type.ts";
+import type { RouteItem } from "../types/mypage_type.ts";
 import "../css/mypage_course.css";
 import arrow_back from "../../assets/arrow_back.png";
 import ex2 from "../../assets/homeMap_ex2.png";

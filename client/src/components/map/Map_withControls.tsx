@@ -18,10 +18,6 @@ function MapWithControls() {
 
   const markerRef = useRef<kakao.maps.Marker | null>(null);
 
-  const handleModeSelect = (mode: keyof typeof sectionComponents) => {
-    setSelectedMode(mode);
-  };
-
   const handleGoalChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setGoalType(e.target.value);
     setDistanceGoal("");

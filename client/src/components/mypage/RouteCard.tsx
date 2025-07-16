@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/RouteCard.css";
-import type { RouteItem } from "../../types/mypage_type";
+import type { RouteItem } from "../types/mypage_type";
 import heart from "../../assets/heart.png";
 
 interface Props {

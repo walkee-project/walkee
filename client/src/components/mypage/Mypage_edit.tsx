@@ -1,7 +1,7 @@
 import "../css/Mypage_edit.css";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
-import type { mypage_props } from "../../types/mypage_type";
+import type { mypage_props } from "../types/mypage_type";
 import profileImage from "../../assets/profile.png";
 import arrow_back from "../../assets/arrow_back.png";
 import cameraIcon from "../../assets/cameraIcon.png";

@@ -1,7 +1,6 @@
 import { type ChangeEvent } from "react";
-import "../css/Map_goalSection.css";
+import "../css/Map_basic.css";
 import useGpsTracking from "../../utils/useGpsTracking";
-import { formatTime } from "../../utils/gpsUtils";
 
 interface BasicRunSectionProps {
   goalType: string;
@@ -13,7 +12,7 @@ interface BasicRunSectionProps {
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>;
 }
 
-export default function BasicRunSection({
+export default function Map_basic({
   goalType,
   distanceGoal,
   timeGoal,
@@ -32,7 +31,7 @@ export default function BasicRunSection({
   } = useGpsTracking(markerRef);
 
   return (
-    <div className="goal_section">
+    <div className="basic_section">
       <div className="goal_wrapper">
         <div className="goal_label">목표 정하기</div>
         <select
@@ -75,31 +74,10 @@ export default function BasicRunSection({
             )}
           </div>
         )}
-      </div>
-
-      {!isTracking ? (
         <button className="mapbtn_one mapbtn" onClick={startTracking}>
           시작
         </button>
-      ) : (
-        <div className="tracking_info">
-          <div className="tracking_stats">
-            <div className="stat_item">
-              <span className="stat_label">거리</span>
-              <span className="stat_value">
-                {(totalDistance / 1000).toFixed(3)} km
-              </span>
-            </div>
-            <div className="stat_item">
-              <span className="stat_label">시간</span>
-              <span className="stat_value">{formatTime(elapsedTime)}</span>
-            </div>
-          </div>
-          <button className="mapbtn_one mapbtn stop_btn" onClick={stopTracking}>
-            중지
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
