@@ -17,6 +17,7 @@ export class RoutesController {
 
   @Post()
   create(@Body() createRouteDto: CreateRouteDto) {
+    console.log('컨트롤러에서 받은 값:', createRouteDto);
     return this.routesService.create(createRouteDto);
   }
 

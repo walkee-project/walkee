@@ -44,7 +44,7 @@
   pointer-events: none;
 }
 
-/* 🧩 하단 버튼 섹션 */
+/*  하단 버튼 섹션 */
 .button_section {
   position: absolute;
   bottom: 0;
@@ -56,7 +56,15 @@
   gap: 10px;
 }
 
-/* 📍 현재 위치 이동 버튼 - 우하단 */
+/* 현재 위치 이동 버튼 - 오른쪽 위 고정 */
+.gps_button_wrapper {
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  z-index: 20;
+}
+
+/* 현재 위치 이동 버튼*/
 .gps_button {
   width: 40px;
   height: 40px;

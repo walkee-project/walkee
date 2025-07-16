@@ -28,16 +28,16 @@ export class RouteEntity {
   @Column({ name: 'route_polyline' })
   routePolyline: string;
 
-  @Column({ name: 'route_start_lat' })
+  @Column({ name: 'route_start_lat', type: 'double' })
   routeStartLat: number;
 
-  @Column({ name: 'route_start_lng' })
+  @Column({ name: 'route_start_lng', type: 'double' })
   routeStartLng: number;
 
-  @Column({ name: 'route_end_lat' })
+  @Column({ name: 'route_end_lat', type: 'double' })
   routeEndLat: number;
 
-  @Column({ name: 'route_end_lng' })
+  @Column({ name: 'route_end_lng', type: 'double' })
   routeEndLng: number;
 
   @Column({ name: 'route_run_count' })

@@ -24,11 +24,13 @@ declare global {
         constructor(options: any);
         setPosition(latLng: LatLng): void;
         getPosition(): LatLng;
+        getMap(): Map | null;
       }
 
       class Polyline {
         constructor(options: any);
         setMap(map: Map | null): void;
+        setPath(path: LatLng[]): void;
       }
 
       namespace services {

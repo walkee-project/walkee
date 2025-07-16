@@ -5,7 +5,7 @@ import compass_needle from "../assets/compass_needle.png";
 import gpsBtnIcon from "../assets/gpsBtnIcon.png";
 import Map_goalSection from "./Map_goalSection";
 import MapComponent from "./map/MapComponent";
-import { animateMarker } from "../utils/gpsUtils";
+import MapTools from "./MapTools";
 
 // window 객체에 카카오맵 타입 확장
 declare global {
@@ -13,11 +13,6 @@ declare global {
     kakaoMapInstance: kakao.maps.Map;
     currentMarker: kakao.maps.Marker;
   }
-}
-
-// kakao.maps.Map에 panTo 메서드 타입을 명시적으로 추가
-interface KakaoMapWithPanTo extends kakao.maps.Map {
-  panTo: (latlng: kakao.maps.LatLng) => void;
 }
 
 function Map() {
@@ -28,6 +23,14 @@ function Map() {
   const [selectedMode, setSelectedMode] =
     useState<keyof typeof sectionComponents>("");
   const markerRef = useRef<kakao.maps.Marker | null>(null);
+  const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
+
+  // MapComponent에서 onMapReady 콜백으로 mapInstance를 세팅
+  const handleMapReady = () => {
+    if (window.kakaoMapInstance) {
+      setMapInstance(window.kakaoMapInstance);
+    }
+  };
 
   const handleModeSelect = (mode: keyof typeof sectionComponents) => {
     setSelectedMode(mode);
@@ -45,37 +48,6 @@ function Map() {
 
   const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTimeGoal(e.target.value);
-  };
-
-  // 현재 위치로 지도 이동하는 함수
-  const moveToCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          if (markerRef.current) {
-            animateMarker(markerRef.current, lat, lng, 1000);
-          }
-          if (window.kakaoMapInstance) {
-            (window.kakaoMapInstance as KakaoMapWithPanTo).panTo(
-              new window.kakao.maps.LatLng(lat, lng)
-            );
-          }
-        },
-        (error) => {
-          console.error("현재 위치를 가져올 수 없습니다:", error);
-          alert("현재 위치를 가져올 수 없습니다.");
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 5000,
-        }
-      );
-    } else {
-      alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
-    }
   };
 
   useEffect(() => {
@@ -115,26 +87,21 @@ function Map() {
 
   return (
     <div className="map_page">
-      <MapComponent markerRef={markerRef} />
+      <MapComponent markerRef={markerRef} onMapReady={handleMapReady} />
 
-      {/* 🧭 나침반 (좌상단 고정) */}
-      <div className="compass">
-        <img src={compass_bg} alt="나침반 배경" className="compass_bg" />
-        <img
-          src={compass_needle}
-          alt="나침반 바늘"
-          className="compass_needle"
-          style={{ transform: `translate(-50%, -50%) rotate(${heading}deg)` }}
-        />
-      </div>
+      {/* 🧭 나침반 + 현재 위치 이동 버튼 (합쳐진 컴포넌트) */}
+      <MapTools
+        heading={heading}
+        markerRef={markerRef}
+        mapInstance={mapInstance}
+        compassBg={compass_bg}
+        compassNeedle={compass_needle}
+        gpsIcon={gpsBtnIcon}
+      />
 
       {/* 기능 버튼들 (네비게이션 바로 위) */}
       <div className="button_section">
-        {/* 📍 현재 위치 이동 버튼 (우하단) */}
-
-        <button className="gps_button" onClick={moveToCurrentLocation}>
-          <img src={gpsBtnIcon} alt="현재위치로이동" />
-        </button>
+        {/* 기존 나침반, GPS 버튼 제거됨 */}
 
         <div className={`button_box ${selectedMode ? "" : "active"}`}>
           {/* 선택 전: 버튼 보여줌 */}
