@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import Map from "./components/map/Map";
 import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
+import Community from "./components/community/Community";
 
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
@@ -17,6 +18,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<First />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/community" element={<Community />} />
         <Route path="/map" element={<Map />} />
         <Route path="/mypage" element={<Mypage />} />
       </Routes>
