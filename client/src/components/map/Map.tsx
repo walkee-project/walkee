@@ -29,9 +29,10 @@ function Map() {
           style={{ left: activeTab === "basic" ? "0%" : "50%" }}
         />
       </div>
-      {/* 선택 후: 섹션 보여줌 */}
-      {activeTab === "basic" && <Map_basic />}
-      {activeTab === "course" && <Map_course />}
+      <div className="section_container">
+        {activeTab === "basic" && <Map_basic />}
+        {activeTab === "course" && <Map_course />}
+      </div>
     </div>
   );
 }

@@ -1,21 +1,30 @@
 .basic_section {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
 }
 
+.map_container {
+  position: relative;
+}
+
 .goal_wrapper {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   padding: 30px 10px;
+  text-align: center;
+  background-color: white;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .goal_label {
   width: 100%;
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 20px;
   position: relative;
   display: inline-block;
   z-index: 0;
@@ -30,6 +39,10 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: -1;
+}
+
+.goal_box {
+  width: 100%;
 }
 
 /* 드롭다운 스타일 */
@@ -77,4 +90,8 @@
   font-weight: 500;
   color: black;
   margin-left: 5px;
+}
+
+.basic_btn {
+  width: 65%;
 }

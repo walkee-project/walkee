@@ -69,12 +69,12 @@
   gap: 8px; /* 세로 간격 */
 }
 
-.btn {
+.first_btn {
   background: none;
   padding: 0;
 }
 
-.btn > img {
+.first_btn > img {
   width: 80%;
   object-fit: contain;
   border: 1px solid rgba(93, 93, 93, 0.5);
@@ -83,6 +83,6 @@
   margin: 0 auto;
 }
 
-.btn:active img {
+.first_btn:active img {
   border-color: black;
 }

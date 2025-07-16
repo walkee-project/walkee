@@ -50,21 +50,21 @@ function First() {
 
           <div className="button-group">
             <div
-              className="btn google_btn"
+              className="first_btn google_btn"
               onClick={() => handleSocialLogin("google")}
               style={{ cursor: "pointer" }}
             >
               <img src={google_login} alt="구글 로그인" />
             </div>
             <div
-              className="btn kakao_btn"
+              className="first_btn kakao_btn"
               onClick={() => handleSocialLogin("kakao")}
               style={{ cursor: "pointer" }}
             >
               <img src={kakao_login} alt="카카오 로그인" />
             </div>
             <div
-              className="btn naver_btn"
+              className="first_btn naver_btn"
               onClick={() => handleSocialLogin("naver")}
               style={{ cursor: "pointer" }}
             >

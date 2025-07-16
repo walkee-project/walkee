@@ -69,7 +69,7 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
             />
           </div>
         </div>
-        <button className="submit_btn" onClick={handleSave}>
+        <button className="btn btn_two submit_btn" onClick={handleSave}>
           수정하기
         </button>
       </div>

@@ -105,10 +105,6 @@
 
 .submit_btn {
   padding: 12px 32px;
-  border: 3px solid white;
-  border-radius: 30px;
-  background: #a4d7ff;
-  cursor: pointer;
   font-weight: 500;
   font-size: 1.2rem;
 }

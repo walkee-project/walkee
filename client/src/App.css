@@ -69,6 +69,15 @@
   font-family: "Paperlogy";
 }
 
+.btn {
+  padding: 5px 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* 테두리 파란 버튼 배경 하얀 */
 .btn_one {
   background-color: white;
   border: 2px solid #76bfff;
@@ -76,4 +85,16 @@
 }
 .btn_one:active {
   background-color: #76bfff;
+  border-color: white;
+}
+
+/* 테두리 하얀 배경 파란 */
+.btn_two {
+  border: 2px solid white;
+  background-color: #76bfff;
+  border-radius: 50px;
+}
+.btn_two:active {
+  background-color: white;
+  border-color: #76bfff;
 }
