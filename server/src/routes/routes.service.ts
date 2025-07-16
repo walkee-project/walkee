@@ -13,6 +13,7 @@ export class RoutesService {
   ) {}
 
   async create(createRouteDto: CreateRouteDto) {
+    console.log('서비스에서 받은 값:', createRouteDto);
     const route = this.routeRepository.create(createRouteDto);
     return await this.routeRepository.save(route);
   }

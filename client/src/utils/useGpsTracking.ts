@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { animateMarker, calculateDistance } from "./gpsUtils";
+import { calculateDistance } from "./gpsUtils";
 
 export default function useGpsTracking(
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>
@@ -10,6 +10,7 @@ export default function useGpsTracking(
   const [elapsedTime, setElapsedTime] = useState(0);
   const [watchId, setWatchId] = useState<number | null>(null);
   const lastPositionRef = useRef<{ lat: number; lng: number } | null>(null);
+  const [trackedPoints, setTrackedPoints] = useState<kakao.maps.LatLng[]>([]);
 
   // 시간 추적 useEffect
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function useGpsTracking(
       setTotalDistance(0);
       setStartTime(new Date());
       setElapsedTime(0);
+      setTrackedPoints([new window.kakao.maps.LatLng(lat, lng)]);
       setIsTracking(true);
       const id = navigator.geolocation.watchPosition(
         (pos) => {
@@ -60,8 +62,14 @@ export default function useGpsTracking(
             setTotalDistance((prevDist) => prevDist + distance);
           }
           lastPositionRef.current = { lat: newLat, lng: newLng };
+          setTrackedPoints((prev) => [
+            ...prev,
+            new window.kakao.maps.LatLng(newLat, newLng),
+          ]);
           if (markerRef.current) {
-            animateMarker(markerRef.current, newLat, newLng, 1000);
+            markerRef.current.setPosition(
+              new window.kakao.maps.LatLng(newLat, newLng)
+            );
           }
         },
         () => {
@@ -101,5 +109,6 @@ export default function useGpsTracking(
     elapsedTime,
     startTracking,
     stopTracking,
+    trackedPoints,
   };
 }

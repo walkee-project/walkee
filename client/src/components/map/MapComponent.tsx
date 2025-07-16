@@ -128,7 +128,7 @@ function MapComponent({ onMapReady, markerRef }: MapComponentProps) {
         console.error(err);
         alert("카카오 지도 SDK를 불러오지 못했습니다.");
       });
-  }, [onMapReady]);
+  }, []);
 
   return (
     <div

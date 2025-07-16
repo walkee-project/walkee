@@ -16,6 +16,7 @@ import { PostLikeEntity } from './post_likes/entities/post_like.entity';
 import { CommentLikesModule } from './comment_likes/comment_likes.module';
 import { CommentLikeEntity } from './comment_likes/entities/comment_like.entity';
 import { AuthModule } from './auth/auth.module';
+import { UploadController } from './uploads/upload.controller';
 
 @Module({
   imports: [
@@ -55,7 +56,10 @@ import { AuthModule } from './auth/auth.module';
     PostLikesModule,
     CommentLikesModule,
   ],
-  controllers: [AppController],
+  controllers: [
+    AppController,
+    UploadController, // ✅ 썸네일 업로드 컨트롤러 등록
+  ],
   providers: [AppService],
 })
 export class AppModule {}
