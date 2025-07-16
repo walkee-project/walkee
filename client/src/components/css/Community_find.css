@@ -1,0 +1,145 @@
+.find-container {
+  font-family: sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* 가이드 바 */
+.find-guide-bar {
+  display: flex;
+  align-items: center;
+  background-color: #d2ecff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.find-guide-bar img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 상단 로고 + 아이콘 */
+.find-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.find-logo {
+  height: 36px;
+}
+
+.find-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.find-icons img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* 검색 박스 */
+.search-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.search-input,
+.region-select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.search-button {
+  padding: 8px;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.invalid {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.logo-with-back {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #444;
+  padding: 4px 8px;
+  transition: opacity 0.2s;
+}
+
+.back-button img {
+  width: 16px;
+  height: 16px;
+}
+
+/* 검색창 라인 */
+.search-form {
+  display: flex;
+  gap: 8px;
+  padding: 0 10px;
+  margin-top: 10px;
+}
+
+.search-input,
+.region-select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.search-button {
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.error-message {
+  color: red;
+  font-size: 13px;
+  padding: 6px 10px;
+}
