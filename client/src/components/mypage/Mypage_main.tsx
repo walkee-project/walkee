@@ -36,27 +36,23 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
     return <div className="main">로딩 중...</div>;
   }
 
-  // 에러가 있을 때 표시
-  if (error) {
-    return <div className="main">에러: {error}</div>;
-  }
+  // // 에러가 있을 때 표시
+  // if (error) {
+  //   return <div className="main">에러: {error}</div>;
+  // }
 
-  // 사용자 정보가 없을 때 표시
-  if (!user) {
-    return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
-  }
+  // // 사용자 정보가 없을 때 표시
+  // if (!user) {
+  //   return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
+  // }
 
   return (
     <div className="main">
       <div className="profile_card">
-        <img
-          src={user.userProfile || profile}
-          alt="프로필"
-          className="profile_img"
-        />
+        <img src={profile} alt="프로필" className="profile_img" />
         <div className="profile_info">
           <div className="nickname_row">
-            <span className="nickname">{user.userName}</span>
+            <span className="nickname">dd</span>
             <button
               className="edit_btn"
               onClick={() => onChangeSection("edit")}
@@ -64,19 +60,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
               수정
             </button>
           </div>
-          <div className="join_date">
-            가입일 :{" "}
-            {user.userCreatedAt
-              ? new Date(user.userCreatedAt)
-                  .toLocaleDateString("ko-KR", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                  })
-                  .replace(/\. /g, ".")
-                  .replace(/\.$/, "")
-              : "-"}
-          </div>
+          <div className="join_date">가입일 : 2025.02.01</div>
         </div>
         <div className="counts">
           <p>총 {summary.routeCount}개 경로 |</p>

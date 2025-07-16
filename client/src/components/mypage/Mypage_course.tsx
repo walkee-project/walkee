@@ -22,8 +22,8 @@ const dummyData: RouteItem[] = [
     distance: "2.58",
     speed: "4.69",
     image: ex4,
-    who: "푸른달걀",
-    isLiked: true,
+    who: "라쓰비",
+    isLiked: false,
   },
   {
     id: "2",
@@ -33,7 +33,7 @@ const dummyData: RouteItem[] = [
     distance: "2.58",
     speed: "4.69",
     image: ex2,
-    who: "푸른달걀",
+    who: "라쓰비",
     isLiked: false,
   },
   {
@@ -45,7 +45,7 @@ const dummyData: RouteItem[] = [
     speed: "5.1",
     image: ex3,
     who: "라쓰비",
-    isLiked: true,
+    isLiked: false,
   },
 ];
 
@@ -67,9 +67,25 @@ const Mypage_course: React.FC<Props> = ({ type, onChangeSection }) => {
       </div>
 
       <div className="course-list">
-        {filterList.map((route) => (
-          <RouteCard key={route.id} route={route} />
-        ))}
+        {filterList.length > 0 ? (
+          filterList.map((route) => <RouteCard key={route.id} route={route} />)
+        ) : (
+          <div className="no-course-message">
+            {type == "mycourse" ? (
+              <>
+                <p>저장한 경로가 없습니다.</p>
+                <p>지금 바로 기록해보세요!</p>
+                <div className="no_btn btn_one">경로 그리기</div>
+              </>
+            ) : (
+              <>
+                <p>찜한 경로가 없습니다.</p>
+                <p>지금 바로 저장해보세요!</p>
+                <div className="no_btn btn_one">커뮤니티 가기</div>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

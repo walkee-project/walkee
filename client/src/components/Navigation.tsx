@@ -19,19 +19,21 @@ function Navigation() {
   ];
 
   return (
-    <nav className="bottom-nav">
-      {navItems.map((item) => (
-        <div
-          key={item.name}
-          className={`nav-item ${item.center ? "center-item" : ""} ${
-            location.pathname === item.path ? "active" : ""
-          }`}
-          onClick={() => navigate(item.path)}
-        >
-          <img src={item.icon} className="icon" />
-          {!item.center && <p className="label">{item.name}</p>}
-        </div>
-      ))}
+    <nav className="bottom_nav">
+      <div className="nav_list">
+        {navItems.map((item) => (
+          <div
+            key={item.name}
+            className={`nav_item ${item.center ? "center_item" : ""} ${
+              location.pathname === item.path ? "active" : ""
+            }`}
+            onClick={() => navigate(item.path)}
+          >
+            <img src={item.icon} className="icon" />
+            {!item.center && <p className="label">{item.name}</p>}
+          </div>
+        ))}
+      </div>
     </nav>
   );
 }

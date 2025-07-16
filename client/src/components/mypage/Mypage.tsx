@@ -7,9 +7,14 @@ import type {
   mypage_section,
   course_section_type,
 } from "../../types/mypage_type";
+import { useLocation } from "react-router-dom";
 
 function Mypage() {
-  const [currentSection, setCurrentSection] = useState<mypage_section>("main");
+  const location = useLocation();
+  const initSection = (location.state?.section as mypage_section) ?? "main";
+
+  const [currentSection, setCurrentSection] =
+    useState<mypage_section>(initSection);
 
   // 섹션 렌더링 함수
   const renderSection = () => {

@@ -9,6 +9,10 @@ function DrawingSectionComponent() {
     navigate("/map");
   };
 
+  const handleMyCourse = () => {
+    navigate("/mypage", { state: { section: "mycourse" } });
+  };
+
   return (
     <div className="drawing_section">
       <div className="drawing_card">
@@ -29,7 +33,7 @@ function DrawingSectionComponent() {
         <div className="drawing_img">
           <img src={homeMap_ex3} alt="내그림보기" />
         </div>
-        <div className="home_btn" style={{ cursor: "pointer" }}>
+        <div className="home_btn" onClick={handleMyCourse}>
           내그림보기
         </div>
       </div>

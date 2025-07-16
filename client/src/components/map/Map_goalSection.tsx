@@ -1,11 +1,11 @@
 import { type ChangeEvent, useEffect, useRef } from "react";
 import "./css/Map_goalSection.css";
-import useGpsTracking from "../utils/useGpsTracking";
-import { formatTime } from "../utils/gpsUtils";
-import { useAppSelector } from "../store/hooks";
-import { encodePolyline } from "../utils/encodePolyline";
-import { decodePolyline } from "../utils/decodePolyline";
-import { captureStaticMapThumbnail } from "../utils/captureStaticMapThumbnail";
+import useGpsTracking from "../../utils/useGpsTracking";
+import { formatTime } from "../../utils/gpsUtils";
+import { useAppSelector } from "../../store/hooks";
+import { encodePolyline } from "../../utils/encodePolyline";
+import { decodePolyline } from "../../utils/decodePolyline";
+import { captureStaticMapThumbnail } from "../../utils/captureStaticMapThumbnail";
 
 interface BasicRunSectionProps {
   goalType: string;
