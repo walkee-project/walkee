@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "../css/Community.css";
-import Community_Find from "./Community_Find"; // 🔍 검색 컴포넌트 import
+import { useNavigate } from "react-router-dom";
+import Community_Find from "./Community_find"; // 🔍 검색 컴포넌트 import
+import Community_Stats from "./Community_stats";
+import CommunityAll from "./Community_all";
 
 import example from "../../assets/map_ex4.png";
 import example2 from "../../assets/ex2.jpg";
@@ -11,7 +14,6 @@ import logo from "../../assets/logo_small.png";
 import plus from "../../assets/plus_icon.svg";
 import find from "../../assets/find_icon.svg";
 import bell from "../../assets/bell_icon.svg";
-import Community_Stats from "./Community_stats";
 
 interface PostData {
   id: number;
@@ -121,7 +123,8 @@ const recentPosts: PostData[] = [
 
 const Community = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  const [isSearchMode, setIsSearchMode] = useState(false); // 🔍 검색 모드
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [currentSection, setCurrentSection] = useState("default");
 
   const handleLike = (postId: number) => {
     setLikedPosts((prev) =>
@@ -135,115 +138,121 @@ const Community = () => {
     setIsSearchMode(true);
   };
 
-  const handleBackClick = () => {
+  const handleViewAllClick = () => {
     setIsSearchMode(false);
+    setCurrentSection("all");
   };
 
   return (
-    <div className="community-container">
-      <>
-        <section className="community-top-ui">
-          <header className="community-header">
-            <div>
-              <img src={flag} alt="community flag" />
-              <h2>WALKEE 커뮤니티 이용 가이드 보기</h2>
-            </div>
-            <p>{">"}</p>
-          </header>
+    <>
+      {isSearchMode ? (
+        <Community_Find onBack={() => setIsSearchMode(false)} />
+      ) : currentSection === "all" ? (
+        <CommunityAll onBack={() => setCurrentSection("default")} />
+      ) : (
+        <div className="community-container">
+          <section className="community-top-ui">
+            <header className="community-header">
+              <div>
+                <img src={flag} alt="community flag" />
+                <h2>WALKEE 커뮤니티 이용 가이드 보기</h2>
+              </div>
+              <p>{">"}</p>
+            </header>
 
-          <div className="community-logo-container">
-            <img src={logo} alt="community logo" className="community_logo" />
-            <div className="icons">
-              <img src={plus} alt="plus icon" />
-              <img
-                src={find}
-                alt="find icon"
-                onClick={handleSearchClick}
-                style={{ cursor: "pointer" }}
-              />
-              <img src={bell} alt="bell icon" />
+            <div className="community-logo-container">
+              <img src={logo} alt="community logo" className="community_logo" />
+              <div className="icons">
+                <img src={plus} alt="plus icon" />
+                <img
+                  src={find}
+                  alt="find icon"
+                  onClick={handleSearchClick}
+                  style={{ cursor: "pointer" }}
+                />
+                <img src={bell} alt="bell icon" />
+              </div>
             </div>
-          </div>
-        </section>
-        {isSearchMode ? (
-          <Community_Find onBack={handleBackClick} />
-        ) : (
-          <>
-            <section className="popular-section">
-              <h3>인기 TOP3</h3>
-              <div className="popular-scroll-wrapper">
-                <div className="popular-cards">
-                  {popularPosts.map((post) => (
-                    <div key={post.id} className="post-card">
-                      <div className="profile-header">
-                        <img src={post.profile} className="post-profile" />
-                        <span className="username">{post.username}</span>
-                      </div>
-                      <img src={post.image!} className="map-image" />
-                      <div className="post-info">
-                        <p className="post-title">{post.title}</p>
-                        <div className="post-meta">
-                          <span className="post-date">{post.date}</span>
-                          <Community_Stats
-                            views={post.views}
-                            comments={post.comments}
-                            initialLikes={post.likes}
-                            postId={post.id}
-                            isLiked={likedPosts.includes(post.id)}
-                            onLike={handleLike}
-                            variant="popular"
-                          />
-                        </div>
+          </section>
+
+          {/* 인기 TOP3 */}
+          <section className="popular-section">
+            <h3>인기 TOP3</h3>
+            <div className="popular-scroll-wrapper">
+              <div className="popular-cards">
+                {popularPosts.map((post) => (
+                  <div key={post.id} className="post-card">
+                    <div className="profile-header">
+                      <img src={post.profile} className="post-profile" />
+                      <span className="username">{post.username}</span>
+                    </div>
+                    <img src={post.image!} className="map-image" />
+                    <div className="post-info">
+                      <p className="post-title">{post.title}</p>
+                      <div className="post-meta">
+                        <span className="post-date">{post.date}</span>
+                        <Community_Stats
+                          views={post.views}
+                          comments={post.comments}
+                          initialLikes={post.likes}
+                          postId={post.id}
+                          isLiked={likedPosts.includes(post.id)}
+                          onLike={handleLike}
+                          variant="popular"
+                        />
                       </div>
                     </div>
-                  ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* 최근 게시물 */}
+          <section className="recent-section">
+            <h3>최근 게시물</h3>
+            {recentPosts.map((post) => (
+              <div key={post.id} className="recent-post">
+                <div className="recent-post-top">
+                  <div className="recent-post-left">
+                    <div className="user-info">
+                      <span className="username">{post.username}</span>
+                      <span className="date">{post.date}</span>
+                    </div>
+                    <h4 className="title">{post.title}</h4>
+                    <Community_Stats
+                      views={post.views}
+                      comments={post.comments}
+                      initialLikes={post.likes}
+                      postId={post.id}
+                      isLiked={likedPosts.includes(post.id)}
+                      onLike={handleLike}
+                    />
+                  </div>
+                  <div className="recent-post-right">
+                    {post.image ? (
+                      <img
+                        src={post.image}
+                        alt="post"
+                        className="recent-post-map"
+                      />
+                    ) : (
+                      <div className="no-image-placeholder"></div>
+                    )}
+                  </div>
+                </div>
+                <div className="recent-post-bottom">
+                  <p className="content">{post.content}</p>
                 </div>
               </div>
-            </section>
-
-            <section className="recent-section">
-              <h3>최근 게시물</h3>
-              {recentPosts.map((post) => (
-                <div key={post.id} className="recent-post">
-                  <div className="recent-post-top">
-                    <div className="recent-post-left">
-                      <div className="user-info">
-                        <span className="username">{post.username}</span>
-                        <span className="date">{post.date}</span>
-                      </div>
-                      <h4 className="title">{post.title}</h4>
-                      <Community_Stats
-                        views={post.views}
-                        comments={post.comments}
-                        initialLikes={post.likes}
-                        postId={post.id}
-                        isLiked={likedPosts.includes(post.id)}
-                        onLike={handleLike}
-                      />
-                    </div>
-                    <div className="recent-post-right">
-                      {post.image ? (
-                        <img
-                          src={post.image}
-                          alt="post"
-                          className="recent-post-map"
-                        />
-                      ) : (
-                        <div className="no-image-placeholder"></div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="recent-post-bottom">
-                    <p className="content">{post.content}</p>
-                  </div>
-                </div>
-              ))}
-              <button className="view-all-button">게시물 전체보기</button>
-            </section>
-          </>
-        )}
-      </>
-    </div>
+            ))}
+            <button className="view-all-button" onClick={handleViewAllClick}>
+              게시물 전체보기
+            </button>
+          </section>
+        </div>
+      )}
+    </>
   );
 };
 
