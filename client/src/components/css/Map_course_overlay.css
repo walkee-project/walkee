@@ -19,7 +19,7 @@
   width: 100%;
   z-index: 40;
   align-items: center;
-  animation: slideUp 0.4s ease-out forwards;
+  animation: slideUp 0.3s ease-out forwards;
 }
 
 .overlay_map {
