@@ -1,21 +1,17 @@
 .finish_section {
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
   height: 100%;
   width: 100%;
   z-index: 40;
-  align-items: center;
   animation: slideUp 0.4s ease-out forwards;
 }
 
 .finish_map {
-  width: 100%;
+  height: 70%;
 }
 
 .finish_map > img {
   width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -23,7 +19,7 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 40px 20px;
+  padding: 30px 20px;
   text-align: center;
   background-color: white;
   border-radius: 20px 20px 0 0;
@@ -31,7 +27,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 1.2em;
   z-index: 2;
 }
 
@@ -44,33 +40,34 @@
 
 .finish_label {
   font-weight: 400;
-  font-size: 1.2em;
+  font-size: 1em;
+  margin-bottom: 5px;
 }
 .finish_state {
   font-weight: 700;
-  font-size: 1.8em;
+  font-size: 1.5em;
 }
 .unit {
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .finish_input {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  padding: 0.5em;
   border: 1px solid black;
   border-radius: 5px;
   width: 90%;
 }
 .finish_input > p {
   font-weight: 500;
-  font-size: 1.5em;
+  font-size: 1.3em;
 }
 .finish_input > input {
+  width: 80%;
   font-weight: 400;
-  font-size: 1.3em;
+  font-size: 1em;
   border: none;
   padding: 5px;
 }
@@ -84,7 +81,7 @@
   border-radius: 10px;
   margin: 0 auto;
   padding: 10px;
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 .finish_btn:first-child {
   margin-bottom: 15px;

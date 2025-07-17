@@ -69,52 +69,55 @@ export default function Map_course({
 
   return (
     <div className="course_section">
-      {showOverlay && typeof selectedRouteId === "number" && selectedBtn && (
+      {showOverlay && typeof selectedRouteId === "number" && selectedBtn ? (
         <Map_course_overlay
           routeId={selectedRouteId}
           btnTitle={selectedBtn}
           handleHideOverlay={handleHideOverlay}
         />
-      )}
-      <div className="recommend_course">
-        <RecommendCourseComponent routeId={routeId} />
-        <div
-          className="recommend_btn btn btn_two"
-          onClick={() => handleShowOverlay(routeId, "오늘의 추천 경로")}
-        >
-          경로보기
-        </div>
-      </div>
-      <div className="like_course">
-        <div className="like_label">
-          <p>찜한 경로 달리기</p>
-        </div>
-        {filterList.length <= 0 ? (
-          <div className="no_course">
-            <p>찜한 경로가 없습니다.</p>
-            <p>지금 바로 저장해보세요!</p>
+      ) : (
+        <>
+          <div className="recommend_course">
+            <RecommendCourseComponent routeId={routeId} />
+            <div
+              className="recommend_btn btn btn_two"
+              onClick={() => handleShowOverlay(routeId, "오늘의 추천 경로")}
+            >
+              경로보기
+            </div>
           </div>
-        ) : (
-          <RouteCard
-            key={dummyData[route_num].routeIdx}
-            route={dummyData[route_num]}
-          />
-        )}
+          <div className="like_course">
+            <div className="like_label">
+              <p>찜한 경로 달리기</p>
+            </div>
+            {filterList.length <= 0 ? (
+              <div className="no_course">
+                <p>찜한 경로가 없습니다.</p>
+                <p>지금 바로 저장해보세요!</p>
+              </div>
+            ) : (
+              <RouteCard
+                key={dummyData[route_num].id}
+                route={dummyData[route_num]}
+              />
+            )}
 
-        <div className="like_btns">
-          <div
-            className="btn btn_two"
-            onClick={() =>
-              handleShowOverlay(dummyData[0].routeIdx, "최근 경로 달리기")
-            }
-          >
-            최근 경로 달리기
+            <div className="like_btns">
+              <div
+                className="btn btn_two"
+                onClick={() =>
+                  handleShowOverlay(dummyData[0].id, "최근 경로 달리기")
+                }
+              >
+                최근 경로 달리기
+              </div>
+              <div className="btn btn_two" onClick={handlelikeBtn}>
+                {filterList.length <= 0 ? "커뮤니티 가기" : "찜한 경로 리스트"}
+              </div>
+            </div>
           </div>
-          <div className="btn btn_two" onClick={handlelikeBtn}>
-            {filterList.length <= 0 ? "커뮤니티 가기" : "찜한 경로 리스트"}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
