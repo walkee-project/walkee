@@ -1,9 +1,16 @@
 import "../css/Ing_finish.css";
 import ex from "../../assets/map_ex4.png";
 import { useNavigate } from "react-router-dom";
+import { useState, type ChangeEvent } from "react";
 
 export default function Ing_finish() {
   const navigate = useNavigate();
+  const [Title, setTitle] = useState("");
+
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    setTitle(input);
+  };
 
   return (
     <div className="finish_section">
@@ -35,7 +42,14 @@ export default function Ing_finish() {
         </div>
         <div className="finish_input">
           <p>제목</p>
-          <input type="text" placeholder="경로 제목을 입력하세요 (선택)" />
+          <input
+            id="course_title"
+            className="course_title"
+            type="text"
+            value={Title}
+            onChange={handleTitleChange}
+            placeholder="경로 제목을 입력하세요 (선택)"
+          />
         </div>
         <div className="finish_btns">
           <div
