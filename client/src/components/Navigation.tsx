@@ -11,11 +11,11 @@ function Navigation() {
   const location = useLocation();
 
   const navItems = [
-    { name: "home", icon: homeIcon, path: "/home" },
-    { name: "community", icon: communityIcon, path: "/community" },
-    { name: "map", icon: mapIcon, path: "/map", center: true },
-    { name: "store", icon: storeIcon, path: "/store" },
-    { name: "mypage", icon: mypageIcon, path: "/mypage" },
+    { name: "홈", icon: homeIcon, path: "/home" },
+    { name: "커뮤니티", icon: communityIcon, path: "/community" },
+    { name: "맵", icon: mapIcon, path: "/map", center: true },
+    { name: "스토어", icon: storeIcon, path: "/store" },
+    { name: "마이워키", icon: mypageIcon, path: "/mypage" },
   ];
 
   return (

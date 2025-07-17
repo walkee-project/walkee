@@ -34,7 +34,7 @@ function Map({ routeId }: { routeId: number }) {
         </div>
         <div
           className="tab_border"
-          style={{ left: activeTab === "basic" ? "0%" : "50%" }}
+          style={{ left: activeTab === "basic" ? "15%" : "65%" }}
         />
       </div>
       <div className="section_container">

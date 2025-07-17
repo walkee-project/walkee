@@ -9,7 +9,7 @@
   background-position: center;
   display: flex;
   align-items: flex-end;
-  z-index: 100;
+  z-index: 999;
 }
 .bottom_nav::before {
   width: 100%;
@@ -40,13 +40,12 @@
   object-fit: contain;
 }
 .label {
-  color: #37a0fd;
+  color: #a1a1a1;
 }
 
-.icon,
-.label {
-  filter: invert(54%) sepia(71%) saturate(2331%) hue-rotate(185deg)
-    brightness(100%) contrast(99%);
+.icon {
+  filter: invert(69%) sepia(5%) saturate(9%) hue-rotate(315deg) brightness(94%)
+    contrast(85%);
 }
 
 .nav_item.center_item {
