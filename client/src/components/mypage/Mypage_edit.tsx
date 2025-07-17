@@ -11,11 +11,7 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
 
   const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-    const regex = /^[가-힣a-zA-Z0-9]*$/;
-
-    if (regex.test(input) || input === "") {
-      setNickname(input);
-    }
+    setNickname(input);
   };
 
   const handleSave = () => {
