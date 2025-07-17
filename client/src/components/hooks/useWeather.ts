@@ -14,7 +14,7 @@ export function useWeather() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_KEY = process.env.WEATHER_API_KEY;
+  const API_KEY = import.meta.env.VITE_APP_WEATHER_API_KEY;
 
   // 기본 위치 (서울)
   const DEFAULT_LAT = 37.5665;
@@ -22,6 +22,7 @@ export function useWeather() {
 
   useEffect(() => {
     const fetchWeather = async (lat: number, lon: number) => {
+      console.log("API_KEY", API_KEY);
       try {
         const res = await fetch(
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`

@@ -1,0 +1,91 @@
+.finish_section {
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  z-index: 40;
+  align-items: center;
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+.finish_map {
+  width: 100%;
+}
+
+.finish_map > img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.finish_wrapper {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: white;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  z-index: 2;
+}
+
+.finish_content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.finish_label {
+  font-weight: 400;
+  font-size: 1.2em;
+}
+.finish_state {
+  font-weight: 700;
+  font-size: 1.8em;
+}
+.unit {
+  font-size: 0.9em;
+}
+
+.finish_input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 90%;
+}
+.finish_input > p {
+  font-weight: 500;
+  font-size: 1.5em;
+}
+.finish_input > input {
+  font-weight: 400;
+  font-size: 1.3em;
+  border: none;
+  padding: 5px;
+}
+
+.finish_btns {
+  width: 100%;
+}
+
+.finish_btn {
+  width: 90%;
+  border-radius: 10px;
+  margin: 0 auto;
+  padding: 10px;
+  font-size: 1.3em;
+}
+.finish_btn:first-child {
+  margin-bottom: 15px;
+}

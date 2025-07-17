@@ -1,0 +1,149 @@
+.find-container {
+  font-family: sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.logo-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* ← 버튼은 왼쪽에 고정 */
+.back-button {
+  position: absolute;
+  left: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #444;
+  padding: 0 12px;
+}
+
+.back-button img {
+  width: 15px;
+  height: auto;
+}
+
+.community-find-logo {
+  width: 120px;
+  height: auto;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
+  padding: 0 10px;
+  margin-top: 10px;
+  align-items: center;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.search-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background-color: white;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.search-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.invalid {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.search-results {
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+.search-result-card {
+  background: #f6faff;
+  border: 1px solid #cde6ff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.result-title {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.result-content {
+  white-space: nowrap; /* 줄바꿈 X */
+  overflow: hidden; /* 넘치는 텍스트 감춤 */
+  text-overflow: ellipsis; /* ...으로 표시 */
+  max-width: 100%; /* 너비 제한 필수 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 13px;
+}
+
+.result-date {
+  font-size: 12px;
+  color: #888;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 20px 0 100px; /* 하단 nav 안 가리게 여유 확보 */
+  font-size: 14px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid #47aaff;
+  border-radius: 6px;
+  color: #0077cc;
+  cursor: pointer;
+  min-width: 32px;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+  background-color: #e0f0ff;
+}
+
+.pagination button.active {
+  background-color: #47aaff;
+  color: white;
+  font-weight: bold;
+}

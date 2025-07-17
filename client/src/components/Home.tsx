@@ -6,7 +6,7 @@ import WeatherComponent from "./home/WeatherComponent";
 import RecommendCourseComponent from "./home/RecommendCourseComponent";
 import DrawingSectionComponent from "./home/DrawingSectionComponent";
 
-function Home() {
+function Home({ routeId }: { routeId: number }) {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
 
@@ -28,7 +28,7 @@ function Home() {
 
       {/* 추천코스 영역 */}
       <div>
-        <RecommendCourseComponent />
+        <RecommendCourseComponent routeId={routeId} />
       </div>
 
       {/* 새그리기 / 내그림보기 */}

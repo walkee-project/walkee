@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // 모든 환경에서 프록시 사용 (프론트엔드와 백엔드 통합)
       "/api": {
-        target: "https://mad-lock-equilibrium-fire.trycloudflare.com",
+        target: "https://designs-synthesis-munich-forward.trycloudflare.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

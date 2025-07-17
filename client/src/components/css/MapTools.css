@@ -1,0 +1,54 @@
+.map_tools {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 5px;
+  z-index: 20;
+}
+
+/* 🧭 나침반 - 좌상단 */
+.compass {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  position: relative;
+  z-index: 10;
+}
+
+/* 나침반 배경 */
+.compass_bg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 나침반 바늘 */
+.compass_needle {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 85%; /* 회전 기준점: 이미지의 아래 중앙 근처 */
+  transform: translate(-50%, -50%) rotate(0deg); /* 중심 정렬 후 회전 */
+  transition: transform 0.3s ease-out;
+  pointer-events: none;
+}
+
+/* 현재 위치 이동 버튼*/
+.gps_button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.gps_button img {
+  width: 100%;
+  object-fit: contain;
+}

@@ -1,0 +1,371 @@
+/* 공통 컨테이너 */
+.community-container {
+  padding: 20px;
+  width: 100%;
+  position: relative;
+  background: #ffffff;
+  overflow-y: auto; /* 내용이 많을 때 스크롤 */
+  padding-bottom: 30px; /* 네비게이션 높이만큼 패딩 */
+  box-sizing: border-box; /* 패딩을 높이에 포함 */
+  height: 100vh; /* 모바일 화면 높이 대응 */
+  max-width: 100vw; /* 모바일 화면 너비 대응 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 성능 개선 */
+}
+
+.community-top-ui {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 헤더 (이용 가이드 보기 영역) */
+.community-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #d6f2ff;
+  padding: 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+  height: 35px;
+  -webkit-tap-highlight-color: transparent; /* 터치 하이라이트 제거 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
+}
+
+.community-header:hover {
+  background-color: #aed9ff;
+}
+
+.community-header h2 {
+  height: 30px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.community-header img {
+  width: 13px;
+  height: auto;
+}
+
+.community-header div {
+  display: flex;
+  align-items: center;
+  line-height: 30px;
+  margin-left: 10px;
+  gap: 6px;
+}
+
+.community-header p {
+  font-weight: 600;
+}
+
+.community-logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.community_logo {
+  width: 110px;
+  height: auto;
+}
+
+.icons {
+  display: flex;
+  gap: 20px;
+}
+
+.icons img {
+  width: 18px;
+  filter: invert(27%) sepia(0%) saturate(0%) hue-rotate(138deg) brightness(96%)
+    contrast(94%);
+  cursor: pointer;
+}
+
+/* 인기 TOP3 카드들 정렬 */
+/* 감싸는 슬라이드 영역 */
+.popular-section h3 {
+  margin-top: 20px;
+  padding-left: 10px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.popular-scroll-wrapper {
+  margin-top: 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+  width: calc(100% + 40px); /* 패딩 보정 */
+  margin-left: -20px; /* 좌측 패딩 보정 */
+  padding-left: 10px; /* 우측 패딩 보정 */
+}
+.popular-scroll-wrapper::-webkit-scrollbar {
+  display: none; /* 스크롤바 숨기기 */
+}
+/* 카드들 가로 배치 */
+.popular-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  min-width: max-content; /* 카드 수에 따라 너비 생김 */
+  padding: 5px;
+}
+
+/* 카드 개별 사이즈 고정 */
+.post-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  gap: 5px;
+  padding-bottom: 12px;
+}
+
+/* 프로필 + 닉네임 라인 */
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 0;
+  gap: 8px;
+  margin: 6px 0 6px 0;
+  width: 100%;
+}
+
+.post-profile {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #ccc;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 지도 이미지 */
+.map-image {
+  width: 95%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  -webkit-user-drag: none; /* 이미지 드래그 방지 */
+  user-select: none; /* 이미지 선택 방지 */
+}
+
+/* 게시글 정보 영역 */
+.post-info {
+  padding: 10px 12px 0;
+  font-size: 14px;
+  width: 100%; /* 너비 100%로 설정 */
+}
+
+.post-title {
+  text-align: center;
+  margin: 6px 0 15px 0;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.post-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 12px;
+  width: 250px;
+  color: #666;
+}
+
+.stats {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+}
+
+.stats img {
+  width: 15px;
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+
+/* Stats 컴포넌트 스타일 */
+.stats-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.like-button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.like-button img,
+.like-button span {
+  transition: all 0.2s ease;
+}
+
+/* 기본 회색 필터 */
+.like-button:not(.liked) img {
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+
+.liked-text {
+  color: #0066cc;
+}
+
+/* 좋아요 눌렀을 때 #0B8DFF 색상으로 변경 */
+.like-button.liked img,
+.like-button.liked .liked-text {
+  filter: invert(27%) sepia(98%) saturate(1994%) hue-rotate(201deg)
+    brightness(94%) contrast(107%);
+  color: #0066cc;
+  font-weight: 600;
+}
+
+/* 호버 효과 */
+.like-button:hover {
+  opacity: 0.8;
+}
+
+/* 최근 게시물 영역 */
+.recent-section {
+  margin-top: 30px;
+  margin-bottom: 70px;
+}
+.recent-section h3 {
+  padding-left: 10px;
+  font-weight: 700;
+  font-size: 18px;
+}
+.recent-post {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.recent-post-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.recent-post-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.user-info .date {
+  color: #666;
+  font-size: 13px;
+}
+
+.recent-post-right {
+  width: 80px;
+}
+
+.recent-post-map {
+  height: 80px;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  object-fit: cover;
+  -webkit-user-drag: none; /* 이미지 드래그 방지 */
+  user-select: none; /* 이미지 선택 방지 */
+}
+
+.recent-post .title {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.recent-post-info {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 15px;
+}
+
+.recent-post-info img {
+  width: 16px;
+  height: 16px;
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+
+.no-image-placeholder {
+  height: 80px;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  object-fit: cover;
+  -webkit-user-drag: none; /* 이미지 드래그 방지 */
+  user-select: none; /* 이미지 선택 방지 */
+}
+
+.recent-post-bottom {
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.recent-post-bottom .content {
+  width: 95%;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 2줄로 제한 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 말줄임표 표시 */
+  word-break: break-word;
+}
+
+.view-all-button {
+  width: 100%;
+  padding: 12px 0;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  -webkit-tap-highlight-color: transparent; /* 터치 하이라이트 제거 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
+}
+
+.view-all-button:hover {
+  background-color: #ebebeb;
+}

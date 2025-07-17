@@ -20,7 +20,7 @@ function DrawingSectionComponent() {
           <MapComponent />
         </div>
         <div
-          className="home_btn"
+          className="btn btn_one home_btn"
           id="start-drawing"
           onClick={handleStartDrawing}
           style={{ cursor: "pointer" }}
@@ -33,7 +33,7 @@ function DrawingSectionComponent() {
         <div className="drawing_img">
           <img src={homeMap_ex3} alt="내그림보기" />
         </div>
-        <div className="home_btn" onClick={handleMyCourse}>
+        <div className="btn btn_one home_btn" onClick={handleMyCourse}>
           내그림보기
         </div>
       </div>

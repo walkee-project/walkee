@@ -1,4 +1,5 @@
 import React from "react";
+import "../css/MapTools.css";
 import { animateMarker, animateMapCenter } from "../../utils/gpsUtils";
 import compass_bg from "../../assets/compass_bg.png";
 import compass_needle from "../../assets/compass_needle.png";
@@ -45,7 +46,7 @@ const MapTools: React.FC<MapToolsProps> = ({
   };
 
   return (
-    <>
+    <div className="map_tools">
       {/* 🧭 나침반 (좌상단 고정) */}
       <div className="compass">
         <img src={compass_bg} alt="나침반 배경" className="compass_bg" />
@@ -57,16 +58,14 @@ const MapTools: React.FC<MapToolsProps> = ({
         />
       </div>
       {/* 📍 현재 위치 이동 버튼 (오른쪽 위 고정) */}
-      <div className="gps_button_wrapper">
-        <button
-          className="gps_button"
-          onClick={moveToCurrentLocation}
-          disabled={!mapInstance}
-        >
-          <img src={gpsBtnIcon} alt="현재위치로이동" />
-        </button>
-      </div>
-    </>
+      <button
+        className="gps_button"
+        onClick={moveToCurrentLocation}
+        disabled={!mapInstance}
+      >
+        <img src={gpsBtnIcon} alt="현재위치로이동" />
+      </button>
+    </div>
   );
 };
 
