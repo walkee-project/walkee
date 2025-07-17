@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "../css/Community.css";
-import Community_Find from "./Community_Find"; // 🔍 검색 컴포넌트 import
+import { useNavigate } from "react-router-dom";
+import Community_Find from "./Community_find"; // 🔍 검색 컴포넌트 import
+import Community_Stats from "./Community_stats";
+import CommunityAll from "./Community_all";
 
 import example from "../../assets/map_ex4.png";
 import example2 from "../../assets/ex2.jpg";
@@ -11,7 +14,6 @@ import logo from "../../assets/logo_small.png";
 import plus from "../../assets/plus_icon.svg";
 import find from "../../assets/find_icon.svg";
 import bell from "../../assets/bell_icon.svg";
-import Community_Stats from "./Community_stats";
 
 interface PostData {
   id: number;
@@ -121,7 +123,8 @@ const recentPosts: PostData[] = [
 
 const Community = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  const [isSearchMode, setIsSearchMode] = useState(false); // 🔍 검색 모드
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [currentSection, setCurrentSection] = useState("default");
 
   const handleLike = (postId: number) => {
     setLikedPosts((prev) =>
@@ -135,14 +138,17 @@ const Community = () => {
     setIsSearchMode(true);
   };
 
-  const handleBackClick = () => {
+  const handleViewAllClick = () => {
     setIsSearchMode(false);
+    setCurrentSection("all");
   };
 
   return (
     <>
       {isSearchMode ? (
-        <Community_Find onBack={handleBackClick} />
+        <Community_Find onBack={() => setIsSearchMode(false)} />
+      ) : currentSection === "all" ? (
+        <CommunityAll onBack={() => setCurrentSection("default")} />
       ) : (
         <div className="community-container">
           <section className="community-top-ui">
@@ -240,7 +246,9 @@ const Community = () => {
                 </div>
               </div>
             ))}
-            <button className="view-all-button">게시물 전체보기</button>
+            <button className="view-all-button" onClick={handleViewAllClick}>
+              게시물 전체보기
+            </button>
           </section>
         </div>
       )}
