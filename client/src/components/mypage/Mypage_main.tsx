@@ -13,46 +13,52 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
   const dispatch = useAppDispatch();
   const { user, loading, error } = useAppSelector((state) => state.user);
   const [summary, setSummary] = useState({
-    routeCount: 0,
-    likeCount: 0,
-    postCount: 0,
+    userRoute: [],
+    userRouteLikeRaw: [],
+    userRouteLike: [],
+    userPost: [],
   });
 
   useEffect(() => {
-    // 컴포넌트 마운트 시 사용자 정보 로드
-    if (!user) {
-      dispatch(fetchUser());
-    }
-  }, [dispatch, user]);
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (user) {
-      fetchUserSummary(user.userIdx).then(setSummary).catch(console.error);
+    if (user?.userIdx) {
+      fetchUserSummary(user.userIdx)
+        .then((data) => setSummary(data))
+        .catch(console.error);
     }
-  }, [user]);
+  }, [user?.userIdx]);
+
+  console.log("summary", summary);
 
   // 로딩 중일 때 표시
   if (loading) {
     return <div className="main">로딩 중...</div>;
   }
 
-  // // 에러가 있을 때 표시
-  // if (error) {
-  //   return <div className="main">에러: {error}</div>;
-  // }
+  // 에러가 있을 때 표시
+  if (error) {
+    return <div className="main">에러: {error}</div>;
+  }
 
-  // // 사용자 정보가 없을 때 표시
-  // if (!user) {
-  //   return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
-  // }
+  // 사용자 정보가 없을 때 표시
+  if (!user) {
+    return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
+  }
 
   return (
     <div className="main">
       <div className="profile_card">
-        <img src={profile} alt="프로필" className="profile_img" />
+        <img
+          src={user.userProfile || profile}
+          alt="프로필"
+          className="profile_img"
+        />
         <div className="profile_info">
           <div className="nickname_row">
-            <span className="nickname">dd</span>
+            <span className="nickname">{user.userName}</span>
             <button
               className="edit_btn"
               onClick={() => onChangeSection("edit")}
@@ -60,25 +66,58 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
               수정
             </button>
           </div>
-          <div className="join_date">가입일 : 2025.02.01</div>
+          <div className="join_date">
+            가입일 :{" "}
+            {user.userCreatedAt
+              ? new Date(user.userCreatedAt)
+                  .toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                  .replace(/\. /g, ".")
+                  .replace(/\.$/, "")
+              : "-"}
+          </div>
         </div>
         <div className="counts">
-          <p>총 {summary.routeCount}개 경로 |</p>
-          <p>찜 {summary.likeCount}개 |</p>
-          <p>게시글 {summary.postCount}개</p>
+          <p>
+            총 {Array.isArray(summary.userRoute) ? summary.userRoute.length : 0}
+            개 경로 |
+          </p>
+          <p>
+            찜{" "}
+            {Array.isArray(summary.userRouteLike)
+              ? summary.userRouteLike.length
+              : 0}
+            개 |
+          </p>
+          <p>
+            게시글{" "}
+            {Array.isArray(summary.userPost) ? summary.userPost.length : 0}개
+          </p>
         </div>
       </div>
 
       <div className="menu_list">
-        <div className="menu_item" onClick={() => onChangeSection("mycourse")}>
+        <div
+          className="menu_item"
+          onClick={() => onChangeSection("mycourse", summary.userRoute)}
+        >
           <p>내 경로</p>
           <img src={arrow} alt="화살표" />
         </div>
-        <div className="menu_item" onClick={() => onChangeSection("wishlist")}>
+        <div
+          className="menu_item"
+          onClick={() => onChangeSection("wishlist", summary.userRouteLike)}
+        >
           <p>찜한 경로</p>
           <img src={arrow} alt="화살표" />
         </div>
-        <div className="menu_item" onClick={() => onChangeSection("posts")}>
+        <div
+          className="menu_item"
+          onClick={() => onChangeSection("posts", summary.userPost)}
+        >
           <p>게시글</p>
           <img src={arrow} alt="화살표" />
         </div>

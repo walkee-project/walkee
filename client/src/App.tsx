@@ -18,7 +18,7 @@ function AppContent() {
 
   const [routeId] = useState<number>(() => {
     const randomIndex = Math.floor(Math.random() * dummyData.length);
-    return dummyData[randomIndex].id;
+    return dummyData[randomIndex].routeIdx;
   });
 
   return (

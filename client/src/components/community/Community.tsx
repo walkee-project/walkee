@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "../css/Community.css";
-import { useNavigate } from "react-router-dom";
 import Community_Find from "./Community_find"; // 🔍 검색 컴포넌트 import
 import Community_Stats from "./Community_stats";
 import CommunityAll from "./Community_all";

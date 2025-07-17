@@ -3,23 +3,28 @@ import Mypage_main from "./Mypage_main";
 import Mypage_edit from "./Mypage_edit";
 import Mypage_course from "./Mypage_course";
 import { isSection } from "../types/mypage_type";
-import type { mypage_section, course_section_type } from "../types/mypage_type";
-import { useLocation } from "react-router-dom";
+import type {
+  mypage_section,
+  course_section_type,
+  RouteItem,
+} from "../types/mypage_type";
 
 function Mypage() {
-  const location = useLocation();
-  const initSection = (location.state?.section as mypage_section) ?? "main";
+  const [currentSection, setCurrentSection] = useState<mypage_section>("main");
+  const [routeList, setRouteList] = useState<RouteItem[]>([]);
 
-  const [currentSection, setCurrentSection] =
-    useState<mypage_section>(initSection);
+  const handleChangeSection = (section: mypage_section, list?: RouteItem[]) => {
+    setCurrentSection(section);
+    if (list) setRouteList(list);
+  };
 
-  // 섹션 렌더링 함수
   const renderSection = () => {
-    // ✅ "mycourse" 또는 "wishlist"면 공통 CourseSection 컴포넌트 사용
     if (isSection(currentSection, ["mycourse", "wishlist"])) {
       return (
         <Mypage_course
+          key={currentSection}
           type={currentSection as course_section_type}
+          routeList={routeList}
           onChangeSection={() => setCurrentSection("main")}
         />
       );
@@ -29,15 +34,14 @@ function Mypage() {
       case "main":
         return (
           <Mypage_main
-            onChangeSection={setCurrentSection}
+            onChangeSection={handleChangeSection}
             currentSection={currentSection}
           />
         );
-
       case "edit":
         return (
           <Mypage_edit
-            onChangeSection={setCurrentSection}
+            onChangeSection={handleChangeSection}
             currentSection={currentSection}
           />
         );
@@ -45,7 +49,7 @@ function Mypage() {
         return null;
     }
   };
-
+  console.log("📦 Mypage routeList:", routeList);
   return <div className="mypage_container">{renderSection()}</div>;
 }
 

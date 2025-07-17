@@ -43,9 +43,10 @@ export class PostsService {
     );
   }
 
-  async countByUser(userId: number) {
-    return this.postRepository.count({
+  async findByUser(userId: number) {
+    return this.postRepository.find({
       where: { userIdx: userId, postDeletedAt: IsNull() },
+      order: { postCreatedAt: 'DESC' }, // 최신순 정렬
     });
   }
 }

@@ -5,14 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { RoutesModule } from '../routes/routes.module';
 import { PostsModule } from '../posts/posts.module';
-import { PostLikesModule } from '../post_likes/post_likes.module';
+import { RouteLikesModule } from '../route_likes/route_likes.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     RoutesModule,
     PostsModule,
-    PostLikesModule,
+    RouteLikesModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

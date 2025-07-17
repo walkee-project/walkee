@@ -4,6 +4,7 @@ import { Repository, IsNull } from 'typeorm';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { RouteEntity } from './entities/route.entity';
+import { In } from 'typeorm';
 
 @Injectable()
 export class RoutesService {
@@ -44,9 +45,19 @@ export class RoutesService {
     );
   }
 
-  async countByUser(userId: number) {
-    return this.routeRepository.count({
+  async findByUser(userId: number) {
+    return this.routeRepository.find({
       where: { userIdx: userId, routeDeletedAt: IsNull() },
+      order: { routeCreatedAt: 'DESC' }, // 최신순 정렬
+    });
+  }
+
+  async findRoutesByIds(routeIds: number[]) {
+    return this.routeRepository.find({
+      where: {
+        routeIdx: In(routeIds),
+        routeDeletedAt: IsNull(),
+      },
     });
   }
 }

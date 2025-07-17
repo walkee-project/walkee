@@ -1,23 +1,87 @@
 import "../css/Mypage_edit.css";
 import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { mypage_props } from "../types/mypage_type";
 import profileImage from "../../assets/profile.png";
+import { useAppSelector } from "../../store/hooks";
 import arrow_back from "../../assets/arrow_back.png";
 import cameraIcon from "../../assets/cameraIcon.png";
 
 export default function Mypage_edit({ onChangeSection }: mypage_props) {
-  const [nickname, setNickname] = useState("푸른달갈");
+  const user = useAppSelector((state) => state.user.user);
+  const [nickname, setNickname] = useState(user ? user.userName : "푸른달걀");
+  const [imagePreview, setImagePreview] = useState<string>(
+    user?.userProfile || profileImage
+  );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-    setNickname(input);
+    const regex = /^[가-힣a-zA-Z0-9]*$/;
+    const nativeEvent = e.nativeEvent as InputEvent;
+    if (
+      ("isComposing" in nativeEvent && nativeEvent.isComposing) ||
+      regex.test(input) ||
+      input === ""
+    ) {
+      setNickname(input);
+    }
   };
 
-  const handleSave = () => {
-    // 실제 저장 로직 (API 연동 등)
-    alert(`닉네임이 '${nickname}'으로 변경되었습니다.`);
-    onChangeSection("main");
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      window.location.href = "/";
+      return;
+    }
+    let profileImageUrl = user.userProfile;
+    try {
+      if (selectedFile) {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        const uploadRes = await fetch(
+          `/api/users/${user.userIdx}/profile-image`,
+          {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          }
+        );
+        if (!uploadRes.ok) throw new Error("이미지 업로드 실패");
+        const data = await uploadRes.json();
+        profileImageUrl = data.url || data.profileImageUrl;
+        setUploading(false);
+      }
+      const patchRes = await fetch(`/api/users/${user.userIdx}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: nickname,
+          userProfile: profileImageUrl,
+        }),
+        credentials: "include",
+      });
+      if (!patchRes.ok) throw new Error("프로필 수정 실패");
+      alert(`프로필이 변경되었습니다.`);
+      onChangeSection("main");
+    } catch (err) {
+      setUploading(false);
+      alert(err + "프로필 수정/업로드에 실패했습니다.");
+    }
   };
 
   return (
@@ -34,15 +98,26 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
           <div className="profile_section">
             <div className="profile_img_wrapper">
               <img
-                src={profileImage}
+                src={imagePreview}
                 alt="프로필"
                 className="edit_profile_img"
               />
-              <div className="camera_div">
+              <div
+                className="camera_div"
+                onClick={() => fileInputRef.current?.click()}
+                style={{ cursor: "pointer" }}
+              >
                 <img
                   src={cameraIcon}
                   alt="카메라아이콘"
                   className="camera_icon"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                  onChange={handleImageChange}
                 />
               </div>
             </div>
@@ -65,8 +140,12 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
             />
           </div>
         </div>
-        <button className="btn btn_two submit_btn" onClick={handleSave}>
-          수정하기
+        <button
+          className="submit_btn"
+          onClick={handleSave}
+          disabled={uploading}
+        >
+          {uploading ? "업로드 중..." : "수정하기"}
         </button>
       </div>
     </div>

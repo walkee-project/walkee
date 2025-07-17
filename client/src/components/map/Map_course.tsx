@@ -96,7 +96,7 @@ export default function Map_course({
           </div>
         ) : (
           <RouteCard
-            key={dummyData[route_num].id}
+            key={dummyData[route_num].routeIdx}
             route={dummyData[route_num]}
           />
         )}
@@ -105,7 +105,7 @@ export default function Map_course({
           <div
             className="btn btn_two"
             onClick={() =>
-              handleShowOverlay(dummyData[0].id, "최근 경로 달리기")
+              handleShowOverlay(dummyData[0].routeIdx, "최근 경로 달리기")
             }
           >
             최근 경로 달리기

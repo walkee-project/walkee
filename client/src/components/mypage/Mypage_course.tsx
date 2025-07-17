@@ -1,26 +1,23 @@
 import React from "react";
 import RouteCard from "./RouteCard.tsx";
-import type { course_section_type } from "../types/mypage_type.ts";
+import type { course_section_type } from "../types/mypage_type";
+import type { RouteItem } from "../types/mypage_type.ts";
 import "../css/mypage_course.css";
 import arrow_back from "../../assets/arrow_back.png";
-import { dummyData } from "../dummydate.ts";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   type: course_section_type; // "mycourse" | "wishlist"
   onChangeSection: () => void;
+  routeList: RouteItem[];
 }
 
-const Mypage_course: React.FC<Props> = ({ type, onChangeSection }) => {
-  const navigate = useNavigate();
-
+const Mypage_course: React.FC<Props> = ({
+  type,
+  onChangeSection,
+  routeList,
+}) => {
+  console.log("Mypage_course", type, routeList);
   const title = type === "mycourse" ? "내 경로" : "찜한 경로";
-
-  const filterList =
-    type === "wishlist"
-      ? dummyData.filter((item) => item.isLiked)
-      : dummyData.filter((item) => item.who === "푸른달걀");
-
   return (
     <div className="course">
       <button className="back_btn" onClick={onChangeSection}>
@@ -31,54 +28,12 @@ const Mypage_course: React.FC<Props> = ({ type, onChangeSection }) => {
       </div>
 
       <div className="course-list">
-        {filterList.length > 0 ? (
-          filterList.map((route) => (
-            <div
-              key={route.id}
-              onClick={() =>
-                navigate("/map", {
-                  state: {
-                    tab: "course",
-                    routeId: route.id, // 또는 route.id
-                    openOverlay: true,
-                    from: "mypage", // 필요 시 어디서 왔는지도 넘김
-                  },
-                })
-              }
-            >
-              <RouteCard route={route} />
-            </div>
-          ))
+        {!routeList || routeList.length === 0 ? (
+          <p className="empty-message">표시할 경로가 없습니다.</p>
         ) : (
-          <div className="no-course-message">
-            {type == "mycourse" ? (
-              <>
-                <p>저장한 경로가 없습니다.</p>
-                <p>지금 바로 기록해보세요!</p>
-                <div
-                  className="no_btn btn_one"
-                  onClick={() => {
-                    navigate("/map");
-                  }}
-                >
-                  경로 그리기
-                </div>
-              </>
-            ) : (
-              <>
-                <p>찜한 경로가 없습니다.</p>
-                <p>지금 바로 저장해보세요!</p>
-                <div
-                  className="no_btn btn_one"
-                  onClick={() => {
-                    navigate("/community");
-                  }}
-                >
-                  커뮤니티 가기
-                </div>
-              </>
-            )}
-          </div>
+          routeList.map((route) => (
+            <RouteCard key={route.routeIdx} route={route} />
+          ))
         )}
       </div>
     </div>

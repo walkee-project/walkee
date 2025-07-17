@@ -35,9 +35,35 @@ export const api = {
     });
 
     if (!response.ok) {
+      // fetch 실패 원인: 백엔드에서 쿠키 인증이 제대로 안되거나, 세션 만료, 혹은 CORS 문제일 수 있음
+      window.location.href = "/";
       throw new Error("Failed to fetch user info");
     }
 
+    return response.json();
+  },
+
+  // 경로 찜 추가
+  addRouteLike: async (userIdx: number, routeIdx: number) => {
+    const response = await fetch(`${API_BASE_URL}/route-likes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userIdx, routeIdx }),
+      credentials: "include",
+    });
+    if (!response.ok) throw new Error("찜 추가 실패");
+    return response.json();
+  },
+
+  // 경로 찜 삭제
+  removeRouteLike: async (userIdx: number, routeIdx: number) => {
+    const response = await fetch(`${API_BASE_URL}/route-likes`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userIdx, routeIdx }),
+      credentials: "include",
+    });
+    if (!response.ok) throw new Error("찜 삭제 실패");
     return response.json();
   },
 

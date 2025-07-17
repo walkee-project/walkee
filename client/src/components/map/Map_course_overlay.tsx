@@ -13,12 +13,13 @@ export default function Map_course_overlay({
   handleHideOverlay: () => void;
 }) {
   const navigate = useNavigate();
-  const route = dummyData.find((item) => item.id === routeId) ?? dummyData[0];
+  const route =
+    dummyData.find((item) => item.routeIdx === routeId) ?? dummyData[0];
 
   return (
     <div className="overlay_section">
       <div className="overlay_map">
-        <img src={route.image} alt={route.title} />
+        <img src={route.routeThumbnail} alt={route.routeTitle} />
       </div>
       <div className="overlay_wrapper">
         <div className="arrow_back" onClick={handleHideOverlay}>
