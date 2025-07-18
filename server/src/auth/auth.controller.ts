@@ -61,7 +61,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
+    return res.redirect('http://192.168.70:5173/home');
   }
 
   @Get('naver')

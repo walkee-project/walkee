@@ -67,7 +67,9 @@ const RouteCard: React.FC<Props> = ({ route }) => {
     <div className="route_card">
       <div className="route_imgDiv">
         <img
-          src={`api/public/${route.routeThumbnail}`}
+          src={`${import.meta.env.VITE_APP_API_URL}/api/public${
+            route.routeThumbnail
+          }`}
           alt={route.routeTitle}
         />
       </div>

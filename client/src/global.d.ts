@@ -25,6 +25,7 @@ declare global {
         setPosition(latLng: LatLng): void;
         getPosition(): LatLng;
         getMap(): Map | null;
+        setMap(map: Map | null): void;
       }
 
       class Polyline {
