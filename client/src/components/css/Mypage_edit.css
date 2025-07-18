@@ -12,22 +12,6 @@
   margin-top: 20px;
 }
 
-.back_btn {
-  position: absolute;
-  background: none;
-  border: none;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  width: 5%;
-  height: 5%;
-}
-
-.back_btn img {
-  width: 100%;
-  object-fit: contain;
-}
-
 .edit_section {
   height: calc(100% - 30px);
   display: flex;

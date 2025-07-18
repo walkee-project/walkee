@@ -1,6 +1,6 @@
 import "../css/Map_course.css";
 import RecommendCourseComponent from "../home/RecommendCourseComponent";
-import RouteCard from "../mypage/RouteCard";
+import RouteCard from "../RouteCard";
 import { dummyData } from "../dummydate";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";

@@ -102,14 +102,18 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
       <div className="menu_list">
         <div
           className="menu_item"
-          onClick={() => onChangeSection("mycourse", summary.userRoute)}
+          onClick={() =>
+            navigate("/courseList", { state: { sectionType: "mycourse" } })
+          }
         >
           <p>내 경로</p>
           <img src={arrow} alt="화살표" />
         </div>
         <div
           className="menu_item"
-          onClick={() => onChangeSection("wishlist", summary.userRouteLike)}
+          onClick={() =>
+            navigate("/courseList", { state: { sectionType: "wishlist" } })
+          }
         >
           <p>찜한 경로</p>
           <img src={arrow} alt="화살표" />

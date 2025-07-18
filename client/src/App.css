@@ -69,6 +69,22 @@
   font-family: "Paperlogy";
 }
 
+.back_btn {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  width: 5%;
+  margin: 4px 0;
+  z-index: 5;
+}
+.back_btn img {
+  width: 100%;
+  object-fit: contain;
+}
+
 .btn {
   padding: 5px 0;
   font-size: 18px;

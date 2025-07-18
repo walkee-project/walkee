@@ -10,9 +10,9 @@ function Home({ routeId }: { routeId: number }) {
   const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUser());
+  // }, [dispatch]);
 
   if (loading) {
     return <div>Loading...</div>;

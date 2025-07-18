@@ -1,22 +1,13 @@
-.course {
-  position: relative;
-  height: 100%;
-}
-
-.back_btn {
-  position: absolute;
-  background: none;
-  border: none;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  width: 5%;
-  height: 5%;
-}
-
-.back_btn img {
+.courseList {
   width: 100%;
-  object-fit: contain;
+  height: 100%;
+  padding: 20px;
+}
+
+.courseList_section {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .course-header {
