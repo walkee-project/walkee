@@ -48,6 +48,25 @@
   border-radius: 12px;
   margin-bottom: 10px;
 }
+.detail-writer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.writer-profile {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.writer-profile img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
 .writer-name {
   font-weight: 600;
