@@ -1,6 +1,6 @@
 import "../css/Map_course.css";
 import RecommendCourseComponent from "../home/RecommendCourseComponent";
-import RouteCard from "../mypage/RouteCard";
+import RouteCard from "../RouteCard";
 import { dummyData } from "../dummydate";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ export default function Map_course({
     if (filterList.length <= 0) {
       navigate("/community");
     } else {
-      navigate("/mypage", { state: { section: "wishlist" } });
+      navigate("/courseList", { state: { section: "wishlist", from: "map" } });
     }
   };
 
@@ -41,7 +41,12 @@ export default function Map_course({
     setSelectedBtn(btnTitle); //선택 btn 이름
     setShowOverlay(true); // 오버레이 열기
   };
-  const handleHideOverlay = () => setShowOverlay(false);
+
+  const handleHideOverlay = () => {
+    setShowOverlay(false);
+
+    navigate(-1);
+  };
 
   useEffect(() => {
     if (!isActive) setShowOverlay(false);

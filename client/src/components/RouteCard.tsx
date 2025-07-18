@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useAppSelector } from "../../store/hooks";
-import { api } from "../../utils/api";
-import "../css/RouteCard.css";
-import type { RouteItem } from "../types/mypage_type";
-import heart from "../../assets/heart.png";
+import { useAppSelector } from "../store/hooks";
+import { api } from "../utils/api";
+import "./css/RouteCard.css";
+import type { RouteItem } from "./types/courseList_type";
+import heart from "../assets/heart.png";
 
 interface Props {
   route: RouteItem;

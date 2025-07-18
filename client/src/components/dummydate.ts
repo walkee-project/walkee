@@ -1,4 +1,4 @@
-import type { RouteItem } from "./types/mypage_type";
+import type { RouteItem } from "./types/courseList_type";
 import ex2 from "../assets/homeMap_ex2.png";
 import ex3 from "../assets/homeMap_ex3.png";
 import ex4 from "../assets/map_ex4.png";

@@ -34,11 +34,11 @@ export const api = {
       },
     });
 
-    if (!response.ok) {
-      // fetch 실패 원인: 백엔드에서 쿠키 인증이 제대로 안되거나, 세션 만료, 혹은 CORS 문제일 수 있음
-      window.location.href = "/";
-      throw new Error("Failed to fetch user info");
-    }
+    // if (!response.ok) {
+    //   // fetch 실패 원인: 백엔드에서 쿠키 인증이 제대로 안되거나, 세션 만료, 혹은 CORS 문제일 수 있음
+    //   window.location.href = "/";
+    //   throw new Error("Failed to fetch user info");
+    // }
 
     return response.json();
   },

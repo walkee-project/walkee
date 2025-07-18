@@ -10,7 +10,7 @@ function DrawingSectionComponent() {
   };
 
   const handleMyCourse = () => {
-    navigate("/mypage", { state: { section: "mycourse" } });
+    navigate("/courseList", { state: { section: "mycourse" } });
   };
 
   return (
