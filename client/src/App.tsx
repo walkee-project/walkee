@@ -7,7 +7,7 @@ import Ing from "./components/Map_tracking/Ing";
 import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 import Community from "./components/community/Community";
-import CourseList from "./components/courseList";
+import CourseList from "./components/CourseList";
 import Community_write from "./components/community/Community_write";
 
 import { useState } from "react";
@@ -30,6 +30,7 @@ function AppContent() {
         <Route path="/" element={<First />} />
         <Route path="/home" element={<Home routeId={routeId} />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community/write" element={<Community_write />} />
         <Route path="/community/write" element={<Community_write />} />
         <Route path="/map" element={<Map routeId={routeId} />} />
         <Route path="/map/ing" element={<Ing />} />
