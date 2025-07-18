@@ -8,13 +8,15 @@ import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 import Community from "./components/community/Community";
 import CourseList from "./components/courseList";
+import Community_write from "./components/community/Community_write";
+
 import { useState } from "react";
 import { dummyData } from "./components/dummydate";
 
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
   const location = useLocation();
-  const hideNavRoutes = ["/", "/map/ing", "/courseList"]; // 네비게이션 숨길 경로
+  const hideNavRoutes = ["/", "/map/ing", "/courseList", "/community/write"]; // 네비게이션 숨길 경로
   const isNavHidden = hideNavRoutes.includes(location.pathname);
 
   const [routeId] = useState<number>(() => {
@@ -28,6 +30,7 @@ function AppContent() {
         <Route path="/" element={<First />} />
         <Route path="/home" element={<Home routeId={routeId} />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community/write" element={<Community_write />} />
         <Route path="/map" element={<Map routeId={routeId} />} />
         <Route path="/map/ing" element={<Ing />} />
         <Route path="/mypage" element={<Mypage />} />

@@ -1,0 +1,142 @@
+.write-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 상단 헤더 */
+.write-header {
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #ddd;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: white;
+  z-index: 10;
+}
+
+.write-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.write-close,
+.write-submit {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 스크롤 가능한 본문 영역 */
+.write-body {
+  padding: 70px 16px 70px; /* 상단/하단 영역 고려한 패딩 */
+  flex: 1;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.write-topic {
+  font-size: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.write-topic .arrow {
+  float: right;
+}
+
+.write-warning {
+  font-size: 13px;
+  background: #d2eaff;
+  border: 1px solid #d2eaff;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  color: #555;
+}
+
+.write-warning strong {
+  color: #0014c9;
+  margin-right: 6px;
+}
+
+.write-warning a {
+  color: #007aff;
+  text-decoration: underline;
+}
+
+/* 입력 영역 */
+.write-input-title {
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  padding: 12px 0;
+  margin-bottom: 10px;
+}
+
+.write-textarea {
+  width: 100%;
+  height: 150px;
+  border: none;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.5;
+  background: none;
+}
+
+/* 하단 툴바 */
+.write-footer {
+  /* position: fixed;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: start;
+  padding: 0 30px;
+  gap: 15px;
+  align-items: center;
+  z-index: 10; */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  transition: transform 0.25s ease;
+}
+
+.write-footer button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+
+  cursor: pointer;
+}
+.write-footer button img {
+  height: 20px;
+  width: auto;
+  filter: invert(46%) sepia(16%) saturate(17%) hue-rotate(202deg)
+    brightness(94%) contrast(87%);
+}
+.write-footer button h5 {
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+}

@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: transparent;
+  background-color: white;
   /* border-bottom: 1px solid #eee; */
   top: 0;
   z-index: 10;
@@ -40,4 +40,5 @@
   height: auto;
   filter: invert(27%) sepia(0%) saturate(0%) hue-rotate(138deg) brightness(96%)
     contrast(94%);
+  cursor: pointer;
 }

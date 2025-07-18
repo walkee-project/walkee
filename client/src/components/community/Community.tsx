@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/Community.css";
 import "../css/Header.css";
 import Community_Find from "./Community_find"; // 🔍 검색 컴포넌트 import
@@ -122,6 +123,7 @@ const recentPosts: PostData[] = [
 ];
 
 const Community = () => {
+  const navigate = useNavigate();
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [currentSection, setCurrentSection] = useState("default");
@@ -141,6 +143,7 @@ const Community = () => {
   const handleViewAllClick = () => {
     setIsSearchMode(false);
     setCurrentSection("all");
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   return (
@@ -157,7 +160,7 @@ const Community = () => {
             rightIcons={[
               {
                 icon: <img src={plus} alt="plus icon" />,
-                onClick: () => console.log("글쓰기"),
+                onClick: () => navigate("/community/write"),
               },
               {
                 icon: <img src={find} alt="find icon" />,
