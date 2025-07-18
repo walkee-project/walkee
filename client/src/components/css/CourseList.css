@@ -1,7 +1,8 @@
 .courseList {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 20px;
+  background-color: #f6f6f6;
 }
 
 .courseList_section {

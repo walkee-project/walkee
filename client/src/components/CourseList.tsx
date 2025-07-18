@@ -30,15 +30,24 @@ const CourseList: React.FC = () => {
     }
   }, [sectionType]);
 
+  const handleBack = () => {
+    const from = location.state?.from;
+
+    if (from === "map") {
+      navigate("/map", {
+        state: {
+          tab: "course",
+        },
+      });
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <div className="courseList">
       <div className="courseList_section">
-        <button
-          className="back_btn"
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
+        <button className="back_btn" onClick={handleBack}>
           <img src={arrow_back} alt="back_arrow" />
         </button>
 
@@ -58,6 +67,7 @@ const CourseList: React.FC = () => {
                       routeId: route.routeIdx,
                       openOverlay: true,
                       from: "courseList",
+                      fromState: sectionType,
                     },
                   })
                 }
