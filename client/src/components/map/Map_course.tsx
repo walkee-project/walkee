@@ -9,12 +9,12 @@ import type { RouteItem } from "../types/courseList_type";
 
 export default function Map_course({
   isActive,
-  routeId,
   routeList = [], // 찜한 경로 리스트를 props로 받음
+  recommendRoute,
 }: {
   isActive: boolean;
-  routeId: number;
   routeList?: RouteItem[];
+  recommendRoute: RouteItem | null;
 }) {
   console.log(routeList);
   const location = useLocation();
@@ -24,9 +24,9 @@ export default function Map_course({
   const [selectedBtn, setSelectedBtn] = useState<
     "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | null
   >(null);
+  const [selectedRoute, setSelectedRoute] = useState<RouteItem | null>(null);
 
-  // 추천 경로: 랜덤
-  const route_num = routeList.length > 0 ? Math.floor(Math.random() * routeList.length) : 0;
+  // useEffect로 setRecommendRoute 등은 모두 삭제
 
   const handlelikeBtn = () => {
     if (routeList.length <= 0) {
@@ -39,12 +39,13 @@ export default function Map_course({
   };
 
   const handleShowOverlay = (
-    routeId: number,
+    route: RouteItem,
     btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기"
   ) => {
-    setSelectedRouteId(routeId); // 코스 번호 저장
+    setSelectedRouteId(route.routeIdx); // 코스 번호 저장 (혹시 routeId 필요하면)
     setSelectedBtn(btnTitle); //선택 btn 이름
     setShowOverlay(true); // 오버레이 열기
+    setSelectedRoute(route); // 오버레이에 넘길 route 객체 저장
   };
 
   const handleHideOverlay = () => {
@@ -77,19 +78,19 @@ export default function Map_course({
 
   return (
     <div className="course_section">
-      {showOverlay && typeof selectedRouteId === "number" && selectedBtn ? (
+      {showOverlay && selectedRoute && selectedBtn ? (
         <Map_course_overlay
-          routeId={selectedRouteId}
+          route={selectedRoute}
           btnTitle={selectedBtn}
           handleHideOverlay={handleHideOverlay}
         />
       ) : (
         <>
           <div className="recommend_course">
-            <RecommendCourseComponent routeId={routeId} />
+            <RecommendCourseComponent route={recommendRoute} />
             <div
               className="recommend_btn btn btn_two"
-              onClick={() => handleShowOverlay(routeId, "오늘의 추천 경로")}
+              onClick={() => recommendRoute && handleShowOverlay(recommendRoute, "오늘의 추천 경로")}
             >
               경로보기
             </div>
@@ -114,7 +115,7 @@ export default function Map_course({
               <div
                 className="btn btn_two"
                 onClick={() =>
-                  routeList.length > 0 && handleShowOverlay(routeList[0].routeIdx, "최근 경로 달리기")
+                  routeList.length > 0 && handleShowOverlay(routeList[0], "최근 경로 달리기")
                 }
               >
                 최근 경로 달리기

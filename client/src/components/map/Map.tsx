@@ -4,6 +4,7 @@ import Map_basic from "./Map_basic";
 import Map_course from "./Map_course";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks";
+import type { RouteItem } from "../types/courseList_type";
 
 // // window 객체에 카카오맵 타입 확장
 // declare global {
@@ -13,7 +14,7 @@ import { useAppSelector } from "../../store/hooks";
 //   }
 // }
 
-function Map({ routeId }: { routeId: number }) {
+function Map({ routeId, recommendRoute }: { routeId: number; recommendRoute: RouteItem | null }) {
   const location = useLocation();
   const state = location.state as {
     tab?: "basic" | "course";
@@ -41,7 +42,11 @@ function Map({ routeId }: { routeId: number }) {
       <div className="section_container">
         {activeTab === "basic" && <Map_basic />}
         {activeTab === "course" && (
-          <Map_course isActive={activeTab === "course"} routeId={routeId} routeList={routeList} />
+          <Map_course
+            isActive={activeTab === "course"}
+            routeList={routeList}
+            recommendRoute={recommendRoute}
+          />
         )}
       </div>
     </div>

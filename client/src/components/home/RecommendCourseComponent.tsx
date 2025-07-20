@@ -1,14 +1,12 @@
 import arrow_right from "../../assets/arrow_right.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks"; 
+import type { RouteItem } from "../types/courseList_type";
 
-function RecommendCourseComponent({ routeId }: { routeId: number }) {
+function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const allRoute = useAppSelector((state) => state.user.allRoute);
-  const route = allRoute.find((item) => item.routeIdx === routeId) ?? allRoute[0];
 
-  if (!allRoute || allRoute.length === 0 || !route) {
+  if (!route) {
     return (
       <div className="recommend_section empty">
         아직 등록된 경로가 없습니다.

@@ -1,25 +1,23 @@
 import "../css/Map_course_overlay.css";
-import { dummyData } from "../dummydate";
 import arrow_back from "../../assets/arrow_back.png";
+import type { RouteItem } from "../types/courseList_type";
 import { useNavigate } from "react-router-dom";
 
 export default function Map_course_overlay({
-  routeId,
+  route,
   btnTitle,
   handleHideOverlay,
 }: {
-  routeId: number;
+  route: RouteItem;
   btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기";
   handleHideOverlay: () => void;
 }) {
   const navigate = useNavigate();
-  const route =
-    dummyData.find((item) => item.routeIdx === routeId) ?? dummyData[0];
 
   return (
     <div className="overlay_section">
       <div className="overlay_map">
-        <img src={route.routeThumbnail} alt={route.routeTitle} />
+        <img src={`api/public${route.routeThumbnail}`} alt={route.routeTitle} />
       </div>
       <div className="overlay_wrapper">
         <div className="arrow_back" onClick={handleHideOverlay}>

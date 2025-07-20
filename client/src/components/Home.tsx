@@ -6,10 +6,10 @@ import DrawingSectionComponent from "./home/DrawingSectionComponent";
 import Header from "./Header";
 import bell from "../assets/bell_icon.svg";
 import { useAppSelector } from "../store/hooks";
+import type { RouteItem } from "./types/courseList_type";
 
-function Home({ routeId }: { routeId: number }) {
+function Home({ recommendRoute }: { recommendRoute: RouteItem | null }) {
   const user = useAppSelector((state) => state.user.user);
-
 
   if (!user) {
     return <div>Loading...</div>;
@@ -36,7 +36,7 @@ function Home({ routeId }: { routeId: number }) {
 
       {/* 추천코스 영역 */}
       <div>
-        <RecommendCourseComponent routeId={routeId} />
+        <RecommendCourseComponent route={recommendRoute} />
       </div>
 
       {/* 새그리기 / 내그림보기 */}

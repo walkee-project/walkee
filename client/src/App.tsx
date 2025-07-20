@@ -20,6 +20,7 @@ import Community_detail from "./components/community/Community_detail";
 import { useState } from "react";
 import { dummyData } from "./components/dummydate";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { fetchUser, fetchUserSummaryThunk, fetchAllRouteThunk } from "./store/userSlice";
 
@@ -33,6 +34,13 @@ function AppContent() {
 
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
+  const allRoute = useAppSelector((state) => state.user.allRoute);
+  const recommendRoute = useMemo(
+    () => allRoute && allRoute.length > 0
+      ? allRoute[Math.floor(Math.random() * allRoute.length)]
+      : null,
+    [allRoute]
+  );
 
   // 1. user 정보 한 번만 불러오기
   useEffect(() => {
@@ -69,7 +77,7 @@ function AppContent() {
     <>
       <Routes>
         <Route path="/" element={<First />} />
-        <Route path="/home" element={<Home routeId={routeId} />} />
+        <Route path="/home" element={<Home routeId={routeId} recommendRoute={recommendRoute} />} />
         <Route
           path="/community"
           element={<Community key={resetKey.community} />}
@@ -79,7 +87,7 @@ function AppContent() {
           path="/community/:id"
           element={<Community_detail key={resetKey.community} />}
         />
-        <Route path="/map" element={<Map routeId={routeId} />} />
+        <Route path="/map" element={<Map routeId={routeId} recommendRoute={recommendRoute} />} />
         <Route path="/map/ing" element={<Ing />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
         <Route path="/courseList" element={<CourseList />} />
