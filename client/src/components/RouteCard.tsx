@@ -92,7 +92,10 @@ const RouteCard: React.FC<Props> = ({ route }) => {
           src={heart}
           alt="하트"
           className={`${liked ? "like" : ""}`}
-          onClick={toggleLike}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLike();
+          }}
         />
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import MapComponent from "./MapComponent";
 import MapTools from "./MapTools";
 import { animateMarker, animateMapCenter } from "../../utils/gpsUtils";
+import { createUserMarker } from '../../utils/createUserMarker';
 
 export default function Map_basic() {
   const navigate = useNavigate();
@@ -15,25 +16,6 @@ export default function Map_basic() {
   const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
   const userLocationWatchId = useRef<number | null>(null);
   const markerAnimationRef = useRef<number | null>(null);
-
-  // 통일된 사용자 마커 생성 함수
-  const createUserMarker = (position: kakao.maps.LatLng) => {
-    const svgString =
-      '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="8" fill="#4285f4" stroke="white" stroke-width="2"/><circle cx="10" cy="10" r="3" fill="white"/></svg>';
-
-    const markerImage = new window.kakao.maps.MarkerImage(
-      "data:image/svg+xml;base64," + btoa(svgString),
-      new window.kakao.maps.Size(20, 20),
-      { offset: new window.kakao.maps.Point(10, 10) }
-    );
-
-    return new window.kakao.maps.Marker({
-      position: position,
-      map: mapInstance,
-      title: "내 위치",
-      image: markerImage,
-    });
-  };
 
   const handleGoalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGoalType(e.target.value);
@@ -68,10 +50,10 @@ export default function Map_basic() {
 
     // 마커가 없으면 생성
     if (!markerRef.current) {
-      markerRef.current = createUserMarker(latLng);
+      markerRef.current = createUserMarker(mapInstance, latLng);
     } else {
-      // 마커 위치 부드럽게 업데이트
-      animateMarker(markerRef.current, lat, lng, 1000, markerAnimationRef);
+      markerRef.current.setMap(null);
+      markerRef.current = createUserMarker(mapInstance, latLng);
     }
 
     // 디바이스 방향도 업데이트

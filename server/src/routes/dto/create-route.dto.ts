@@ -9,10 +9,6 @@ export class CreateRouteDto {
   @IsNotEmpty()
   routeTitle: string;
 
-  @IsOptional()
-  @IsString()
-  routeDescription?: string;
-
   @IsNumber()
   @IsNotEmpty()
   routeTotalKm: number;

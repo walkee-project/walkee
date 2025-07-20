@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { api } from "../utils/api";
+import { api, fetchUserSummary, fetchAllRoutes } from "../utils/api";
 
 interface UserInfo {
   userIdx: number;
@@ -13,16 +13,32 @@ interface UserInfo {
   userCreatedAt: string; // 가입일
 }
 
+// UserSummary 타입 추가
+interface UserSummary {
+  userRoute: any[];
+  userRouteLikeRaw?: any[];
+  userRouteLike: any[];
+  userPost: any[];
+}
+
+interface routeSummary {
+  allRoute: any[];
+}
+
 interface UserState {
   user: UserInfo | null;
   loading: boolean;
   error: string | null;
+  summary: UserSummary | null; // summary 추가
+  allRoute: routeSummary["allRoute"]; // 전체 경로 리스트 타입 지정
 }
 
 const initialState: UserState = {
   user: null,
   loading: false,
   error: null,
+  summary: null, // summary 초기값
+  allRoute: [], // 초기값
 };
 
 // 비동기 액션: 사용자 정보 가져오기
@@ -36,6 +52,19 @@ export const fetchUser = createAsyncThunk(
       return rejectWithValue(
         error instanceof Error ? error.message : "Unknown error"
       );
+    }
+  }
+);
+
+// 비동기 액션: 유저 summary(마이페이지 요약) 가져오기
+export const fetchUserSummaryThunk = createAsyncThunk(
+  "user/fetchUserSummary",
+  async (userIdx: number, { rejectWithValue }) => {
+    try {
+      const data = await fetchUserSummary(userIdx);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
@@ -55,6 +84,19 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// 비동기 액션: 전체 경로 가져오기
+export const fetchAllRouteThunk = createAsyncThunk(
+  "user/fetchAllRoute",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await fetchAllRoutes();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -66,6 +108,7 @@ const userSlice = createSlice({
     clearUser: (state) => {
       state.user = null;
       state.error = null;
+      state.summary = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -88,6 +131,26 @@ const userSlice = createSlice({
         state.user = null;
         state.error = action.payload as string;
       })
+      // fetchUserSummaryThunk 액션 처리
+      .addCase(fetchUserSummaryThunk.pending, (state) => {
+        // summary 로딩 상태를 따로 두고 싶으면 추가 가능
+      })
+      .addCase(fetchUserSummaryThunk.fulfilled, (state, action) => {
+        state.summary = action.payload;
+      })
+      .addCase(fetchUserSummaryThunk.rejected, (state, action) => {
+        state.summary = null;
+      })
+      // fetchAllRouteThunk 액션 처리
+      .addCase(fetchAllRouteThunk.pending, (state) => {
+        // allRoute 로딩 상태를 따로 두고 싶으면 추가 가능
+      })
+      .addCase(fetchAllRouteThunk.fulfilled, (state, action) => {
+        state.allRoute = action.payload;
+      })
+      .addCase(fetchAllRouteThunk.rejected, (state, action) => {
+        state.allRoute = [];
+      })
       // logoutUser 액션 처리
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
@@ -96,6 +159,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = null;
         state.error = null;
+        state.summary = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;

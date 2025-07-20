@@ -19,6 +19,9 @@ import Community_detail from "./components/community/Community_detail";
 
 import { useState } from "react";
 import { dummyData } from "./components/dummydate";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { fetchUser, fetchUserSummaryThunk, fetchAllRouteThunk } from "./store/userSlice";
 
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
@@ -27,6 +30,22 @@ function AppContent() {
   const isDynamicDetail = matchPath("/community/:id", location.pathname);
   const isNavHidden =
     hideNavRoutes.includes(location.pathname) || !!isDynamicDetail;
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+
+  // 1. user 정보 한 번만 불러오기
+  useEffect(() => {
+    dispatch(fetchUser());
+    dispatch(fetchAllRouteThunk()); // 전체 경로 리스트도 한 번만 불러오기
+  }, [dispatch]);
+
+  // 2. user 정보가 있으면 summary 한 번만 불러오기
+  useEffect(() => {
+    if (user?.userIdx) {
+      dispatch(fetchUserSummaryThunk(user.userIdx));
+    }
+  }, [user?.userIdx, dispatch]);
 
   const [routeId] = useState<number>(() => {
     const randomIndex = Math.floor(Math.random() * dummyData.length);

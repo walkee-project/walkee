@@ -1,19 +1,22 @@
 import "../css/Map_course.css";
 import RecommendCourseComponent from "../home/RecommendCourseComponent";
 import RouteCard from "../RouteCard";
-import { dummyData } from "../dummydate";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Map_course_overlay from "./Map_course_overlay";
 import { useLocation } from "react-router-dom";
+import type { RouteItem } from "../types/courseList_type";
 
 export default function Map_course({
   isActive,
   routeId,
+  routeList = [], // 찜한 경로 리스트를 props로 받음
 }: {
   isActive: boolean;
   routeId: number;
+  routeList?: RouteItem[];
 }) {
+  console.log(routeList);
   const location = useLocation();
   const navigate = useNavigate();
   const [showOverlay, setShowOverlay] = useState(false);
@@ -22,14 +25,16 @@ export default function Map_course({
     "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | null
   >(null);
 
-  const filterList = dummyData.filter((item) => item.isLiked);
-  const route_num = Math.floor(Math.random() * filterList.length);
+  // 추천 경로: 랜덤
+  const route_num = routeList.length > 0 ? Math.floor(Math.random() * routeList.length) : 0;
 
   const handlelikeBtn = () => {
-    if (filterList.length <= 0) {
+    if (routeList.length <= 0) {
       navigate("/community");
     } else {
-      navigate("/courseList", { state: { section: "wishlist", from: "map" } });
+      navigate("/courseList", {
+        state: { sectionType: "wishlist", userRouteLike: routeList, from: "map" }
+      });
     }
   };
 
@@ -44,7 +49,6 @@ export default function Map_course({
 
   const handleHideOverlay = () => {
     setShowOverlay(false);
-
     navigate(-1);
   };
 
@@ -66,7 +70,6 @@ export default function Map_course({
       setShowOverlay(true);
       setSelectedRouteId(routeIdFromState);
       setSelectedBtn("경로 따라 달리기");
-
       // 🚫 다시 뜨지 않도록 location.state 초기화
       navigate(location.pathname, { replace: true });
     }
@@ -95,15 +98,15 @@ export default function Map_course({
             <div className="like_label">
               <p>찜한 경로 달리기</p>
             </div>
-            {filterList.length <= 0 ? (
+            {routeList.length <= 0 ? (
               <div className="no_course">
                 <p>찜한 경로가 없습니다.</p>
                 <p>지금 바로 저장해보세요!</p>
               </div>
             ) : (
               <RouteCard
-                key={dummyData[route_num].routeIdx}
-                route={dummyData[route_num]}
+                key={routeList[0].routeIdx}
+                route={routeList[0]}
               />
             )}
 
@@ -111,13 +114,13 @@ export default function Map_course({
               <div
                 className="btn btn_two"
                 onClick={() =>
-                  handleShowOverlay(dummyData[0].routeIdx, "최근 경로 달리기")
+                  routeList.length > 0 && handleShowOverlay(routeList[0].routeIdx, "최근 경로 달리기")
                 }
               >
                 최근 경로 달리기
               </div>
               <div className="btn btn_two" onClick={handlelikeBtn}>
-                {filterList.length <= 0 ? "커뮤니티 가기" : "찜한 경로 리스트"}
+                {routeList.length <= 0 ? "커뮤니티 가기" : "찜한 경로 리스트"}
               </div>
             </div>
           </div>

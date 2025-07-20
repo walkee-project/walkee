@@ -1,12 +1,20 @@
 import arrow_right from "../../assets/arrow_right.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { dummyData } from "../dummydate";
+import { useAppSelector } from "../../store/hooks"; 
 
 function RecommendCourseComponent({ routeId }: { routeId: number }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const route =
-    dummyData.find((item) => item.routeIdx === routeId) ?? dummyData[0];
+  const allRoute = useAppSelector((state) => state.user.allRoute);
+  const route = allRoute.find((item) => item.routeIdx === routeId) ?? allRoute[0];
+
+  if (!allRoute || allRoute.length === 0 || !route) {
+    return (
+      <div className="recommend_section empty">
+        아직 등록된 경로가 없습니다.
+      </div>
+    );
+  }
 
   return (
     <div
@@ -24,7 +32,7 @@ function RecommendCourseComponent({ routeId }: { routeId: number }) {
         )}
       </div>
       <div className="recommend_img">
-        <img src={route.routeThumbnail} alt="추천코스" />
+        <img src={`api/public${route.routeThumbnail}`} alt="추천코스" />
         <div className="recommend_detail">
           <p>{route.routeTotalKm} km</p>
           <p>{route.routeTotalTime}분</p>

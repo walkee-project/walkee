@@ -7,10 +7,6 @@ export class UpdateRouteDto {
 
   @IsOptional()
   @IsString()
-  routeDescription?: string;
-
-  @IsOptional()
-  @IsString()
   routeThumbnail?: string;
 
   @IsOptional()

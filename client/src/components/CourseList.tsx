@@ -5,30 +5,28 @@ import type {
 import "./css/courseList.css";
 import arrow_back from "../assets/arrow_back.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RouteCard from "./RouteCard.tsx";
-import { dummyData } from "./dummydate.ts";
 
-const CourseList: React.FC = () => {
+interface Props {
+  routeList?: RouteItem[];
+  sectionType?: course_section_type;
+}
+
+const CourseList: React.FC<Props> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // location.state에서 routeList/sectionType을 fallback으로 받음
+  const routeList: RouteItem[] =
+    props.routeList ??
+    location.state?.userRoute ??
+    location.state?.userRouteLike ??
+    [];
   const sectionType: course_section_type =
-    location.state?.sectionType ?? "mycourse";
-  const [routeList, setRouteList] = useState<RouteItem[]>([]);
+    props.sectionType ?? location.state?.sectionType ?? "mycourse";
 
   const title = sectionType === "mycourse" ? "내 경로" : "찜한 경로";
-  const currentUserId = 1;
-
-  useEffect(() => {
-    if (sectionType === "mycourse") {
-      setRouteList(
-        dummyData.filter((route) => route.userIdx === currentUserId)
-      );
-    } else {
-      setRouteList(dummyData.filter((route) => route.isLiked));
-    }
-  }, [sectionType]);
 
   const handleBack = () => {
     const from = location.state?.from;

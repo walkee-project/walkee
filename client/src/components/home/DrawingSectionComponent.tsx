@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import homeMap_ex3 from "../../assets/homeMap_ex3.png";
 import MapComponent from "../map/MapComponent";
+import { useAppSelector } from "../../store/hooks";
 
 function DrawingSectionComponent() {
+  const summary = useAppSelector((state) => state.user.summary);
+
   const navigate = useNavigate();
 
   const handleStartDrawing = () => {
@@ -10,7 +13,7 @@ function DrawingSectionComponent() {
   };
 
   const handleMyCourse = () => {
-    navigate("/courseList", { state: { section: "mycourse" } });
+    navigate("/courseList", { state: { sectionType: "mycourse", userRoute: summary?.userRoute } });
   };
 
   return (
@@ -31,7 +34,14 @@ function DrawingSectionComponent() {
 
       <div className="drawing_card">
         <div className="drawing_img">
-          <img src={homeMap_ex3} alt="내그림보기" />
+          {summary?.userRoute && summary.userRoute.length > 0 && summary.userRoute[0].routeThumbnail ? (
+            <img
+              src={`api/public${summary.userRoute[0].routeThumbnail}`}
+              alt="내그림보기"
+            />
+          ) : (
+            <div className="drawing_empty_text">그림을 그려보세요!</div>
+          )}
         </div>
         <div className="btn btn_one home_btn" onClick={handleMyCourse}>
           내그림보기

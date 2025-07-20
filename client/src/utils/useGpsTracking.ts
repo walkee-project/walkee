@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { calculateDistance } from "./gpsUtils";
+import { createUserMarker } from "./createUserMarker";
 
 export default function useGpsTracking(
-  markerRef: React.MutableRefObject<kakao.maps.Marker | null>
+  markerRef: React.MutableRefObject<kakao.maps.Marker | null>,
+  mapInstance?: kakao.maps.Map // mapInstance를 추가 인자로 받음
 ) {
   const [isTracking, setIsTracking] = useState(false);
   const [totalDistance, setTotalDistance] = useState(0);
@@ -44,6 +46,10 @@ export default function useGpsTracking(
       setElapsedTime(0);
       setTrackedPoints([new window.kakao.maps.LatLng(lat, lng)]);
       setIsTracking(true);
+      // 마커가 없으면 공통 마커 생성
+      if (!markerRef.current && mapInstance) {
+        markerRef.current = createUserMarker(mapInstance, new window.kakao.maps.LatLng(lat, lng));
+      }
       const id = navigator.geolocation.watchPosition(
         (pos) => {
           const newLat = pos.coords.latitude;

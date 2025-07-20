@@ -5,6 +5,7 @@ import MapTools from "../map/MapTools";
 import Ing_finish from "./Ing_finish";
 import useGpsTracking from "../../utils/useGpsTracking";
 import { formatTime } from "../../utils/gpsUtils";
+import { createUserMarker } from '../../utils/createUserMarker';
 
 export default function Ing() {
   const [isPause, setIsPause] = useState(false);
@@ -55,6 +56,17 @@ export default function Ing() {
       polylineRef.current.setMap(mapInstance);
     }
   }, [trackedPoints, mapInstance]);
+
+  // 마커 최초 생성 useEffect (기존 마커 삭제 후 항상 새로 생성)
+  useEffect(() => {
+    if (mapInstance && trackedPoints.length > 0) {
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
+      }
+      markerRef.current = createUserMarker(mapInstance, trackedPoints[0]);
+    }
+  }, [mapInstance, trackedPoints.length > 0]);
 
   // isTracking 미사용 경고 방지 (실제 사용처가 없으므로 주석 처리)
   // console.log(isTracking);

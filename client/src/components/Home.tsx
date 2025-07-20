@@ -1,26 +1,21 @@
 import "./css/Home.css";
 import "../components/css/Header.css";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-
-import { fetchUser } from "../store/userSlice";
 import WeatherComponent from "./home/WeatherComponent";
 import RecommendCourseComponent from "./home/RecommendCourseComponent";
 import DrawingSectionComponent from "./home/DrawingSectionComponent";
 import Header from "./Header";
 import bell from "../assets/bell_icon.svg";
+import { useAppSelector } from "../store/hooks";
 
 function Home({ routeId }: { routeId: number }) {
-  const dispatch = useAppDispatch();
-  const { user, loading } = useAppSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
 
-  // useEffect(() => {
-  //   dispatch(fetchUser());
-  // }, [dispatch]);
 
-  if (loading) {
+  if (!user) {
     return <div>Loading...</div>;
   }
+
+  // summary?.userRoute, summary?.userRouteLike, summary?.userPost 등 사용 가능
 
   return (
     <div className="main_container">

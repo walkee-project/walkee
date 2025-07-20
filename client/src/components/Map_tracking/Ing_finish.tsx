@@ -34,7 +34,6 @@ export default function Ing_finish({
     elapsedTime > 0 ? totalDistance / 1000 / (elapsedTime / 3600) : 0;
 
   const routeTitle = Title || `${new Date().toLocaleDateString()} 런닝`;
-  const routeDescription = "";
 
   const originalPoints = trackedPoints
     .filter(
@@ -105,7 +104,6 @@ export default function Ing_finish({
       const routeData = {
         userIdx: user.userIdx,
         routeTitle,
-        routeDescription,
         routeTotalKm: parseFloat((totalDistance / 1000).toFixed(3)),
         routeTotalTime: totalTimeInSeconds,
         routePolyline: encodedPolyline,

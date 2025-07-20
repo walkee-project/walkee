@@ -16,9 +16,6 @@ export class RouteEntity {
   @Column({ name: 'route_title' })
   routeTitle: string;
 
-  @Column({ name: 'route_description' })
-  routeDescription?: string;
-
   @Column({ name: 'route_totalKm' })
   routeTotalKm: number;
 
