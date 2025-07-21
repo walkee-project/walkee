@@ -6,11 +6,23 @@ import MapTools from "../map/MapTools";
 import Ing_finish from "./Ing_finish";
 import useGpsTracking from "../../utils/useGpsTracking";
 import { formatTime } from "../../utils/gpsUtils";
-import { createUserMarker } from "../../utils/createUserMarker";
+import { decodePolyline } from "../../utils/decodePolyline";
 
 export default function Ing() {
   const location = useLocation();
   const tab = location.state?.tab; // "basic" | "course"
+  const routeToFollow = location.state?.route; // 따라갈 경로 정보
+
+  const trackingOptions = {
+    mode: tab || "basic",
+    targetStartPoint: routeToFollow
+      ? {
+          lat: routeToFollow.routeStartLat,
+          lng: routeToFollow.routeStartLng,
+        }
+      : undefined,
+  };
+
   const [isPause, setIsPause] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
 
@@ -18,57 +30,103 @@ export default function Ing() {
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
 
-  // 트래킹 데이터 관리
   const {
     totalDistance,
     elapsedTime,
     startTracking,
     stopTracking,
     trackedPoints,
-  } = useGpsTracking(markerRef);
+    isFollowingActive,
+  } = useGpsTracking(markerRef, mapInstance, trackingOptions);
 
-  // Polyline을 지도에 그리기 위한 ref
-  const polylineRef = useRef<kakao.maps.Polyline | null>(null);
+  const userPolylineRef = useRef<kakao.maps.Polyline | null>(null);
+  const targetPolylineRef = useRef<kakao.maps.Polyline | null>(null);
 
-  // 컴포넌트 마운트 시 트래킹 자동 시작, 언마운트 시 중지
   useEffect(() => {
-    startTracking();
+    if (mapInstance) {
+      startTracking();
+    }
     return () => {
       stopTracking();
     };
-  }, []);
+  }, [mapInstance]);
 
-  // trackedPoints가 바뀔 때마다 polyline을 지도에 그림
   useEffect(() => {
     if (!mapInstance || !trackedPoints || trackedPoints.length < 2) return;
-    // 기존 polyline 제거
-    if (polylineRef.current !== null) {
-      polylineRef.current.setMap(null);
-      polylineRef.current = null;
+    if (userPolylineRef.current) {
+      userPolylineRef.current.setMap(null);
     }
-    // 새 polyline 생성
-    polylineRef.current = new window.kakao.maps.Polyline({
+    userPolylineRef.current = new window.kakao.maps.Polyline({
       path: trackedPoints,
       strokeWeight: 5,
       strokeColor: "#4285f4",
       strokeOpacity: 0.8,
       strokeStyle: "solid",
     });
-    if (polylineRef.current !== null) {
-      polylineRef.current.setMap(mapInstance);
+    if (userPolylineRef.current) {
+      userPolylineRef.current.setMap(mapInstance);
     }
   }, [trackedPoints, mapInstance]);
 
-  // 마커 최초 생성 useEffect (기존 마커 삭제 후 항상 새로 생성)
   useEffect(() => {
-    if (mapInstance && trackedPoints.length > 0) {
+    if (tab === "course" && mapInstance && routeToFollow) {
+      const path = decodePolyline(routeToFollow.routePolyline);
+      const bounds = new window.kakao.maps.LatLngBounds();
+
+      const targetPath = path.map((p) => {
+        const latLng = new window.kakao.maps.LatLng(p.lat, p.lng);
+        bounds.extend(latLng);
+        return latLng;
+      });
+
+      targetPolylineRef.current = new window.kakao.maps.Polyline({
+        path: targetPath,
+        strokeWeight: 7,
+        strokeColor: "#555555",
+        strokeOpacity: 0.6,
+        strokeStyle: "solid",
+      });
+
+      if (targetPolylineRef.current) {
+        targetPolylineRef.current.setMap(mapInstance);
+        mapInstance.setBounds(bounds);
+      }
+
+      new window.kakao.maps.Marker({
+        map: mapInstance,
+        position: targetPath[0],
+        title: "시작",
+      });
+      new window.kakao.maps.CustomOverlay({
+        map: mapInstance,
+        position: targetPath[0],
+        content: `<div style="background:#fff;border:1px solid #4285f4;border-radius:6px;padding:2px 8px;font-size:13px;color:#4285f4;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.1);">시작</div>`,
+        yAnchor: 1.5,
+      });
+
+      new window.kakao.maps.Marker({
+        map: mapInstance,
+        position: targetPath[targetPath.length - 1],
+        title: "도착",
+      });
+      new window.kakao.maps.CustomOverlay({
+        map: mapInstance,
+        position: targetPath[targetPath.length - 1],
+        content: `<div style="background:#fff;border:1px solid #e74c3c;border-radius:6px;padding:2px 8px;font-size:13px;color:#e74c3c;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.1);">도착</div>`,
+        yAnchor: 1.5,
+      });
+    }
+
+    return () => {
+      if (targetPolylineRef.current) {
+        targetPolylineRef.current.setMap(null);
+      }
       if (markerRef.current) {
         markerRef.current.setMap(null);
         markerRef.current = null;
       }
-      markerRef.current = createUserMarker(mapInstance, trackedPoints[0]);
-    }
-  }, [mapInstance, trackedPoints.length > 0]);
+    };
+  }, [mapInstance, tab, routeToFollow]);
 
   const handlePause = () => {
     setIsPause(!isPause);
@@ -79,7 +137,6 @@ export default function Ing() {
     setIsFinish(true);
   };
 
-  // MapComponent에서 onMapReady 콜백으로 mapInstance를 세팅
   const handleMapReady = () => {
     if (window.kakaoMapInstance) {
       setMapInstance(window.kakaoMapInstance);
@@ -120,6 +177,12 @@ export default function Ing() {
               mapInstance={mapInstance}
             />
           </div>
+
+          {tab === "course" && !isFollowingActive && (
+            <div className="info_box">
+              <div>시작 지점으로 이동해주세요.</div>
+            </div>
+          )}
 
           {isPause && (
             <div className="pause_box">

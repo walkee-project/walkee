@@ -31,72 +31,59 @@ export default function Map_basic() {
     setTimeGoal(e.target.value);
   };
 
-  // MapComponent에서 onMapReady 콜백으로 mapInstance를 세팅
   const handleMapReady = () => {
     if (window.kakaoMapInstance) {
       setMapInstance(window.kakaoMapInstance);
     }
   };
 
-  // 사용자 위치 업데이트 함수 (항상 실행)
   const updateUserLocation = (position: GeolocationPosition) => {
     if (!mapInstance) return;
 
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
-    const latLng = new window.kakao.maps.LatLng(lat, lng);
 
-    console.log("GPS 위치 업데이트:", lat, lng);
-
-    // 마커가 없으면 생성
     if (!markerRef.current) {
-      markerRef.current = createUserMarker(mapInstance, latLng);
+      markerRef.current = createUserMarker(
+        mapInstance,
+        new window.kakao.maps.LatLng(lat, lng)
+      );
     } else {
-      markerRef.current.setMap(null);
-      markerRef.current = createUserMarker(mapInstance, latLng);
+      // 마커를 부드럽게 이동
+      animateMarker(markerRef.current, lat, lng, 1000, markerAnimationRef);
     }
 
-    // 디바이스 방향도 업데이트
     if (position.coords.heading !== null) {
       setHeading(position.coords.heading);
     }
   };
 
-  // GPS 추적 시작 함수 (항상 실행)
   const startContinuousLocationTracking = () => {
     if (!navigator.geolocation) {
       console.error("Geolocation을 지원하지 않는 브라우저입니다.");
       return;
     }
 
-    // 먼저 빠른 위치 가져오기 (저정밀도)
     navigator.geolocation.getCurrentPosition(
       (position) => {
         updateUserLocation(position);
-        // 지도 중심을 사용자 위치로 이동
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         animateMapCenter(mapInstance!, lat, lng, 1000);
-        console.log("초기 위치 설정:", lat, lng);
-
-        // 성공 후 고정밀도 추적 시작
         startHighAccuracyTracking();
       },
       (error) => {
         console.warn("초기 위치 가져오기 실패, 고정밀도로 재시도:", error);
-        // 실패 시 고정밀도로 재시도
         navigator.geolocation.getCurrentPosition(
           (position) => {
             updateUserLocation(position);
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             animateMapCenter(mapInstance!, lat, lng, 1000);
-            console.log("초기 위치 설정 (고정밀도):", lat, lng);
             startHighAccuracyTracking();
           },
           (fallbackError) => {
             console.error("모든 초기 위치 가져오기 실패:", fallbackError);
-            // 그래도 추적은 시작
             startHighAccuracyTracking();
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
@@ -106,21 +93,12 @@ export default function Map_basic() {
     );
   };
 
-  // 고정밀도 GPS 추적 시작
   const startHighAccuracyTracking = () => {
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         updateUserLocation(position);
-        console.log(
-          "위치 업데이트:",
-          position.coords.latitude,
-          position.coords.longitude,
-          "정확도:",
-          position.coords.accuracy
-        );
       },
       (error) => {
-        // 타임아웃이나 일시적 오류는 경고만 출력
         if (error.code === error.TIMEOUT) {
           console.warn("GPS 타임아웃 - 계속 진행");
         } else if (error.code === error.POSITION_UNAVAILABLE) {
@@ -136,8 +114,8 @@ export default function Map_basic() {
       },
       {
         enableHighAccuracy: true,
-        timeout: 20000, // 타임아웃을 20초로 증가
-        maximumAge: 10000, // 캐시 시간을 10초로 증가
+        timeout: 20000,
+        maximumAge: 10000,
       }
     );
 
@@ -145,14 +123,11 @@ export default function Map_basic() {
     return watchId;
   };
 
-  // 지도 로드 시 항상 GPS 추적 시작
   useEffect(() => {
     if (!mapInstance) return;
 
-    // 항상 사용자 위치 추적 시작
     startContinuousLocationTracking();
 
-    // 디바이스 방향 이벤트 리스너
     const handleOrientation = (event: DeviceOrientationEvent) => {
       if (event.alpha !== null) {
         setHeading(event.alpha);
@@ -161,17 +136,14 @@ export default function Map_basic() {
 
     window.addEventListener("deviceorientation", handleOrientation, true);
 
-    // 컴포넌트 언마운트 시 정리
     return () => {
       window.removeEventListener("deviceorientation", handleOrientation);
 
-      // 항상 실행되는 위치 추적 정리
       if (userLocationWatchId.current) {
         navigator.geolocation.clearWatch(userLocationWatchId.current);
         userLocationWatchId.current = null;
       }
 
-      // 마커 애니메이션 정리
       if (markerAnimationRef.current) {
         cancelAnimationFrame(markerAnimationRef.current);
         markerAnimationRef.current = null;
@@ -183,20 +155,6 @@ export default function Map_basic() {
       }
     };
   }, [mapInstance]);
-
-  useEffect(() => {
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (event.alpha !== null) {
-        setHeading(event.alpha);
-      }
-    };
-
-    window.addEventListener("deviceorientation", handleOrientation, true);
-
-    return () => {
-      window.removeEventListener("deviceorientation", handleOrientation);
-    };
-  }, []);
 
   return (
     <div className="basic_section">
