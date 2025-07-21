@@ -118,7 +118,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
           <span className="logout" onClick={() => navigate("/")}>
             로그아웃
           </span>
-          <span className="userout" onClick={() => navigate("/")}>
+          <span className="userout" onClick={() => navigate("/user/logoutUser")}>
             회원탈퇴
           </span>
         </div>

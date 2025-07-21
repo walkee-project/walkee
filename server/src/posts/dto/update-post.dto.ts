@@ -14,6 +14,10 @@ export class UpdatePostDto {
   postUploadImg?: string;
 
   @IsOptional()
+  @IsString()
+  postLocation?: string;
+
+  @IsOptional()
   @IsDate()
   postDeletedAt?: Date;
 

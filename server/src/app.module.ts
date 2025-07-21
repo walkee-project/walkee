@@ -19,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
 import { UploadController } from './uploads/upload.controller';
 import { RouteLikesModule } from './route_likes/route_likes.module';
 import { FollowsModule } from './follows/follows.module';
+import { FollowEntity } from './follows/entities/follow.entity';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { FollowsModule } from './follows/follows.module';
           CommentEntity,
           PostLikeEntity,
           CommentLikeEntity,
+          FollowEntity,
         ],
         synchronize: false, // 개발 단계에서만 true
         autoLoadEntities: true, // 자동으로 entity 인식

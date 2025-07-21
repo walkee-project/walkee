@@ -15,10 +15,10 @@ export class FollowEntity {
   userIdx: number;
 
   @Column({ name: 'route_idx' })
-  routeIdx: number;
+  routeIdx?: number;
 
   @Column({ name: 'follow_title' })
-  followTitle: string;
+  followTitle?: string;
 
   @Column({ name: 'follow_totalKm' })
   followTotalKm: number;
@@ -45,7 +45,7 @@ export class FollowEntity {
   followThumbnail?: string;
 
   @Column({ name: 'follow_completed' })
-  followCompleted: number;
+  followCompleted?: number;
 
   @CreateDateColumn({ name: 'follow_created_at' })
   followCreatedAt: Date;

@@ -12,6 +12,17 @@ export class PostLikesService {
   ) {}
 
   async create(createPostLikeDto: CreatePostLikeDto) {
+    // 이미 존재하는지 확인
+    const exists = await this.postLikeRepository.findOne({
+      where: {
+        userIdx: createPostLikeDto.userIdx,
+        postIdx: createPostLikeDto.postIdx,
+      },
+    });
+    if (exists) {
+      // 이미 좋아요한 경우, 에러 대신 성공 메시지 반환
+      return { message: 'already liked' };
+    }
     const postLike = this.postLikeRepository.create(createPostLikeDto);
     return await this.postLikeRepository.save(postLike);
   }
@@ -26,5 +37,13 @@ export class PostLikesService {
 
   async remove(id: number) {
     return await this.postLikeRepository.delete({ likeIdx: id });
+  }
+
+  async findByUserAndPost(userIdx: number, postIdx: number) {
+    return await this.postLikeRepository.findOne({ where: { userIdx, postIdx } });
+  }
+
+  async removeByUserAndPost(userIdx: number, postIdx: number) {
+    return await this.postLikeRepository.delete({ userIdx, postIdx });
   }
 }

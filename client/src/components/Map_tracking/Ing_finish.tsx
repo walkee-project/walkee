@@ -1,13 +1,18 @@
 import "../css/Ing_finish.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, type ChangeEvent } from "react";
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "../../store/hooks";
 import {
   fetchUserSummaryThunk,
   fetchAllRouteThunk,
 } from "../../store/userSlice";
 import { encodePolyline } from "../../utils/encodePolyline";
 import { captureStaticMapThumbnail } from "../../utils/captureStaticMapThumbnail";
+import { getStaticMapImageUrl } from "../../utils/getStaticMapImageUrl";
+import { getDifficulty } from "../../utils/difficulty";
 
 interface IngFinishProps {
   totalDistance: number;
@@ -15,6 +20,8 @@ interface IngFinishProps {
   trackedPoints: kakao.maps.LatLng[];
   formatTime: (seconds: number) => string;
   tab?: "basic" | "course";
+  completion?: number;
+  routeIdx?: number;
 }
 
 export default function Ing_finish({
@@ -23,6 +30,8 @@ export default function Ing_finish({
   trackedPoints,
   formatTime,
   tab,
+  completion,
+  routeIdx,
 }: IngFinishProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -36,7 +45,6 @@ export default function Ing_finish({
     setTitle(e.target.value);
   };
 
-  // 평균 페이스 계산 (km/h)
   const avgPace =
     elapsedTime > 0 ? totalDistance / 1000 / (elapsedTime / 3600) : 0;
 
@@ -49,20 +57,12 @@ export default function Ing_finish({
         typeof point.getLat === "function" &&
         typeof point.getLng === "function"
     )
-    .map((pos: kakao.maps.LatLng) => {
-      try {
-        return {
-          lat: pos.getLat(),
-          lng: pos.getLng(),
-        };
-      } catch (error) {
-        console.error("포인트 변환 오류:", error);
-        return null;
-      }
-    })
+    .map((pos: kakao.maps.LatLng) => ({
+      lat: pos.getLat(),
+      lng: pos.getLng(),
+    }))
     .filter((point): point is { lat: number; lng: number } => point !== null);
 
-  // 썸네일 + 인코딩 생성 함수
   const saveRouteThumbnail = async (points: { lat: number; lng: number }[]) => {
     try {
       const encoded = encodePolyline(points);
@@ -71,19 +71,75 @@ export default function Ing_finish({
       setEncodedPolyline(encoded);
     } catch (error) {
       console.error("경로 인코딩 또는 썸네일 생성 오류:", error);
-      setRouteThumbnailUrl("");
-      setEncodedPolyline("");
     }
   };
 
-  // 페이지 진입 시 썸네일 미리 생성
   useEffect(() => {
     if (originalPoints.length > 0) {
       saveRouteThumbnail(originalPoints);
     }
   }, []);
 
-  // 경로 저장 함수
+  const saveFollowRecord = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    // if (trackedPoints.length < 2) {
+    //   alert("유의미한 이동 기록이 없습니다.");
+    //   return;
+    // }
+
+    const encodedPolyline = encodePolyline(
+      trackedPoints.map((p) => ({ lat: p.getLat(), lng: p.getLng() })),
+    );
+    const startPoint = trackedPoints[0];
+    const endPoint = trackedPoints[trackedPoints.length - 1];
+
+    const followData: { [key: string]: any } = {
+      userIdx: user.userIdx,
+      followTitle: routeTitle,
+      followTotalKm: parseFloat((totalDistance / 1000).toFixed(3)),
+      followTotalTime: elapsedTime,
+      followPolyline: encodedPolyline,
+      followStartLat: parseFloat(startPoint.getLat().toFixed(7)),
+      followStartLng: parseFloat(startPoint.getLng().toFixed(7)),
+      followEndLat: parseFloat(endPoint.getLat().toFixed(7)),
+      followEndLng: parseFloat(endPoint.getLng().toFixed(7)),
+      followThumbnail: routeThumbnailUrl,
+    };
+
+    if (tab === "course") {
+      if (routeIdx !== undefined) {
+        followData.routeIdx = routeIdx;
+      }
+      if (completion !== undefined) {
+        followData.followCompleted = completion;
+      }
+    }
+
+    try {
+      const response = await fetch("/api/follows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(followData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Follow 기록 저장 실패:", errorData);
+        throw new Error("Follow 기록 저장 실패");
+      }
+      console.log("Follow 기록 저장 성공");
+      alert("러닝 기록이 성공적으로 저장되었습니다!");
+      navigate("/map");
+    } catch (error) {
+      console.error(error);
+      alert("기록 저장 중 오류가 발생했습니다.");
+    }
+  };
+
   const saveRoute = async () => {
     if (saving) return;
     setSaving(true);
@@ -108,6 +164,8 @@ export default function Ing_finish({
       const endPoint = originalPoints[originalPoints.length - 1];
       const totalTimeInSeconds = elapsedTime;
 
+      const routeDifficulty = getDifficulty(elapsedTime);
+
       const routeData = {
         userIdx: user.userIdx,
         routeTitle,
@@ -119,7 +177,7 @@ export default function Ing_finish({
         routeEndLat: parseFloat(endPoint.lat.toFixed(7)),
         routeEndLng: parseFloat(endPoint.lng.toFixed(7)),
         routeThumbnail: routeThumbnailUrl,
-        routeDifficulty: "초급",
+        routeDifficulty,
       };
 
       const apiUrl = import.meta.env.VITE_APP_API_URL;
@@ -216,6 +274,15 @@ export default function Ing_finish({
               <span className="unit"> km/h</span>
             </div>
           </div>
+          {tab === "course" && completion !== undefined && (
+            <div>
+              <p className="finish_label">완성도</p>
+              <div>
+                <span className="finish_state">{completion}</span>
+                <span className="unit"> %</span>
+              </div>
+            </div>
+          )}
         </div>
         <div className="finish_input">
           <p>제목</p>
@@ -243,7 +310,7 @@ export default function Ing_finish({
               </div>
               <div
                 className="btn btn_one finish_btn"
-                onClick={() => navigate("/map")}
+                onClick={saveFollowRecord}
               >
                 러닝 기록만 저장
               </div>
@@ -251,7 +318,7 @@ export default function Ing_finish({
           ) : (
             <div
               className="btn btn_one finish_btn"
-              onClick={() => navigate("/map")}
+              onClick={saveFollowRecord}
             >
               러닝 기록 저장
             </div>

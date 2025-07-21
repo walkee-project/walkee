@@ -6,11 +6,11 @@ export class CreateFollowDto {
   userIdx: number;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   routeIdx: number;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   followTitle: string;
 
   @IsNumber()
@@ -45,7 +45,7 @@ export class CreateFollowDto {
   @IsString()
   followThumbnail?: string;
 
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  followCompleted: number;
+  followCompleted?: number;
 }

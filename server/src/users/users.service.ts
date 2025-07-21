@@ -6,12 +6,25 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
+import { RouteEntity } from 'src/routes/entities/route.entity';
+import { PostEntity } from 'src/posts/entities/post.entity';
+import { RouteLikeEntity } from 'src/route_likes/entities/route_like.entity';
+import { FollowEntity } from 'src/follows/entities/follow.entity';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>,
+    @InjectRepository(RouteEntity)
+    private routeRepository: Repository<RouteEntity>,
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
+    @InjectRepository(RouteLikeEntity)
+    private routeLikeRepository: Repository<RouteLikeEntity>,
+    @InjectRepository(FollowEntity)
+    private followRepository: Repository<FollowEntity>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -76,5 +89,75 @@ export class UsersService {
 
   async remove(id: number) {
     return await this.userRepository.delete({ userIdx: id });
+  }
+
+  async getUserSummary(userIdx: number) {
+    const userRoute = await this.routeRepository.find({ where: { userIdx } });
+    const userRouteLike = await this.routeLikeRepository.find({
+      where: { userIdx },
+    });
+    const userPost = await this.postRepository.find({ where: { userIdx } });
+    const userFollows = await this.followRepository.find({
+      where: { userIdx },
+      order: { followCreatedAt: 'DESC' },
+    });
+
+    // userRouteLike에는 routeIdx만 있으므로, 실제 route 정보를 가져와야 함.
+    const likedRouteDetails = await Promise.all(
+      userRouteLike.map((like) =>
+        this.routeRepository.findOne({ where: { routeIdx: like.routeIdx } }),
+      ),
+    );
+
+    return {
+      userRoute,
+      userRouteLike: likedRouteDetails.filter((route) => route !== null), // null 제거
+      userRouteLikeRaw: userRouteLike,
+      userPost,
+      userFollows,
+    };
+  }
+
+  async getCommunityPosts(userIdx?: number) {
+    try {
+      // 1. posts + user 조인
+      const posts = await this.postRepository.find({
+        where: { postDeletedAt: IsNull() },
+        order: { postCreatedAt: 'DESC' },
+        relations: ['user'],
+      });
+
+      // 2. postIdx 목록 추출
+      const postIdxs = posts.map((p) => p.postIdx);
+
+      // 3. post_likes count group by postIdx
+      const likeCountsRaw = await this.postRepository.manager.query(
+        `SELECT post_idx as postIdx, COUNT(*) as likeCount FROM post_likes WHERE post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0}) GROUP BY post_idx`
+      );
+      const likeCountMap = new Map(likeCountsRaw.map((row: any) => [Number(row.postIdx), Number(row.likeCount)]));
+
+      // 4. user가 좋아요한 postIdx 목록
+      let likedPostIdxSet = new Set();
+      if (userIdx) {
+        const likedRows = await this.postRepository.manager.query(
+          `SELECT post_idx FROM post_likes WHERE user_idx = ? AND post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0})`,
+          [userIdx]
+        );
+        likedPostIdxSet = new Set(likedRows.map((row: any) => Number(row.post_idx)));
+      }
+
+      // 5. posts에 user, likeCount, isLiked 포함해서 반환
+      return posts.map((p) => ({
+        ...p,
+        userIdx: Number(p.userIdx),
+        userName: p.user?.userName || '',
+        userProfile: p.user?.userProfile || '',
+        likeCount: likeCountMap.get(p.postIdx) || 0,
+        isLiked: userIdx ? likedPostIdxSet.has(p.postIdx) : false,
+      }));
+    } catch (e) {
+      console.error('getCommunityPosts error:', e);
+      return [];
+    }
   }
 }

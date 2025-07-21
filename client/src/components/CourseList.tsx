@@ -1,25 +1,44 @@
 import { useAppSelector } from "../store/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import RouteCard from "./RouteCard";
+import FollowCard from "./FollowCard";
 import "./css/courseList.css";
 import arrow_back from "../assets/arrow_back.png";
-import type { course_section_type } from "./types/courseList_type";
+import type {
+  course_section_type,
+  Follow,
+  RouteItem,
+} from "./types/courseList_type";
 
 const CourseList: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const summary = useAppSelector((state) => state.user.summary);
-
-  // sectionType은 location.state에서만 fallback
+console.log(summary?.userFollows);
+  // sectionType은 location.state에서만 fallback (찜한 경로 등)
   const sectionType: course_section_type =
     location.state?.sectionType ?? "mycourse";
-  const routeList =
-    sectionType === "mycourse"
-      ? summary?.userRoute ?? []
-      : summary?.userRouteLike ?? [];
 
-  const title = sectionType === "mycourse" ? "내 경로" : "찜한 경로";
+  // 내 경로 페이지에서만 탭 사용
+  const [activeTab, setActiveTab] = useState<"mycourse" | "myruns">("mycourse");
+
+  let listData: (RouteItem | Follow)[] = [];
+  let title = "";
+
+  if (sectionType === "mycourse") {
+    // 내 경로 페이지에서 탭 분기
+    if (activeTab === "mycourse") {
+      listData = summary?.userRoute ?? [];
+      title = "내 경로";
+    } else {
+      listData = summary?.userFollows ?? [];
+      title = "러닝 기록";
+    }
+  } else if (sectionType === "wishlist") {
+    listData = summary?.userRouteLike ?? [];
+    title = "찜한 경로";
+  }
 
   const handleBack = () => {
     const from = location.state?.from;
@@ -45,29 +64,76 @@ const CourseList: React.FC = () => {
           <p>{title}</p>
         </div>
 
+        {/* 내 경로 페이지에서만 탭 노출 */}
+        {sectionType === "mycourse" && (
+          <div className="course-tabs">
+            <button
+              className={activeTab === "mycourse" ? "tab active" : "tab"}
+              onClick={() => setActiveTab("mycourse")}
+            >
+              내 경로
+            </button>
+            <button
+              className={activeTab === "myruns" ? "tab active" : "tab"}
+              onClick={() => setActiveTab("myruns")}
+            >
+              러닝 기록
+            </button>
+          </div>
+        )}
+
         <div className="course-list">
-          {routeList.length > 0 ? (
-            routeList.map((route) => (
-              <div
-                key={route.routeIdx}
-                onClick={() =>
-                  navigate("/map", {
-                    state: {
-                      tab: "course",
-                      route: route,
-                      openOverlay: true,
-                      from: "courseList", // 출처 유지
-                      fromState: sectionType,
-                    },
-                  })
-                }
-              >
-                <RouteCard route={route} />
-              </div>
-            ))
+          {listData.length > 0 ? (
+            listData.map((item) => {
+              if (sectionType === "mycourse" && activeTab === "myruns") {
+                return <FollowCard key={(item as Follow).followIdx} follow={item as Follow} />;
+              }
+              if (sectionType === "mycourse" && activeTab === "mycourse") {
+                return (
+                  <div
+                    key={(item as RouteItem).routeIdx}
+                    onClick={() =>
+                      navigate("/map", {
+                        state: {
+                          tab: "course",
+                          route: item,
+                          openOverlay: true,
+                          from: "courseList",
+                          fromState: sectionType,
+                        },
+                      })
+                    }
+                  >
+                    <RouteCard route={item as RouteItem} />
+                  </div>
+                );
+              }
+              // 찜한 경로 등
+              if (sectionType === "wishlist") {
+                return (
+                  <div
+                    key={(item as RouteItem).routeIdx}
+                    onClick={() =>
+                      navigate("/map", {
+                        state: {
+                          tab: "course",
+                          route: item,
+                          openOverlay: true,
+                          from: "courseList",
+                          fromState: sectionType,
+                        },
+                      })
+                    }
+                  >
+                    <RouteCard route={item as RouteItem} />
+                  </div>
+                );
+              }
+              return null;
+            })
           ) : (
             <div className="no-course-message">
-              {sectionType === "mycourse" ? (
+              {sectionType === "mycourse" && activeTab === "mycourse" && (
                 <>
                   <p>저장한 경로가 없습니다.</p>
                   <p>지금 바로 기록해보세요!</p>
@@ -78,7 +144,20 @@ const CourseList: React.FC = () => {
                     경로 그리기
                   </div>
                 </>
-              ) : (
+              )}
+              {sectionType === "mycourse" && activeTab === "myruns" && (
+                <>
+                  <p>러닝 기록이 없습니다.</p>
+                  <p>지금 바로 달려보세요!</p>
+                  <div
+                    className="no_btn btn_one"
+                    onClick={() => navigate("/map")}
+                  >
+                    러닝 시작하기
+                  </div>
+                </>
+              )}
+              {sectionType === "wishlist" && (
                 <>
                   <p>찜한 경로가 없습니다.</p>
                   <p>지금 바로 저장해보세요!</p>

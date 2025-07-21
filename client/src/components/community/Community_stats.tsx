@@ -6,27 +6,25 @@ import thumb from "../../assets/thumbs-up-regular.svg";
 interface Community_StatsProps {
   views?: number;
   comments?: number;
-  initialLikes?: number;
+  likeCount: number;
   postId: number;
   isLiked: boolean;
-  onLike: (postId: number) => void;
+  onLike: (e: React.MouseEvent, postId: number) => void;
   variant?: "popular" | "recent";
 }
 
 const Community_Stats = ({
   views = 0,
   comments = 0,
-  initialLikes = 0,
+  likeCount,
   postId,
   isLiked,
   onLike,
   variant = "recent",
 }: Community_StatsProps) => {
-  const [likeCount, setLikeCount] = useState(initialLikes);
 
-  const handleLikeClick = () => {
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    onLike(postId);
+  const handleLikeClick = (e: React.MouseEvent) => {
+    onLike(e, postId);
   };
 
   return (

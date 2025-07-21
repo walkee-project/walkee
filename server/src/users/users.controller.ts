@@ -11,10 +11,12 @@ import {
   BadRequestException,
   UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RoutesService } from '../routes/routes.service';
 import { PostsService } from '../posts/posts.service';
+import { FollowsService } from '../follows/follows.service';
 import { RouteLikesService } from '../route_likes/route_likes.service';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -43,6 +45,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly routesService: RoutesService,
     private readonly postsService: PostsService,
+    private readonly followsService: FollowsService,
     private readonly routeLikesService: RouteLikesService,
   ) {}
 
@@ -102,6 +105,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('community-posts')
+  async getCommunityPosts(@Query('userIdx') userIdx?: string) {
+    return this.usersService.getCommunityPosts(userIdx ? Number(userIdx) : undefined);
+  }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
@@ -111,6 +119,7 @@ export class UsersController {
   async getUserSummary(@Param('userId') userId: number) {
     const userRoute = await this.routesService.findByUser(userId);
     const userRouteLikeRaw = await this.routeLikesService.findByUser(userId);
+    const userFollows = await this.followsService.findByUser(userId);
     userRouteLikeRaw.sort(
       (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
     );
@@ -123,8 +132,16 @@ export class UsersController {
       .filter(Boolean);
 
     const userPost = await this.postsService.findByUser(userId);
-    return { userRoute, userRouteLikeRaw, userRouteLike, userPost };
+    return {
+      userRoute,
+      userRouteLikeRaw,
+      userRouteLike,
+      userPost,
+      userFollows,
+    };
   }
+
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

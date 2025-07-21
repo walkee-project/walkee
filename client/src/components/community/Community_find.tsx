@@ -3,13 +3,29 @@ import "../css/Community_Find.css";
 import find from "../../assets/find_icon.svg";
 import logo from "../../assets/logo_small.png";
 import back from "../../assets/arrow_back.png";
+import { useNavigate } from "react-router-dom";
 
 type SearchResult = {
-  id: number;
+  id?: number;
+  postIdx?: number;
   title: string;
   content: string;
   date: string;
 };
+
+// 날짜 포맷 함수 추가
+function formatDate(dateString: string) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours < 12 ? 'AM' : 'PM';
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${ampm} ${pad(hours)}:${pad(minutes)}`;
+}
 
 const Community_Find = ({ onBack }: { onBack?: () => void }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +36,7 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
 
   const itemsPerPage = 10;
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -29,26 +46,27 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
 
   const validPattern = /^[가-힣a-zA-Z0-9\s]+$/;
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.length >= 2 && validPattern.test(searchTerm)) {
       setShowError(false);
       setCurrentPage(1); // 검색할 때마다 페이지 초기화
-
-      const dummyResults: SearchResult[] = Array.from(
-        { length: 55 },
-        (_, i) => ({
-          id: i + 1,
-          title: `"${searchTerm}" 관련 게시물 ${String.fromCharCode(
-            65 + (i % 26)
-          )}`,
-          content: `이건 ${
-            i + 1
-          }번째 더미 게시물입니다. 커뮤니티 테스트용이에요.WALKEEWALKEE`,
-          date: `2025-07-${String((i % 30) + 1).padStart(2, "0")}`,
-        })
-      );
-      setResults(dummyResults);
+      try {
+        const res = await fetch(`/api/posts/search?query=${encodeURIComponent(searchTerm)}`);
+        if (!res.ok) throw new Error('검색 결과를 불러오지 못했습니다.');
+        const data = await res.json();
+        // 서버에서 내려온 필드명을 프론트에서 사용하는 필드명으로 매핑
+        const mapped = data.map((post: any) => ({
+          postIdx: post.postIdx,
+          title: post.postTitle,
+          content: post.postContent,
+          date: post.postCreatedAt,
+        }));
+        setResults(mapped);
+      } catch (err) {
+        setResults([]);
+        setShowError(true);
+      }
     } else {
       setShowError(true);
       setResults([]);
@@ -108,11 +126,16 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
 
         {/* 검색 결과 */}
         <div className="search-results">
-          {currentItems.map((result) => (
-            <div key={result.id} className="search-result-card">
+          {currentItems.map((result, idx) => (
+            <div
+              key={result.postIdx || result.id || idx}
+              className="search-result-card"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/community/${result.postIdx}`)}
+            >
               <h4 className="result-title">{result.title}</h4>
               <p className="result-content">{result.content}</p>
-              <span className="result-date">{result.date}</span>
+              <span className="result-date">{formatDate(result.date)}</span>
             </div>
           ))}
         </div>

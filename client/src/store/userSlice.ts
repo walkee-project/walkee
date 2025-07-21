@@ -17,10 +17,11 @@ interface UserInfo {
 
 // UserSummary 타입 추가
 interface UserSummary {
-  userRoute: RouteItem[];
-  userRouteLikeRaw?: RouteItem[];
-  userRouteLike: RouteItem[];
-  userPost: Post[];
+  userRoute: any[];
+  userRouteLikeRaw?: any[];
+  userRouteLike: any[];
+  userPost: any[];
+  userFollows: any[];
 }
 
 interface routeSummary {
@@ -34,6 +35,7 @@ interface UserState {
   summary: UserSummary | null; // summary 추가
   allRoute: routeSummary["allRoute"]; // 전체 경로 리스트 타입 지정
   recommendRoute: RouteItem | null; // 추천 경로 추가
+  communityPosts: any[]; // 커뮤니티 게시글 목록
 }
 
 const initialState: UserState = {
@@ -43,6 +45,7 @@ const initialState: UserState = {
   summary: null, // summary 초기값
   allRoute: [], // 초기값
   recommendRoute: null, // 추천 경로 초기값
+  communityPosts: [],
 };
 
 // 비동기 액션: 사용자 정보 가져오기
@@ -132,6 +135,25 @@ export const removeRouteLikeThunk = createAsyncThunk(
     try {
       await api.removeRouteLike(userIdx, routeIdx);
       return routeIdx;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+export const fetchCommunityPostsThunk = createAsyncThunk(
+  "user/fetchCommunityPosts",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      // userIdx 가져오기
+      const state: any = getState();
+      const userIdx = state.user?.user?.userIdx;
+      const url = userIdx ? `/api/users/community-posts?userIdx=${userIdx}` : '/api/users/community-posts';
+      const res = await fetch(url);
+      const data = await res.json();
+      return data;
     } catch (error) {
       return rejectWithValue(
         error instanceof Error ? error.message : "Unknown error"
@@ -238,6 +260,12 @@ const userSlice = createSlice({
             (item: RouteItem) => item.routeIdx !== action.payload
           );
         }
+      })
+      .addCase(fetchCommunityPostsThunk.fulfilled, (state, action) => {
+        state.communityPosts = action.payload;
+      })
+      .addCase(fetchCommunityPostsThunk.rejected, (state) => {
+        state.communityPosts = [];
       });
   },
 });

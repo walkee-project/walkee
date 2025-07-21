@@ -42,4 +42,11 @@ export class FollowsService {
       },
     );
   }
+
+  async findByUser(userId: number) {
+    return this.followRepository.find({
+      where: { userIdx: userId, followDeletedAt: IsNull() },
+      order: { followCreatedAt: 'DESC' }, // 최신순 정렬
+    });
+  }
 }

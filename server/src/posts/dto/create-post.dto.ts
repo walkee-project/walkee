@@ -16,4 +16,8 @@ export class CreatePostDto {
   @IsOptional()
   @IsString()
   postUploadImg?: string;
+
+  @IsOptional()
+  @IsString()
+  postLocation?: string;
 }

@@ -3,7 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Entity('posts')
 export class PostEntity {
@@ -13,6 +16,10 @@ export class PostEntity {
   @Column({ name: 'user_idx' })
   userIdx: number;
 
+  @ManyToOne(() => UserEntity, (user) => user.posts)
+  @JoinColumn({ name: 'user_idx' })
+  user: UserEntity;
+
   @Column({ name: 'post_title' })
   postTitle: string;
 
@@ -21,6 +28,9 @@ export class PostEntity {
 
   @Column({ name: 'post_uploadImg' })
   postUploadImg?: string;
+
+  @Column({ name: 'post_location' })
+  postLocation?: string;
 
   @Column({ name: 'post_count' })
   postCount: number;

@@ -7,6 +7,7 @@ import Ing_finish from "./Ing_finish";
 import useGpsTracking from "../../utils/useGpsTracking";
 import { formatTime } from "../../utils/gpsUtils";
 import { decodePolyline } from "../../utils/decodePolyline";
+import { calculateDistance } from "../../utils/gpsUtils";
 
 export default function Ing() {
   const location = useLocation();
@@ -128,6 +129,33 @@ export default function Ing() {
     };
   }, [mapInstance, tab, routeToFollow]);
 
+  // 완성도 계산 (경로 따라가기 모드에서만)
+  const [completion, setCompletion] = useState<number>(0);
+  useEffect(() => {
+    if (tab === "course" && routeToFollow && trackedPoints.length > 0) {
+      const targetPath = decodePolyline(routeToFollow.routePolyline);
+      let successCount = 0;
+      trackedPoints.forEach((userPoint) => {
+        let minDist = Infinity;
+        for (const targetPoint of targetPath) {
+          const dist = calculateDistance(
+            userPoint.getLat(),
+            userPoint.getLng(),
+            targetPoint.lat,
+            targetPoint.lng
+          );
+          if (dist < minDist) minDist = dist;
+        }
+        if (minDist <= 10) successCount += 1;
+      });
+      setCompletion(
+        trackedPoints.length > 0
+          ? Math.round((successCount / trackedPoints.length) * 100)
+          : 0
+      );
+    }
+  }, [tab, routeToFollow, trackedPoints]);
+
   const handlePause = () => {
     setIsPause(!isPause);
   };
@@ -166,6 +194,8 @@ export default function Ing() {
           trackedPoints={trackedPoints}
           formatTime={formatTime}
           tab={tab}
+          completion={tab === "course" ? completion : undefined}
+          routeIdx={tab === "course" && routeToFollow ? routeToFollow.routeIdx : undefined}
         />
       ) : (
         <>

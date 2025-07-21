@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // 모든 환경에서 프록시 사용 (프론트엔드와 백엔드 통합)
       "/api": {
-        target: "https://until-telecom-floors-phases.trycloudflare.com",
+        target: "https://replaced-nutrition-supreme-targeted.trycloudflare.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
