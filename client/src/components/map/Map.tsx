@@ -17,6 +17,7 @@ function Map() {
   const location = useLocation();
   const state = location.state as {
     tab?: "basic" | "course";
+    from?: string;
   } | null;
 
   const [activeTab, setActiveTab] = useState<"basic" | "course">(
@@ -59,6 +60,7 @@ function Map() {
             routeList={routeList}
             userRouteList={userRouteList}
             recommendRoute={recommendRoute}
+            from={state?.from}
           />
         )}
       </div>

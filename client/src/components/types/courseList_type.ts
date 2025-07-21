@@ -8,6 +8,7 @@ export interface RouteItem {
   routeTotalKm: number; // km 단위 거리 (소수점)
   routeThumbnail: string; // 썸네일 이미지 경로
   routeCreatedAt: string; // ISO 날짜 문자열
+  routeDifficulty: string;
   userIdx: number;
   isLiked?: boolean;
   userName?: string;

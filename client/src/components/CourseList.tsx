@@ -12,8 +12,8 @@ const CourseList: React.FC = () => {
   const summary = useAppSelector((state) => state.user.summary);
 
   // sectionType은 location.state에서만 fallback
-  const sectionType = (location.state?.section ??
-    "mycourse") as course_section_type;
+  const sectionType: course_section_type =
+    location.state?.sectionType ?? "mycourse";
   const routeList =
     sectionType === "mycourse"
       ? summary?.userRoute ?? []
@@ -56,7 +56,7 @@ const CourseList: React.FC = () => {
                       tab: "course",
                       route: route,
                       openOverlay: true,
-                      from: "courseList",
+                      from: "courseList", // 출처 유지
                       fromState: sectionType,
                     },
                   })

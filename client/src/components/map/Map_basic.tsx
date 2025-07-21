@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import MapComponent from "./MapComponent";
 import MapTools from "./MapTools";
 import { animateMarker, animateMapCenter } from "../../utils/gpsUtils";
-import { createUserMarker } from '../../utils/createUserMarker';
+import { createUserMarker } from "../../utils/createUserMarker";
 
 export default function Map_basic() {
   const navigate = useNavigate();
@@ -255,7 +255,7 @@ export default function Map_basic() {
         <button
           className="btn_two btn basic_btn"
           onClick={() => {
-            navigate("/map/ing");
+            navigate("/map/ing", { state: { tab: "basic" } });
           }}
         >
           시작

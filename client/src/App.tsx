@@ -19,9 +19,7 @@ import Community_detail from "./components/community/Community_detail";
 import PostsList from "./components/PostsList";
 
 import { useState } from "react";
-import { dummyData } from "./components/dummydate";
 import { useEffect } from "react";
-import { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   fetchUser,
@@ -39,7 +37,6 @@ function AppContent() {
 
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
-  const allRoute = useAppSelector((state) => state.user.allRoute);
 
   // 1. user 정보 한 번만 불러오기
   useEffect(() => {
