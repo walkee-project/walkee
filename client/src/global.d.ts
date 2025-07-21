@@ -18,6 +18,7 @@ declare global {
       class Map {
         constructor(container: HTMLElement, options: any);
         setCenter(latLng: LatLng): void;
+        setBounds(bounds: LatLngBounds): void;
       }
 
       class Marker {
@@ -26,6 +27,11 @@ declare global {
         getPosition(): LatLng;
         getMap(): Map | null;
         setMap(map: Map | null): void;
+      }
+
+      class LatLngBounds {
+        constructor();
+        extend(latlng: LatLng): void;
       }
 
       class Polyline {

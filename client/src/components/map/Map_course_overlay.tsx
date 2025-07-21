@@ -52,7 +52,7 @@ export default function Map_course_overlay({
         <div
           className="btn btn_two overlay_btn"
           onClick={() => {
-            navigate("/map/ing", { state: { tab: "course" } });
+            navigate("/map/ing", { state: { tab: "course", route: route } });
           }}
         >
           시 작

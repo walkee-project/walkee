@@ -1,10 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import { calculateDistance } from "./gpsUtils";
+import { calculateDistance, animateMarker } from "./gpsUtils";
 import { createUserMarker } from "./createUserMarker";
+
+interface GpsTrackingOptions {
+  mode: "basic" | "course";
+  targetStartPoint?: { lat: number; lng: number };
+}
 
 export default function useGpsTracking(
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>,
-  mapInstance?: kakao.maps.Map // mapInstance를 추가 인자로 받음
+  mapInstance: kakao.maps.Map | null,
+  options: GpsTrackingOptions
 ) {
   const [isTracking, setIsTracking] = useState(false);
   const [totalDistance, setTotalDistance] = useState(0);
@@ -14,10 +20,20 @@ export default function useGpsTracking(
   const lastPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   const [trackedPoints, setTrackedPoints] = useState<kakao.maps.LatLng[]>([]);
 
+  // "경로 따라가기" 모드의 활성화 상태
+  const [isFollowingActive, setIsFollowingActive] = useState(
+    options.mode === "basic"
+  );
+  const isFollowingActiveRef = useRef(options.mode === "basic");
+  const setAndRefIsFollowingActive = (val: boolean) => {
+    isFollowingActiveRef.current = val;
+    setIsFollowingActive(val);
+  };
+
   // 시간 추적 useEffect
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isTracking && startTime) {
+    if (isTracking && startTime && isFollowingActiveRef.current) {
       interval = setInterval(() => {
         const now = new Date();
         const elapsed = Math.floor(
@@ -37,61 +53,97 @@ export default function useGpsTracking(
       alert("GPS를 지원하지 않는 브라우저입니다.");
       return;
     }
-    navigator.geolocation.getCurrentPosition((position) => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      lastPositionRef.current = { lat, lng };
-      setTotalDistance(0);
-      setStartTime(new Date());
-      setElapsedTime(0);
-      setTrackedPoints([new window.kakao.maps.LatLng(lat, lng)]);
-      setIsTracking(true);
-      // 마커가 없으면 공통 마커 생성
-      if (!markerRef.current && mapInstance) {
-        markerRef.current = createUserMarker(mapInstance, new window.kakao.maps.LatLng(lat, lng));
-      }
-      const id = navigator.geolocation.watchPosition(
-        (pos) => {
-          const newLat = pos.coords.latitude;
-          const newLng = pos.coords.longitude;
-          const accuracy = pos.coords.accuracy;
-          if (accuracy > 50) return;
-          if (lastPositionRef.current) {
-            const distance = calculateDistance(
-              lastPositionRef.current.lat,
-              lastPositionRef.current.lng,
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const newPosition = new window.kakao.maps.LatLng(lat, lng);
+
+        if (!markerRef.current && mapInstance) {
+          markerRef.current = createUserMarker(mapInstance, newPosition);
+        }
+
+        if (options.mode === "basic") {
+          lastPositionRef.current = { lat, lng };
+          setTrackedPoints([newPosition]);
+          setStartTime(new Date());
+        }
+
+        setIsTracking(true);
+
+        const id = navigator.geolocation.watchPosition(
+          (pos) => {
+            const newLat = pos.coords.latitude;
+            const newLng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy;
+            const currentPosition = new window.kakao.maps.LatLng(
               newLat,
               newLng
             );
-            if (distance < 2) return;
-            if (distance > 100) return;
-            setTotalDistance((prevDist) => prevDist + distance);
+
+            if (accuracy > 50) return;
+
+            if (markerRef.current) {
+              // setPosition 대신 animateMarker 사용
+              animateMarker(markerRef.current, newLat, newLng, 1000);
+            }
+
+            if (options.mode === "course" && !isFollowingActiveRef.current) {
+              const distanceToStart = calculateDistance(
+                newLat,
+                newLng,
+                options.targetStartPoint!.lat,
+                options.targetStartPoint!.lng
+              );
+
+              if (distanceToStart <= 10) {
+                setAndRefIsFollowingActive(true);
+                setStartTime(new Date());
+                setTotalDistance(0);
+                setElapsedTime(0);
+                lastPositionRef.current = { lat: newLat, lng: newLng };
+                setTrackedPoints([currentPosition]);
+              }
+              return;
+            }
+
+            if (isFollowingActiveRef.current) {
+              if (lastPositionRef.current) {
+                const distance = calculateDistance(
+                  lastPositionRef.current.lat,
+                  lastPositionRef.current.lng,
+                  newLat,
+                  newLng
+                );
+
+                if (distance < 2) return;
+                if (distance > 100) return;
+
+                setTotalDistance((prevDist) => prevDist + distance);
+              }
+              lastPositionRef.current = { lat: newLat, lng: newLng };
+              setTrackedPoints((prev) => [...prev, currentPosition]);
+            }
+          },
+          () => {
+            alert("위치 정보를 사용할 수 없습니다.");
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 2000,
           }
-          lastPositionRef.current = { lat: newLat, lng: newLng };
-          setTrackedPoints((prev) => [
-            ...prev,
-            new window.kakao.maps.LatLng(newLat, newLng),
-          ]);
-          if (markerRef.current) {
-            markerRef.current.setPosition(
-              new window.kakao.maps.LatLng(newLat, newLng)
-            );
-          }
-        },
-        () => {
-          alert("위치 정보를 사용할 수 없습니다.");
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 2000,
-        }
-      );
-      setWatchId(id);
-    });
+        );
+        setWatchId(id);
+      },
+      (error) => {
+        console.error("초기 위치를 가져올 수 없습니다:", error);
+        alert("초기 위치를 가져올 수 없습니다.");
+      }
+    );
   };
 
-  // 트래킹 중지
   const stopTracking = () => {
     setIsTracking(false);
     if (watchId) {
@@ -100,7 +152,6 @@ export default function useGpsTracking(
     }
   };
 
-  // 언마운트 시 정리
   useEffect(() => {
     return () => {
       if (watchId) {
@@ -116,5 +167,6 @@ export default function useGpsTracking(
     startTracking,
     stopTracking,
     trackedPoints,
+    isFollowingActive,
   };
 }

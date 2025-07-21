@@ -28,6 +28,21 @@
   align-items: center;
 }
 
+.info_box {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 10px 20px;
+  z-index: 10;
+  font-size: 14px;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+}
+
 .state_wrapper {
   position: absolute;
   bottom: 0;

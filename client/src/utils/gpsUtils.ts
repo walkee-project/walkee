@@ -31,47 +31,52 @@ export function animateMarker(
   marker: kakao.maps.Marker,
   newLat: number,
   newLng: number,
-  duration: number = 1000,
-  markerAnimationRef?: { current: number | null },
-  calculateDistanceFn: typeof calculateDistance = calculateDistance
-): void {
-  if (markerAnimationRef && markerAnimationRef.current) {
-    cancelAnimationFrame(markerAnimationRef.current);
-  }
+  duration: number,
+  animationRef?: React.MutableRefObject<number | null>
+) {
   const startPosition = marker.getPosition();
-  const startLat = startPosition.getLat();
-  const startLng = startPosition.getLng();
-  const distance = calculateDistanceFn(startLat, startLng, newLat, newLng);
-  if (distance < 1) {
-    marker.setPosition(new kakao.maps.LatLng(newLat, newLng));
-    return;
-  }
-  const startTime = Date.now();
-  const animate = () => {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    let easeProgress = progress;
-    if (progress < 0.5) {
-      easeProgress = 4 * progress * progress * progress;
+  const endPosition = new window.kakao.maps.LatLng(newLat, newLng);
+  const startTime = new Date().getTime();
+
+  const step = () => {
+    const t = Math.min(1, (new Date().getTime() - startTime) / duration);
+    const easeProgress =
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const currentLat =
+      startPosition.getLat() +
+      (endPosition.getLat() - startPosition.getLat()) * easeProgress;
+    const currentLng =
+      startPosition.getLng() +
+      (endPosition.getLng() - startPosition.getLng()) * easeProgress;
+
+    marker.setPosition(new window.kakao.maps.LatLng(currentLat, currentLng));
+
+    if (t < 1) {
+      if (animationRef) {
+        animationRef.current = requestAnimationFrame(step);
+      } else {
+        requestAnimationFrame(step);
+      }
     } else {
-      easeProgress = 1 - Math.pow(-2 * progress + 2, 3) / 2;
-    }
-    const currentLat = startLat + (newLat - startLat) * easeProgress;
-    const currentLng = startLng + (newLng - startLng) * easeProgress;
-    marker.setPosition(new kakao.maps.LatLng(currentLat, currentLng));
-    if (progress < 1) {
-      if (markerAnimationRef)
-        markerAnimationRef.current = requestAnimationFrame(animate);
-    } else {
-      if (markerAnimationRef) markerAnimationRef.current = null;
+      if (animationRef) {
+        animationRef.current = null;
+      }
     }
   };
-  if (markerAnimationRef)
-    markerAnimationRef.current = requestAnimationFrame(animate);
-  else requestAnimationFrame(animate);
+
+  if (animationRef && animationRef.current) {
+    cancelAnimationFrame(animationRef.current);
+  }
+
+  if (animationRef) {
+    animationRef.current = requestAnimationFrame(step);
+  } else {
+    requestAnimationFrame(step);
+  }
 }
 
-// 지도 중심 애니메이션
+// 지도 중심점 부드럽게 이동
 export function animateMapCenter(
   mapInstance: kakao.maps.Map,
   newLat: number,
