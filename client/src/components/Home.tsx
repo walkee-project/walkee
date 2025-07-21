@@ -6,17 +6,9 @@ import DrawingSectionComponent from "./home/DrawingSectionComponent";
 import Header from "./Header";
 import bell from "../assets/bell_icon.svg";
 import { useAppSelector } from "../store/hooks";
-import { useMemo } from "react";
 
 const Home = () => {
-  const allRoute = useAppSelector((state) => state.user.allRoute);
-  const recommendRoute = useMemo(
-    () =>
-      allRoute && allRoute.length > 0
-        ? allRoute[Math.floor(Math.random() * allRoute.length)]
-        : null,
-    [allRoute]
-  );
+  const recommendRoute = useAppSelector((state) => state.user.recommendRoute);
 
   const user = useAppSelector((state) => state.user.user);
 

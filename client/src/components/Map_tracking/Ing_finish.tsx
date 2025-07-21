@@ -1,7 +1,11 @@
 import "../css/Ing_finish.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, type ChangeEvent } from "react";
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import {
+  fetchUserSummaryThunk,
+  fetchAllRouteThunk,
+} from "../../store/userSlice";
 import { encodePolyline } from "../../utils/encodePolyline";
 import { captureStaticMapThumbnail } from "../../utils/captureStaticMapThumbnail";
 
@@ -21,6 +25,7 @@ export default function Ing_finish({
   tab,
 }: IngFinishProps) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [Title, setTitle] = useState("");
   const { user } = useAppSelector((state) => state.user);
   const [routeThumbnailUrl, setRouteThumbnailUrl] = useState<string>("");
@@ -141,6 +146,12 @@ export default function Ing_finish({
             : `서버 오류 (${response.status})`;
         throw new Error(errorMessage);
       }
+
+      // 저장 성공 후 store 갱신
+      if (user?.userIdx) {
+        dispatch(fetchUserSummaryThunk(user.userIdx));
+      }
+      dispatch(fetchAllRouteThunk());
 
       alert("경로가 성공적으로 저장되었습니다!");
       navigate("/map");

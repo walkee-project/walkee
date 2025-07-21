@@ -33,6 +33,7 @@ interface UserState {
   error: string | null;
   summary: UserSummary | null; // summary 추가
   allRoute: routeSummary["allRoute"]; // 전체 경로 리스트 타입 지정
+  recommendRoute: RouteItem | null; // 추천 경로 추가
 }
 
 const initialState: UserState = {
@@ -41,6 +42,7 @@ const initialState: UserState = {
   error: null,
   summary: null, // summary 초기값
   allRoute: [], // 초기값
+  recommendRoute: null, // 추천 경로 초기값
 };
 
 // 비동기 액션: 사용자 정보 가져오기
@@ -188,6 +190,15 @@ const userSlice = createSlice({
       })
       .addCase(fetchAllRouteThunk.fulfilled, (state, action) => {
         state.allRoute = action.payload;
+        // recommendRoute가 null일 때만 한 번만 계산
+        if (
+          state.recommendRoute === null &&
+          action.payload &&
+          action.payload.length > 0
+        ) {
+          state.recommendRoute =
+            action.payload[Math.floor(Math.random() * action.payload.length)];
+        }
       })
       .addCase(fetchAllRouteThunk.rejected, (state) => {
         state.allRoute = [];

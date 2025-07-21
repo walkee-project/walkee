@@ -22,6 +22,9 @@ export class PostEntity {
   @Column({ name: 'post_uploadImg' })
   postUploadImg?: string;
 
+  @Column({ name: 'post_count' })
+  postCount: number;
+
   @CreateDateColumn({ name: 'post_created_at' })
   postCreatedAt: Date;
 

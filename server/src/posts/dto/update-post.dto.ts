@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsDate, IsNumber } from 'class-validator';
 
 export class UpdatePostDto {
   @IsOptional()
@@ -16,4 +16,8 @@ export class UpdatePostDto {
   @IsOptional()
   @IsDate()
   postDeletedAt?: Date;
+
+  @IsOptional()
+  @IsNumber()
+  postCount?: string;
 }
