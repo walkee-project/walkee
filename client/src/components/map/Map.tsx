@@ -14,7 +14,13 @@ import type { RouteItem } from "../types/courseList_type";
 //   }
 // }
 
-function Map({ routeId, recommendRoute }: { routeId: number; recommendRoute: RouteItem | null }) {
+function Map({
+  routeId,
+  recommendRoute,
+}: {
+  routeId: number;
+  recommendRoute: RouteItem | null;
+}) {
   const location = useLocation();
   const state = location.state as {
     tab?: "basic" | "course";
@@ -27,13 +33,18 @@ function Map({ routeId, recommendRoute }: { routeId: number; recommendRoute: Rou
   // 전역 상태에서 summary 가져오기
   const summary = useAppSelector((state) => state.user.summary);
   const routeList = summary?.userRouteLike || [];
+  const userRouteList = summary?.userRoute || [];
 
   return (
     <div className="map_container">
       <div className="tab_container">
-        <div className="tab_item" onClick={() => setActiveTab("basic")}>일반 달리기</div>
+        <div className="tab_item" onClick={() => setActiveTab("basic")}>
+          일반 달리기
+        </div>
         <div className="tab_divider" />
-        <div className="tab_item" onClick={() => setActiveTab("course")}>경로 따라 달리기</div>
+        <div className="tab_item" onClick={() => setActiveTab("course")}>
+          경로 따라 달리기
+        </div>
         <div
           className="tab_border"
           style={{ left: activeTab === "basic" ? "15%" : "65%" }}
@@ -45,6 +56,7 @@ function Map({ routeId, recommendRoute }: { routeId: number; recommendRoute: Rou
           <Map_course
             isActive={activeTab === "course"}
             routeList={routeList}
+            userRouteList={userRouteList}
             recommendRoute={recommendRoute}
           />
         )}

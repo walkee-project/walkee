@@ -11,10 +11,12 @@ export default function Map_course({
   isActive,
   routeList = [], // 찜한 경로 리스트를 props로 받음
   recommendRoute,
+  userRouteList = [], // 전체 경로 리스트를 props로 받음
 }: {
   isActive: boolean;
   routeList?: RouteItem[];
   recommendRoute: RouteItem | null;
+  userRouteList?: RouteItem[];
 }) {
   console.log(routeList);
   const location = useLocation();
@@ -24,6 +26,7 @@ export default function Map_course({
   const [selectedBtn, setSelectedBtn] = useState<
     "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | null
   >(null);
+  console.log(userRouteList);
   const [selectedRoute, setSelectedRoute] = useState<RouteItem | null>(null);
 
   // useEffect로 setRecommendRoute 등은 모두 삭제
@@ -33,7 +36,11 @@ export default function Map_course({
       navigate("/community");
     } else {
       navigate("/courseList", {
-        state: { sectionType: "wishlist", userRouteLike: routeList, from: "map" }
+        state: {
+          sectionType: "wishlist",
+          userRouteLike: routeList,
+          from: "map",
+        },
       });
     }
   };
@@ -90,7 +97,10 @@ export default function Map_course({
             <RecommendCourseComponent route={recommendRoute} />
             <div
               className="recommend_btn btn btn_two"
-              onClick={() => recommendRoute && handleShowOverlay(recommendRoute, "오늘의 추천 경로")}
+              onClick={() =>
+                recommendRoute &&
+                handleShowOverlay(recommendRoute, "오늘의 추천 경로")
+              }
             >
               경로보기
             </div>
@@ -105,17 +115,15 @@ export default function Map_course({
                 <p>지금 바로 저장해보세요!</p>
               </div>
             ) : (
-              <RouteCard
-                key={routeList[0].routeIdx}
-                route={routeList[0]}
-              />
+              <RouteCard key={routeList[0].routeIdx} route={routeList[0]} />
             )}
 
             <div className="like_btns">
               <div
                 className="btn btn_two"
                 onClick={() =>
-                  routeList.length > 0 && handleShowOverlay(routeList[0], "최근 경로 달리기")
+                  userRouteList.length > 0 &&
+                  handleShowOverlay(userRouteList[0], "최근 경로 달리기")
                 }
               >
                 최근 경로 달리기
