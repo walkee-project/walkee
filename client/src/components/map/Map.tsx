@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import "../css/Map.css";
 import Map_basic from "./Map_basic";
 import Map_course from "./Map_course";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks";
-import type { RouteItem } from "../types/courseList_type";
 
 // // window 객체에 카카오맵 타입 확장
 // declare global {
@@ -14,13 +13,7 @@ import type { RouteItem } from "../types/courseList_type";
 //   }
 // }
 
-function Map({
-  routeId,
-  recommendRoute,
-}: {
-  routeId: number;
-  recommendRoute: RouteItem | null;
-}) {
+function Map() {
   const location = useLocation();
   const state = location.state as {
     tab?: "basic" | "course";
@@ -34,6 +27,14 @@ function Map({
   const summary = useAppSelector((state) => state.user.summary);
   const routeList = summary?.userRouteLike || [];
   const userRouteList = summary?.userRoute || [];
+  const allRoute = useAppSelector((state) => state.user.allRoute);
+  const recommendRoute = useMemo(
+    () =>
+      allRoute && allRoute.length > 0
+        ? allRoute[Math.floor(Math.random() * allRoute.length)]
+        : null,
+    [allRoute]
+  );
 
   return (
     <div className="map_container">

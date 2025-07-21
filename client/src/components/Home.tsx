@@ -6,9 +6,18 @@ import DrawingSectionComponent from "./home/DrawingSectionComponent";
 import Header from "./Header";
 import bell from "../assets/bell_icon.svg";
 import { useAppSelector } from "../store/hooks";
-import type { RouteItem } from "./types/courseList_type";
+import { useMemo } from "react";
 
-function Home({ recommendRoute }: { recommendRoute: RouteItem | null }) {
+const Home = () => {
+  const allRoute = useAppSelector((state) => state.user.allRoute);
+  const recommendRoute = useMemo(
+    () =>
+      allRoute && allRoute.length > 0
+        ? allRoute[Math.floor(Math.random() * allRoute.length)]
+        : null,
+    [allRoute]
+  );
+
   const user = useAppSelector((state) => state.user.user);
 
   if (!user) {
@@ -45,6 +54,6 @@ function Home({ recommendRoute }: { recommendRoute: RouteItem | null }) {
       </div>
     </div>
   );
-}
+};
 
 export default Home;

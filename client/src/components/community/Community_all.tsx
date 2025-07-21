@@ -6,7 +6,7 @@ import profileImg from "../../assets/profile.png";
 import sampleMap from "../../assets/map_ex4.png";
 import arrow_back from "../../assets/arrow_back.png";
 
-type Post = {
+export type Post = {
   id: number;
   username: string;
   profile: string;

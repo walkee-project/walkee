@@ -1,14 +1,12 @@
 import "../css/Mypage_main.css";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import { fetchUser } from "../../store/userSlice";
+import { useAppSelector } from "../../store/hooks";
 import type { mypage_props } from "../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
 
 export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
   const summary = useAppSelector((state) => state.user.summary);
   const loading = useAppSelector((state) => state.user.loading);
@@ -63,8 +61,9 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
         </div>
         <div className="counts">
           <p>
-            총 {Array.isArray(summary?.userRoute) ? summary.userRoute.length : 0}
-            개 경로 |
+            총{" "}
+            {Array.isArray(summary?.userRoute) ? summary.userRoute.length : 0}개
+            경로 |
           </p>
           <p>
             찜{" "}
@@ -85,7 +84,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
           className="menu_item"
           onClick={() =>
             navigate("/courseList", {
-              state: { sectionType: "mycourse", userRoute: summary?.userRoute },
+              state: { sectionType: "mycourse" },
             })
           }
         >
@@ -96,21 +95,18 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
           className="menu_item"
           onClick={() =>
             navigate("/courseList", {
-              state: { sectionType: "wishlist", userRouteLike: summary?.userRouteLike },
+              state: { sectionType: "wishlist" },
             })
           }
         >
           <p>찜한 경로</p>
           <img src={arrow} alt="화살표" />
         </div>
-        <div
-          className="menu_item"
-          onClick={() => onChangeSection("posts")}
-        >
+        <div className="menu_item" onClick={() => onChangeSection("posts")}>
           <p>게시글</p>
           <img src={arrow} alt="화살표" />
         </div>
-        <div className="menu_item" onClick={() => onChangeSection("purchase")}> 
+        <div className="menu_item" onClick={() => onChangeSection("purchase")}>
           <p>구매목록</p>
           <img src={arrow} alt="화살표" />
         </div>
@@ -119,8 +115,12 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
       <div className="bottom_links">
         <span className="terms">이용약관 및 보안</span>
         <div className="btn_user">
-          <span className="logout" onClick={() => navigate("/")}>로그아웃</span>
-          <span className="userout" onClick={() => navigate("/")}>회원탈퇴</span>
+          <span className="logout" onClick={() => navigate("/")}>
+            로그아웃
+          </span>
+          <span className="userout" onClick={() => navigate("/")}>
+            회원탈퇴
+          </span>
         </div>
       </div>
     </div>

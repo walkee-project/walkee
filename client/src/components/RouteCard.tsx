@@ -1,43 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { useAppSelector } from "../store/hooks";
-import { api } from "../utils/api";
-import "./css/RouteCard.css";
+import React from "react";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { addRouteLikeThunk, removeRouteLikeThunk } from "../store/userSlice";
 import type { RouteItem } from "./types/courseList_type";
 import heart from "../assets/heart.png";
+import "./css/RouteCard.css";
 
 interface Props {
   route: RouteItem;
 }
 
 const RouteCard: React.FC<Props> = ({ route }) => {
-  console.log("RouteCard", route);
+  const dispatch = useAppDispatch();
   const userIdx = useAppSelector((state) => state.user.user?.userIdx);
-  const [liked, setLiked] = useState(false);
-
-  // DB 기준으로 찜 상태 동기화
-  useEffect(() => {
-    if (userIdx && route.routeIdx) {
-      fetch(
-        `/api/route-likes/is-liked?userIdx=${userIdx}&routeIdx=${route.routeIdx}`
-      )
-        .then((res) => res.json())
-        .then((data) => setLiked(data.isLiked))
-        .catch(() => setLiked(false));
-    }
-  }, [userIdx, route.routeIdx]);
+  const liked = useAppSelector(
+    (state) =>
+      state.user.summary?.userRouteLike?.some(
+        (item) => item.routeIdx === route.routeIdx
+      ) ?? false
+  );
 
   const toggleLike = async () => {
     if (!userIdx) return;
-    try {
-      if (!liked) {
-        await api.addRouteLike(userIdx, route.routeIdx);
-        setLiked(true);
-      } else {
-        await api.removeRouteLike(userIdx, route.routeIdx);
-        setLiked(false);
-      }
-    } catch (err) {
-      alert(err + "찜 처리 중 오류가 발생했습니다.");
+    if (!liked) {
+      dispatch(addRouteLikeThunk({ userIdx, routeIdx: route.routeIdx }));
+    } else {
+      dispatch(removeRouteLikeThunk({ userIdx, routeIdx: route.routeIdx }));
     }
   };
 
@@ -49,7 +36,6 @@ const RouteCard: React.FC<Props> = ({ route }) => {
   // 속도 계산: km / 시간
   let speed = "-";
   if (route.routeTotalKm && route.routeTotalTime) {
-    // route.routeTotalTime이 string 또는 number일 수 있으므로 string으로 변환
     const timeStr = String(route.routeTotalTime);
     const timeParts = timeStr.split(":").map(Number);
     let hours = 0;
@@ -62,6 +48,11 @@ const RouteCard: React.FC<Props> = ({ route }) => {
       speed = (route.routeTotalKm / hours).toFixed(2);
     }
   }
+
+  // 초를 분, 초로 변환
+  const totalSeconds = Number(route.routeTotalTime) || 0;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
   return (
     <div className="route_card">
@@ -79,7 +70,9 @@ const RouteCard: React.FC<Props> = ({ route }) => {
           <div className="route_title">{route.routeTitle}</div>
         </div>
         <div className="route_details">
-          <p>{route.routeTotalTime}</p>
+          <p>
+            {minutes}분{seconds > 0 ? ` ${seconds}초` : ""}
+          </p>
           <div className="route_km">
             <p>{route.routeTotalKm} km</p>
             <p>|</p>

@@ -3,12 +3,14 @@ import type { ChangeEvent } from "react";
 import { useState, useRef } from "react";
 import type { mypage_props } from "../types/mypage_type";
 import profileImage from "../../assets/profile.png";
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { fetchUser, fetchUserSummaryThunk } from "../../store/userSlice";
 import arrow_back from "../../assets/arrow_back.png";
 import cameraIcon from "../../assets/cameraIcon.png";
 
 export default function Mypage_edit({ onChangeSection }: mypage_props) {
   const user = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
   const [nickname, setNickname] = useState(user ? user.userName : "푸른달걀");
   const [imagePreview, setImagePreview] = useState<string>(
     user?.userProfile || profileImage
@@ -76,6 +78,11 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
         credentials: "include",
       });
       if (!patchRes.ok) throw new Error("프로필 수정 실패");
+      // store 최신화
+      await dispatch(fetchUser());
+      if (user.userIdx) {
+        await dispatch(fetchUserSummaryThunk(user.userIdx));
+      }
       alert(`프로필이 변경되었습니다.`);
       onChangeSection("main");
     } catch (err) {

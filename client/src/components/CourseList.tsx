@@ -1,36 +1,26 @@
-import type {
-  course_section_type,
-  RouteItem,
-} from "./types/courseList_type.ts";
-import "./css/courseList.css";
-import arrow_back from "../assets/arrow_back.png";
+import { useAppSelector } from "../store/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import RouteCard from "./RouteCard.tsx";
+import RouteCard from "./RouteCard";
+import "./css/courseList.css";
+import arrow_back from "../assets/arrow_back.png";
 
-interface Props {
-  routeList?: RouteItem[];
-  sectionType?: course_section_type;
-}
-
-const CourseList: React.FC<Props> = (props) => {
+const CourseList: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const summary = useAppSelector((state) => state.user.summary);
 
-  // location.state에서 routeList/sectionType을 fallback으로 받음
-  const routeList: RouteItem[] =
-    props.routeList ??
-    location.state?.userRoute ??
-    location.state?.userRouteLike ??
-    [];
-  const sectionType: course_section_type =
-    props.sectionType ?? location.state?.sectionType ?? "mycourse";
+  // sectionType은 location.state에서만 fallback
+  const sectionType = location.state?.sectionType ?? "mycourse";
+  const routeList =
+    sectionType === "mycourse"
+      ? summary?.userRoute ?? []
+      : summary?.userRouteLike ?? [];
 
   const title = sectionType === "mycourse" ? "내 경로" : "찜한 경로";
 
   const handleBack = () => {
     const from = location.state?.from;
-
     if (from === "map") {
       navigate("/map", {
         state: {

@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { api, fetchUserSummary, fetchAllRoutes } from "../utils/api";
+import type { RouteItem } from "../components/types/courseList_type";
+import type { Post } from "../components/community/Community_all";
 
 interface UserInfo {
   userIdx: number;
@@ -15,14 +17,14 @@ interface UserInfo {
 
 // UserSummary 타입 추가
 interface UserSummary {
-  userRoute: any[];
-  userRouteLikeRaw?: any[];
-  userRouteLike: any[];
-  userPost: any[];
+  userRoute: RouteItem[];
+  userRouteLikeRaw?: RouteItem[];
+  userRouteLike: RouteItem[];
+  userPost: Post[];
 }
 
 interface routeSummary {
-  allRoute: any[];
+  allRoute: RouteItem[];
 }
 
 interface UserState {
@@ -64,7 +66,9 @@ export const fetchUserSummaryThunk = createAsyncThunk(
       const data = await fetchUserSummary(userIdx);
       return data;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
     }
   }
 );
@@ -92,7 +96,44 @@ export const fetchAllRouteThunk = createAsyncThunk(
       const data = await fetchAllRoutes();
       return data;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+// 찜 추가/삭제 thunk
+export const addRouteLikeThunk = createAsyncThunk(
+  "user/addRouteLike",
+  async (
+    { userIdx, routeIdx }: { userIdx: number; routeIdx: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      await api.addRouteLike(userIdx, routeIdx);
+      return routeIdx;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+export const removeRouteLikeThunk = createAsyncThunk(
+  "user/removeRouteLike",
+  async (
+    { userIdx, routeIdx }: { userIdx: number; routeIdx: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      await api.removeRouteLike(userIdx, routeIdx);
+      return routeIdx;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
     }
   }
 );
@@ -132,23 +173,23 @@ const userSlice = createSlice({
         state.error = action.payload as string;
       })
       // fetchUserSummaryThunk 액션 처리
-      .addCase(fetchUserSummaryThunk.pending, (state) => {
+      .addCase(fetchUserSummaryThunk.pending, () => {
         // summary 로딩 상태를 따로 두고 싶으면 추가 가능
       })
       .addCase(fetchUserSummaryThunk.fulfilled, (state, action) => {
         state.summary = action.payload;
       })
-      .addCase(fetchUserSummaryThunk.rejected, (state, action) => {
+      .addCase(fetchUserSummaryThunk.rejected, (state) => {
         state.summary = null;
       })
       // fetchAllRouteThunk 액션 처리
-      .addCase(fetchAllRouteThunk.pending, (state) => {
+      .addCase(fetchAllRouteThunk.pending, () => {
         // allRoute 로딩 상태를 따로 두고 싶으면 추가 가능
       })
       .addCase(fetchAllRouteThunk.fulfilled, (state, action) => {
         state.allRoute = action.payload;
       })
-      .addCase(fetchAllRouteThunk.rejected, (state, action) => {
+      .addCase(fetchAllRouteThunk.rejected, (state) => {
         state.allRoute = [];
       })
       // logoutUser 액션 처리
@@ -164,6 +205,28 @@ const userSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // 찜 추가/삭제 처리
+      .addCase(addRouteLikeThunk.fulfilled, (state, action) => {
+        if (state.summary && state.summary.userRouteLike) {
+          // 이미 있으면 중복 추가 방지
+          if (
+            !state.summary.userRouteLike.some(
+              (item: RouteItem) => item.routeIdx === action.payload
+            )
+          ) {
+            state.summary.userRouteLike.push({
+              routeIdx: action.payload,
+            } as RouteItem);
+          }
+        }
+      })
+      .addCase(removeRouteLikeThunk.fulfilled, (state, action) => {
+        if (state.summary && state.summary.userRouteLike) {
+          state.summary.userRouteLike = state.summary.userRouteLike.filter(
+            (item: RouteItem) => item.routeIdx !== action.payload
+          );
+        }
       });
   },
 });

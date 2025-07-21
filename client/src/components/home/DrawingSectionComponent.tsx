@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import homeMap_ex3 from "../../assets/homeMap_ex3.png";
 import MapComponent from "../map/MapComponent";
 import { useAppSelector } from "../../store/hooks";
 
@@ -13,7 +12,9 @@ function DrawingSectionComponent() {
   };
 
   const handleMyCourse = () => {
-    navigate("/courseList", { state: { sectionType: "mycourse", userRoute: summary?.userRoute } });
+    navigate("/courseList", {
+      state: { sectionType: "mycourse", userRoute: summary?.userRoute },
+    });
   };
 
   return (
@@ -34,7 +35,9 @@ function DrawingSectionComponent() {
 
       <div className="drawing_card">
         <div className="drawing_img">
-          {summary?.userRoute && summary.userRoute.length > 0 && summary.userRoute[0].routeThumbnail ? (
+          {summary?.userRoute &&
+          summary.userRoute.length > 0 &&
+          summary.userRoute[0].routeThumbnail ? (
             <img
               src={`api/public${summary.userRoute[0].routeThumbnail}`}
               alt="내그림보기"
