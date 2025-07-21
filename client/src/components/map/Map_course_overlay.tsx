@@ -2,6 +2,8 @@ import "../css/Map_course_overlay.css";
 import arrow_back from "../../assets/arrow_back.png";
 import type { RouteItem } from "../types/courseList_type";
 import { useNavigate } from "react-router-dom";
+import MapOverlayView from "./MapOverlayView";
+import { decodePolyline } from "../../utils/decodePolyline";
 
 export default function Map_course_overlay({
   route,
@@ -17,7 +19,6 @@ export default function Map_course_overlay({
   const navigate = useNavigate();
 
   const handleBack = () => {
-    console.log(from);
     if (from === "courseList") {
       navigate(-1);
     } else {
@@ -25,10 +26,17 @@ export default function Map_course_overlay({
     }
   };
 
+  // polyline 디코딩
+  const path = decodePolyline(route.routePolyline);
+
   return (
     <div className="overlay_section">
       <div className="overlay_map">
-        <img src={`api/public${route.routeThumbnail}`} alt={route.routeTitle} />
+        <MapOverlayView
+          path={path}
+          start={{ lat: route.routeStartLat, lng: route.routeStartLng }}
+          end={{ lat: route.routeEndLat, lng: route.routeEndLng }}
+        />
       </div>
       <div className="overlay_wrapper">
         <div className="arrow_back" onClick={handleBack}>

@@ -12,4 +12,10 @@ export interface RouteItem {
   userIdx: number;
   isLiked?: boolean;
   userName?: string;
+  // 아래 필드 추가
+  routePolyline: string;
+  routeStartLat: number;
+  routeStartLng: number;
+  routeEndLat: number;
+  routeEndLng: number;
 }
