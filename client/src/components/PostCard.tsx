@@ -37,7 +37,7 @@ const PostCard: React.FC<Props> = ({ post }) => {
   const postDate = formatDate(input); // 👉 2025.07.18 PM 05:07
 
   return (
-    <div className="post-card">
+    <div className="postlist-card">
       <div className="post_imgDiv">
         <img src={post.postUploadImg} alt="thumbnail" className="post_img" />
       </div>
