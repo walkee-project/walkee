@@ -7,12 +7,23 @@ export default function Map_course_overlay({
   route,
   btnTitle,
   handleHideOverlay,
+  from,
 }: {
   route: RouteItem;
   btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기";
   handleHideOverlay: () => void;
+  from?: string;
 }) {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    console.log(from);
+    if (from === "courseList") {
+      navigate(-1);
+    } else {
+      handleHideOverlay();
+    }
+  };
 
   return (
     <div className="overlay_section">
@@ -20,7 +31,7 @@ export default function Map_course_overlay({
         <img src={`api/public${route.routeThumbnail}`} alt={route.routeTitle} />
       </div>
       <div className="overlay_wrapper">
-        <div className="arrow_back" onClick={handleHideOverlay}>
+        <div className="arrow_back" onClick={handleBack}>
           <img src={arrow_back} alt="뒤로가기" />
         </div>
         <div className="overlay_title">

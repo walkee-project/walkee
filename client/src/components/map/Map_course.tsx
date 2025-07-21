@@ -12,11 +12,13 @@ export default function Map_course({
   routeList = [], // 찜한 경로 리스트를 props로 받음
   recommendRoute,
   userRouteList = [], // 전체 경로 리스트를 props로 받음
+  from,
 }: {
   isActive: boolean;
   routeList?: RouteItem[];
   recommendRoute: RouteItem | null;
   userRouteList?: RouteItem[];
+  from?: string;
 }) {
   console.log(routeList);
   const location = useLocation();
@@ -27,6 +29,9 @@ export default function Map_course({
   >(null);
   console.log(userRouteList);
   const [selectedRoute, setSelectedRoute] = useState<RouteItem | null>(null);
+  const [selectedFrom, setSelectedFrom] = useState<string | undefined>(
+    undefined
+  );
 
   // useEffect로 setRecommendRoute 등은 모두 삭제
 
@@ -37,8 +42,7 @@ export default function Map_course({
       navigate("/courseList", {
         state: {
           sectionType: "wishlist",
-          userRouteLike: routeList,
-          from: "map",
+          from: "map", // 출처 명확히 추가
         },
       });
     }
@@ -48,14 +52,14 @@ export default function Map_course({
     route: RouteItem,
     btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기"
   ) => {
-    setSelectedBtn(btnTitle); //선택 btn 이름
-    setShowOverlay(true); // 오버레이 열기
-    setSelectedRoute(route); // 오버레이에 넘길 route 객체 저장
+    setSelectedBtn(btnTitle);
+    setShowOverlay(true);
+    setSelectedRoute(route);
+    setSelectedFrom(from); // 내부에서 띄울 때는 undefined
   };
 
   const handleHideOverlay = () => {
     setShowOverlay(false);
-    navigate(-1);
   };
 
   useEffect(() => {
@@ -65,7 +69,6 @@ export default function Map_course({
   const state = location.state as {
     route?: RouteItem | null;
     openOverlay?: boolean;
-    from?: string;
   } | null;
 
   const openOverlay = state?.openOverlay ?? false;
@@ -75,6 +78,7 @@ export default function Map_course({
       setShowOverlay(true);
       setSelectedRoute(state.route);
       setSelectedBtn("경로 따라 달리기");
+      setSelectedFrom(from);
       // 🚫 다시 뜨지 않도록 location.state 초기화
       navigate(location.pathname, { replace: true });
     }
@@ -87,6 +91,7 @@ export default function Map_course({
           route={selectedRoute}
           btnTitle={selectedBtn}
           handleHideOverlay={handleHideOverlay}
+          from={selectedFrom}
         />
       ) : (
         <>
