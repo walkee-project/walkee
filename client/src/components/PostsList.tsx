@@ -1,37 +1,18 @@
 import { useAppSelector } from "../store/hooks";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React from "react";
-import RouteCard from "./RouteCard";
-import "./css/courseList.css";
+import PostCard from "./PostCard";
+import "./css/postsList.css";
 import arrow_back from "../assets/arrow_back.png";
-import type { course_section_type } from "./types/courseList_type";
 
-const CourseList: React.FC = () => {
+const PostsList: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const summary = useAppSelector((state) => state.user.summary);
 
-  // sectionType은 location.state에서만 fallback
-  const sectionType = (location.state?.section ??
-    "mycourse") as course_section_type;
-  const routeList =
-    sectionType === "mycourse"
-      ? summary?.userRoute ?? []
-      : summary?.userRouteLike ?? [];
-
-  const title = sectionType === "mycourse" ? "내 경로" : "찜한 경로";
+  const postsList = summary?.userPost ?? [];
 
   const handleBack = () => {
-    const from = location.state?.from;
-    if (from === "map") {
-      navigate("/map", {
-        state: {
-          tab: "course",
-        },
-      });
-    } else {
-      navigate(-1);
-    }
+    navigate(-1);
   };
 
   return (
@@ -98,4 +79,4 @@ const CourseList: React.FC = () => {
   );
 };
 
-export default CourseList;
+export default PostsList;

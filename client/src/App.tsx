@@ -16,6 +16,7 @@ import Community from "./components/community/Community";
 import CourseList from "./components/CourseList";
 import Community_write from "./components/community/Community_write";
 import Community_detail from "./components/community/Community_detail";
+import PostsList from "./components/PostsList";
 
 import { useState } from "react";
 import { dummyData } from "./components/dummydate";
@@ -84,6 +85,7 @@ function AppContent() {
         <Route path="/map/ing" element={<Ing />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
         <Route path="/courseList" element={<CourseList />} />
+        <Route path="/posts" element={<PostsList />} />
       </Routes>
 
       {!isNavHidden && <Navigation onResetKey={handleResetKey} />}

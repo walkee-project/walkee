@@ -1,35 +1,80 @@
 import "../css/Map_course.css";
 import RecommendCourseComponent from "../home/RecommendCourseComponent";
 import RouteCard from "../RouteCard";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Map_course_overlay from "./Map_course_overlay";
-import { useLocation } from "react-router-dom";
-import type { RouteItem } from "../types/courseList_type";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import type { course_section_type, RouteItem } from "../types/courseList_type";
 
 export default function Map_course({
   isActive,
-  routeList = [], // 찜한 경로 리스트를 props로 받음
+  routeList = [],
   recommendRoute,
-  userRouteList = [], // 전체 경로 리스트를 props로 받음
+  userRouteList = [],
 }: {
   isActive: boolean;
   routeList?: RouteItem[];
   recommendRoute: RouteItem | null;
   userRouteList?: RouteItem[];
 }) {
-  console.log(routeList);
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [showOverlay, setShowOverlay] = useState(false);
   const [selectedBtn, setSelectedBtn] = useState<
     "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | null
   >(null);
-  console.log(userRouteList);
   const [selectedRoute, setSelectedRoute] = useState<RouteItem | null>(null);
 
-  // useEffect로 setRecommendRoute 등은 모두 삭제
+  const state = location.state as {
+    route?: RouteItem;
+    openOverlay?: boolean;
+    from?: string;
+    section?: course_section_type;
+  } | null;
 
+  const openOverlay = state?.openOverlay ?? false;
+  const fromState = state?.section === "wishlist" ? "wishlist" : "mycourse";
+
+  // 🔄 location.state를 바탕으로 오버레이 자동 오픈
+  useEffect(() => {
+    if (openOverlay && state?.route) {
+      setShowOverlay(true);
+      setSelectedRoute(state.route);
+      setSelectedBtn("경로 따라 달리기");
+
+      // 다시 열리지 않도록 state 제거
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
+  // 🔙 오버레이 닫기
+  const handleHideOverlay = () => {
+    console.log("아아");
+    setShowOverlay(false);
+    if (location.state !== undefined) {
+      navigate("/course", { state: { section: fromState } });
+    }
+  };
+
+  // 📌 오버레이 수동 오픈 (버튼 클릭)
+  const handleShowOverlay = (
+    route: RouteItem,
+    btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기"
+  ) => {
+    setSelectedBtn(btnTitle);
+    setShowOverlay(true);
+    setSelectedRoute(route);
+  };
+
+  // ⛔ 탭 비활성화 시 오버레이 닫기
+  useEffect(() => {
+    if (!isActive) {
+      setShowOverlay(false);
+    }
+  }, [isActive]);
+
+  // 🧭 찜한 경로 리스트 버튼
   const handlelikeBtn = () => {
     if (routeList.length <= 0) {
       navigate("/community");
@@ -43,42 +88,6 @@ export default function Map_course({
       });
     }
   };
-
-  const handleShowOverlay = (
-    route: RouteItem,
-    btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기"
-  ) => {
-    setSelectedBtn(btnTitle); //선택 btn 이름
-    setShowOverlay(true); // 오버레이 열기
-    setSelectedRoute(route); // 오버레이에 넘길 route 객체 저장
-  };
-
-  const handleHideOverlay = () => {
-    setShowOverlay(false);
-    navigate(-1);
-  };
-
-  useEffect(() => {
-    if (!isActive) setShowOverlay(false);
-  }, [isActive]);
-
-  const state = location.state as {
-    route?: RouteItem | null;
-    openOverlay?: boolean;
-    from?: string;
-  } | null;
-
-  const openOverlay = state?.openOverlay ?? false;
-
-  useEffect(() => {
-    if (openOverlay && state?.route) {
-      setShowOverlay(true);
-      setSelectedRoute(state.route);
-      setSelectedBtn("경로 따라 달리기");
-      // 🚫 다시 뜨지 않도록 location.state 초기화
-      navigate(location.pathname, { replace: true });
-    }
-  }, []);
 
   return (
     <div className="course_section">
@@ -102,6 +111,7 @@ export default function Map_course({
               경로보기
             </div>
           </div>
+
           <div className="like_course">
             <div className="like_label">
               <p>찜한 경로 달리기</p>
