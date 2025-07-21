@@ -22,7 +22,6 @@ export default function Map_course({
   const location = useLocation();
   const navigate = useNavigate();
   const [showOverlay, setShowOverlay] = useState(false);
-  const [selectedRouteId, setSelectedRouteId] = useState<number | null>(null);
   const [selectedBtn, setSelectedBtn] = useState<
     "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | null
   >(null);
@@ -49,7 +48,6 @@ export default function Map_course({
     route: RouteItem,
     btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기"
   ) => {
-    setSelectedRouteId(route.routeIdx); // 코스 번호 저장 (혹시 routeId 필요하면)
     setSelectedBtn(btnTitle); //선택 btn 이름
     setShowOverlay(true); // 오버레이 열기
     setSelectedRoute(route); // 오버레이에 넘길 route 객체 저장
@@ -76,7 +74,6 @@ export default function Map_course({
   useEffect(() => {
     if (openOverlay && routeIdFromState !== null) {
       setShowOverlay(true);
-      setSelectedRouteId(routeIdFromState);
       setSelectedBtn("경로 따라 달리기");
       // 🚫 다시 뜨지 않도록 location.state 초기화
       navigate(location.pathname, { replace: true });

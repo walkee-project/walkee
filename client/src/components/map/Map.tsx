@@ -15,7 +15,6 @@ import type { RouteItem } from "../types/courseList_type";
 // }
 
 function Map({
-  routeId,
   recommendRoute,
 }: {
   routeId: number;
