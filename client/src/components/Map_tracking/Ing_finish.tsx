@@ -10,6 +10,7 @@ interface IngFinishProps {
   elapsedTime: number;
   trackedPoints: kakao.maps.LatLng[];
   formatTime: (seconds: number) => string;
+  tab?: "basic" | "course";
 }
 
 export default function Ing_finish({
@@ -17,6 +18,7 @@ export default function Ing_finish({
   elapsedTime,
   trackedPoints,
   formatTime,
+  tab,
 }: IngFinishProps) {
   const navigate = useNavigate();
   const [Title, setTitle] = useState("");
@@ -216,22 +218,33 @@ export default function Ing_finish({
           />
         </div>
         <div className="finish_btns">
-          <div
-            className="btn btn_two finish_btn"
-            onClick={saveRoute}
-            style={{
-              opacity: saving ? 0.5 : 1,
-              pointerEvents: saving ? "none" : "auto",
-            }}
-          >
-            {saving ? "저장 중..." : "경로 저장하기"}
-          </div>
-          <div
-            className="btn btn_one finish_btn"
-            onClick={() => navigate("/map")}
-          >
-            러닝 기록만 저장
-          </div>
+          {tab === "basic" ? (
+            <>
+              <div
+                className="btn btn_two finish_btn"
+                onClick={saveRoute}
+                style={{
+                  opacity: saving ? 0.5 : 1,
+                  pointerEvents: saving ? "none" : "auto",
+                }}
+              >
+                {saving ? "저장 중..." : "경로 저장하기"}
+              </div>
+              <div
+                className="btn btn_one finish_btn"
+                onClick={() => navigate("/map")}
+              >
+                러닝 기록만 저장
+              </div>
+            </>
+          ) : (
+            <div
+              className="btn btn_one finish_btn"
+              onClick={() => navigate("/map")}
+            >
+              러닝 기록 저장
+            </div>
+          )}
         </div>
       </div>
     </div>

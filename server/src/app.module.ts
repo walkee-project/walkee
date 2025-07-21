@@ -18,6 +18,7 @@ import { CommentLikeEntity } from './comment_likes/entities/comment_like.entity'
 import { AuthModule } from './auth/auth.module';
 import { UploadController } from './uploads/upload.controller';
 import { RouteLikesModule } from './route_likes/route_likes.module';
+import { FollowsModule } from './follows/follows.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { RouteLikesModule } from './route_likes/route_likes.module';
     PostLikesModule,
     CommentLikesModule,
     RouteLikesModule,
+    FollowsModule,
   ],
   controllers: [
     AppController,

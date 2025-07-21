@@ -14,6 +14,11 @@ function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
     );
   }
 
+  // 초를 분, 초로 변환
+  const totalSeconds = Number(route.routeTotalTime) || 0;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
   return (
     <div
       className="recommend_section"
@@ -33,8 +38,10 @@ function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
         <img src={`api/public${route.routeThumbnail}`} alt="추천코스" />
         <div className="recommend_detail">
           <p>{route.routeTotalKm} km</p>
-          <p>{route.routeTotalTime}분</p>
-          <p>초급난이도</p>
+          <p>
+            {minutes}분{seconds > 0 ? ` ${seconds}초` : ""}
+          </p>
+          <p>{route.routeDifficulty}난이도</p>
         </div>
       </div>
     </div>

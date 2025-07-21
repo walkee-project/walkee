@@ -33,7 +33,7 @@ export default function Map_course_overlay({
         <div
           className="btn btn_two overlay_btn"
           onClick={() => {
-            navigate("/map/ing");
+            navigate("/map/ing", { state: { tab: "course" } });
           }}
         >
           시 작

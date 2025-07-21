@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../css/Ing.css";
 import MapComponent from "../map/MapComponent";
 import MapTools from "../map/MapTools";
 import Ing_finish from "./Ing_finish";
 import useGpsTracking from "../../utils/useGpsTracking";
 import { formatTime } from "../../utils/gpsUtils";
-import { createUserMarker } from '../../utils/createUserMarker';
+import { createUserMarker } from "../../utils/createUserMarker";
 
 export default function Ing() {
+  const location = useLocation();
+  const tab = location.state?.tab; // "basic" | "course"
   const [isPause, setIsPause] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
 
@@ -17,7 +20,6 @@ export default function Ing() {
 
   // 트래킹 데이터 관리
   const {
-    isTracking,
     totalDistance,
     elapsedTime,
     startTracking,
@@ -68,9 +70,6 @@ export default function Ing() {
     }
   }, [mapInstance, trackedPoints.length > 0]);
 
-  // isTracking 미사용 경고 방지 (실제 사용처가 없으므로 주석 처리)
-  // console.log(isTracking);
-
   const handlePause = () => {
     setIsPause(!isPause);
   };
@@ -109,6 +108,7 @@ export default function Ing() {
           elapsedTime={elapsedTime}
           trackedPoints={trackedPoints}
           formatTime={formatTime}
+          tab={tab}
         />
       ) : (
         <>
