@@ -63,17 +63,17 @@ export default function Map_course({
   }, [isActive]);
 
   const state = location.state as {
-    routeId?: number;
+    route?: RouteItem | null;
     openOverlay?: boolean;
     from?: string;
   } | null;
 
-  const routeIdFromState = state?.routeId ?? null;
   const openOverlay = state?.openOverlay ?? false;
 
   useEffect(() => {
-    if (openOverlay && routeIdFromState !== null) {
+    if (openOverlay && state?.route) {
       setShowOverlay(true);
+      setSelectedRoute(state.route);
       setSelectedBtn("경로 따라 달리기");
       // 🚫 다시 뜨지 않도록 location.state 초기화
       navigate(location.pathname, { replace: true });

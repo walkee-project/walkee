@@ -52,7 +52,7 @@ const CourseList: React.FC = () => {
                   navigate("/map", {
                     state: {
                       tab: "course",
-                      routeId: route.routeIdx,
+                      route: route,
                       openOverlay: true,
                       from: "courseList",
                       fromState: sectionType,
