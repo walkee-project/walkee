@@ -59,11 +59,11 @@ const PostCard: React.FC<Props> = ({ post }) => {
           </div>
           <p className="post_username">하기싫어</p>
           <div className="footer_info">
-            <div className="icon">
+            <div className="post_check">
               <span>👍</span>
               <span> {post.postCount}</span>
             </div>
-            <div className="icon">
+            <div className="post_check">
               <span>👍</span>
               <span> 89</span>
             </div>
