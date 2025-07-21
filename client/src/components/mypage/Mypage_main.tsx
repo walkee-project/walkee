@@ -4,6 +4,7 @@ import { useAppSelector } from "../../store/hooks";
 import type { mypage_props } from "../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
+import { api } from "../../utils/api";
 
 export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
@@ -26,6 +27,26 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
   if (!user) {
     return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
   }
+
+  const handleUserOut = async () => {
+    if (!window.confirm("정말로 회원탈퇴 하시겠습니까?")) return;
+    try {
+      await fetch(`/api/users/${user.userIdx}`, { method: "DELETE" });
+      // 로그아웃 처리 및 메인/로그인 페이지로 이동
+      navigate("/");
+    } catch (err) {
+      alert("회원탈퇴 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+      navigate("/"); // 로그아웃 후 메인/로그인 페이지로 이동
+    } catch (err) {
+      alert("로그아웃 처리 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div className="main">
@@ -115,10 +136,10 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
       <div className="bottom_links">
         <span className="terms">이용약관 및 보안</span>
         <div className="btn_user">
-          <span className="logout" onClick={() => navigate("/")}>
+          <span className="logout" onClick={handleLogout}>
             로그아웃
           </span>
-          <span className="userout" onClick={() => navigate("/user/logoutUser")}>
+          <span className="userout" onClick={handleUserOut}>
             회원탈퇴
           </span>
         </div>
