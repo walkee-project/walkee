@@ -1,0 +1,40 @@
+.postList {
+  width: 100%;
+  height: 100vh;
+  padding: 20px 0;
+  background-color: #f6f6f6;
+}
+
+.postList_section {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.post-header {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.no-course-message {
+  padding: 20px;
+  text-align: center;
+  color: black;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.no_btn {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 20px;
+}
