@@ -10,6 +10,7 @@ import First from "./components/First";
 import Home from "./components/Home";
 import Map from "./components/map/Map";
 import Ing from "./components/Map_tracking/Ing";
+import Store from "./components/Store";
 import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 import Community from "./components/community/Community";
@@ -82,6 +83,7 @@ function AppContent() {
 
         <Route path="/map" element={<Map />} />
         <Route path="/map/ing" element={<Ing />} />
+        <Route path="/store" element={<Store />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
         <Route path="/courseList" element={<CourseList />} />
       </Routes>

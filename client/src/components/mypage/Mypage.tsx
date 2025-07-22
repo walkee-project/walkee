@@ -2,6 +2,7 @@ import { useState } from "react";
 import Mypage_main from "./Mypage_main";
 import Mypage_edit from "./Mypage_edit";
 import Mypage_posts from "./Mypage_posts";
+import Mypage_purchase from "./Mypage_purchase";
 import type { mypage_section } from "../types/mypage_type";
 import Header from "../Header";
 import bell from "../../assets/bell_icon.svg";
@@ -32,6 +33,13 @@ function Mypage() {
       case "posts":
         return (
           <Mypage_posts
+            onChangeSection={handleChangeSection}
+            currentSection={currentSection}
+          />
+        );
+      case "purchase":
+        return (
+          <Mypage_purchase
             onChangeSection={handleChangeSection}
             currentSection={currentSection}
           />
