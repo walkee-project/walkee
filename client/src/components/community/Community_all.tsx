@@ -21,7 +21,7 @@ export type Post = {
 
 // 날짜 상대 포맷 함수 추가
 function formatRelativeDate(dateString: string) {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
   const now = new Date();
@@ -31,14 +31,16 @@ function formatRelativeDate(dateString: string) {
   const diffDay = Math.floor(diffHour / 24);
 
   if (diffDay >= 1) {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate()
+    )}`;
   } else if (diffHour >= 1) {
     return `${diffHour}시간전`;
   } else if (diffMin >= 1) {
     return `${diffMin}분전`;
   } else {
-    return '방금전';
+    return "방금전";
   }
 }
 
@@ -63,27 +65,27 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
   const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
     e.stopPropagation();
     if (!userIdx) {
-      alert('로그인이 필요합니다.');
+      alert("로그인이 필요합니다.");
       return;
     }
     const post = safePosts.find((p) => p.postIdx === postIdx);
     if (!post) return;
     try {
       if (!post.isLiked) {
-        await fetch('/api/post-likes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/post-likes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIdx, postIdx }),
         });
       } else {
         await fetch(`/api/post-likes/by-user-post/${userIdx}/${postIdx}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
     } catch (err) {
-      alert('좋아요 처리 중 오류가 발생했습니다.');
+      alert("좋아요 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -96,18 +98,39 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
         <h2 className="all-posts-title">전체 게시물</h2>
       </div>
       {safePosts.length === 0 ? (
-        <div className="no-posts-message">게시글이 없습니다. 글을 써보세요!</div>
+        <div className="no-posts-message">
+          게시글이 없습니다. 글을 써보세요!
+        </div>
       ) : (
         safePosts.map((post) => (
-          <div className="post-card" key={post.postIdx} onClick={() => handleCardClick(post.postIdx)} style={{ cursor: 'pointer' }}>
+          <div
+            className="post-card"
+            key={post.postIdx}
+            onClick={() => handleCardClick(post.postIdx)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="profile-header">
-              <img src={post.userProfile || ""} alt="profile" className="post-profile" />
-              <span className="username" style={{ fontWeight: 'bold' }}>{post.userName}</span>
-              <span className="post-date">{formatRelativeDate(post.postCreatedAt)}</span>
+              <img
+                src={post.userProfile || ""}
+                alt="profile"
+                className="post-profile"
+              />
+              <span className="username" style={{ fontWeight: "bold" }}>
+                {post.userName}
+              </span>
+              <span className="post-date">
+                {formatRelativeDate(post.postCreatedAt)}
+              </span>
             </div>
 
             {post.postUploadImg && (
-              <img src={`${import.meta.env.VITE_APP_API_URL}/api/public${post.postUploadImg}`} alt="map" className="map-image" />
+              <img
+                src={`${import.meta.env.VITE_APP_API_URL}/api/public${
+                  post.postUploadImg
+                }`}
+                alt="map"
+                className="map-image"
+              />
             )}
 
             <div className="post-actions">
