@@ -1,12 +1,9 @@
-body {
-  background-color: #f6f6f6;
-}
-
 .courseList {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 20px;
   background-color: #f6f6f6;
+  overflow-y: auto;
 }
 
 .courseList_section {
@@ -78,4 +75,3 @@ body {
 .course-tabs::after {
   display: none;
 }
-

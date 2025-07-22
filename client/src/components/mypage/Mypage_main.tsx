@@ -14,9 +14,9 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
   const error = useAppSelector((state) => state.user.error);
 
   // 로딩 중일 때 표시
-  if (loading) {
-    return <div className="main">로딩 중...</div>;
-  }
+  // if (loading) {
+  //   return <div className="main">로딩 중...</div>;
+  // }
 
   // 에러가 있을 때 표시
   if (error) {
