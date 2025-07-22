@@ -3,6 +3,8 @@ import React from "react";
 import type { postsItem } from "./types/postsList_type";
 import "./css/PostCard.css";
 import profile from "../assets/profile.png";
+import viewsIcon from "../assets/viewsIcon.png";
+import goodIcon from "../assets/goodIcon.png";
 
 interface Props {
   post: postsItem;
@@ -37,34 +39,32 @@ const PostCard: React.FC<Props> = ({ post }) => {
   const postDate = formatDate(input); // 👉 2025.07.18 PM 05:07
 
   return (
-    <div className="postlist-card">
-      <div className="post_imgDiv">
-        <img src={post.postUploadImg} alt="thumbnail" className="post_img" />
+    <div className="postList_card">
+      <div className="postcard_imgDiv">
+        <img src={profile} alt="thumbnail" className="postcard_img" />
       </div>
 
-      <div className="post-content">
-        <div className="info">
-          <p className="post_title">{post.postTitle}</p>
-          <p className="post_info">
-            위치 : 경북 경산시 | 거리 : 2.41km | 시간 : 20:11
-          </p>
+      <div className="postcard-container">
+        <div className="postcard-contentInfo">
+          <p className="postcard_title">{post.postTitle}</p>
+          <p className="postcard_content">{post.postContent}</p>
         </div>
-        <div className="date">{postDate}</div>
+        <div className="postcard_date">{postDate}</div>
       </div>
 
-      <div className="footer">
-        <div className="interactions">
-          <div className="profile_imgDiv">
-            <img src={profile} alt="user" className="profile" />
+      <div className="postcard-footer">
+        <div className="postcard-interactions">
+          <div className="postcard-profileDiv">
+            <img src={profile} alt="user" className="postcard-profile" />
           </div>
-          <p className="post_username">하기싫어</p>
-          <div className="footer_info">
-            <div className="post_check">
-              <span>👍</span>
+          <div className="postcard_username">하기싫어</div>
+          <div className="postcard-footerInfo">
+            <div className="postcard_check">
+              <img src={viewsIcon} alt="view 아이콘" />
               <span> {post.postCount}</span>
             </div>
-            <div className="post_check">
-              <span>👍</span>
+            <div className="postcard_check">
+              <img src={goodIcon} alt="good 아이콘" />
               <span> 89</span>
             </div>
           </div>
