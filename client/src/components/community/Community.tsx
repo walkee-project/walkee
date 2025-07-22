@@ -12,6 +12,11 @@ import flag from "../../assets/community_flag.svg";
 import plus from "../../assets/plus_icon.svg";
 import find from "../../assets/find_icon.svg";
 import bell from "../../assets/bell_icon.svg";
+<<<<<<< HEAD
+=======
+import exmple from "../../assets/ex2.jpg";
+import profile from "../../assets/profile.png"; // 프로필 이미지 더미
+>>>>>>> a1721bbfb4b18203b9aa65bd8036b98d4c13221f
 
 // 날짜 포맷 함수 추가
 function formatDate(dateString: string) {
@@ -179,7 +184,7 @@ const Community = () => {
                       >
                         <div className="profile-header">
                           <img
-                            src={post.userProfile || ""}
+                            src={post.userProfile || profile}
                             className="post-profile"
                           />
                           <span className="username">{post.userName}</span>
@@ -194,7 +199,7 @@ const Community = () => {
                           <img
                             src={`/api/public${post.postUploadImg}`}
                             alt="게시글 이미지"
-                            className="detail-image"
+                            className="main-detail-image"
                           />
                         )}
                         <div className="post-info">

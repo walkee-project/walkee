@@ -6,6 +6,7 @@ import type { KeyboardEvent } from "react";
 import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
 import arrow from "../../assets/arrow_top.png";
+import back from "../../assets/arrow_back.png";
 
 interface CommentType {
   userIdx: string;
@@ -183,7 +184,11 @@ const Community_detail = () => {
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
+          <img
+            src={back}
+            alt="뒤로가기"
+            style={{ width: "15px", height: "15px" }}
+          />
         </button>
       </header>
 
