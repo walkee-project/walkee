@@ -1,18 +1,27 @@
 /* 공통 컨테이너 */
+
+html,
+body {
+  height: auto;
+  overflow: auto;
+  scroll-behavior: auto;
+  overscroll-behavior: auto;
+}
 .community-container {
   padding: 20px;
   width: 100%;
   position: relative;
   background: #ffffff;
   overflow-y: auto; /* 내용이 많을 때 스크롤 */
-  padding-bottom: 30px; /* 네비게이션 높이만큼 패딩 */
+  scroll-behavior: smooth;
   box-sizing: border-box; /* 패딩을 높이에 포함 */
   max-width: 100vw; /* 모바일 화면 너비 대응 */
-  overflow-y: visible;
-  height: auto;
   -webkit-overflow-scrolling: touch; /* iOS 스크롤 성능 개선 */
-  height: auto;
+  height: calc(100vh - 60px); /* 네비게이션 바 높이만큼 빼기 */
   margin-top: 40px;
+  padding-bottom: 90px; /* 네비게이션 높이만큼 패딩 */
+  will-change: transform;
+  overscroll-behavior: contain;
 }
 
 .community-top-ui {
@@ -88,6 +97,7 @@
 /* 카드들 가로 배치 */
 .popular-cards {
   display: flex;
+  justify-content: center;
   flex-direction: row;
   gap: 12px;
   min-width: max-content; /* 카드 수에 따라 너비 생김 */
@@ -226,7 +236,7 @@
 /* 최근 게시물 영역 */
 .recent-section {
   margin-top: 30px;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 }
 .recent-section h3 {
   padding-left: 10px;

@@ -1,0 +1,21 @@
+.purchase {
+  position: relative;
+  text-align: center;
+  height: 100%;
+}
+
+.purchase_section {
+  height: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 0;
+}
+
+.purchase_header {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+  font-weight: 400;
+  font-size: 1.5rem;
+}

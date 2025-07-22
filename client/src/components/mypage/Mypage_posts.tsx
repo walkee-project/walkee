@@ -17,7 +17,8 @@ const Mypage_posts: React.FC<mypage_props> = ({ onChangeSection }) => {
     {
       postIdx: 1,
       userIdx: 1,
-      postContent: "아 살려줘 진심으로",
+      postContent:
+        "아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로",
       postTitle: "친구랑 같이 하트 그리기 성공 💖",
       postCreatedAt: "2025-07-18 17:07:37",
       postUploadImg: "../assets/map_ex4.png",
@@ -55,11 +56,9 @@ const Mypage_posts: React.FC<mypage_props> = ({ onChangeSection }) => {
               <div
                 key={post.postIdx}
                 onClick={() =>
-                  navigate("/map", {
+                  navigate("/community/detail", {
                     state: {
-                      tab: "course",
                       post: post,
-                      openOverlay: true,
                       from: "postList",
                     },
                   })

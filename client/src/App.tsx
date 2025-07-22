@@ -10,12 +10,14 @@ import First from "./components/First";
 import Home from "./components/Home";
 import Map from "./components/map/Map";
 import Ing from "./components/Map_tracking/Ing";
+import Store from "./components/Store";
 import Mypage from "./components/mypage/Mypage";
 import Navigation from "./components/Navigation";
 import Community from "./components/community/Community";
 import CourseList from "./components/CourseList";
 import Community_write from "./components/community/Community_write";
 import Community_detail from "./components/community/Community_detail";
+import Community_Rules from "./components/community/Community_rules";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -77,8 +79,11 @@ function AppContent() {
           path="/community/:id"
           element={<Community_detail key={resetKey.community} />}
         />
+        <Route path="/community/rules" element={<Community_Rules />} />
+
         <Route path="/map" element={<Map />} />
         <Route path="/map/ing" element={<Ing />} />
+        <Route path="/store" element={<Store />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
         <Route path="/courseList" element={<CourseList />} />
       </Routes>
