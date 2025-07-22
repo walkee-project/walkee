@@ -68,7 +68,7 @@ const Community_write = () => {
         }
       },
       (err) => {
-        alert("위치 정보를 가져올 수 없습니다.");
+        alert(err + "위치 정보를 가져올 수 없습니다.");
       }
     );
   };
@@ -121,7 +121,7 @@ const Community_write = () => {
       } else {
         alert("게시글 등록 실패");
       }
-    } catch (e) {
+    } catch {
       alert("오류가 발생했습니다.");
     } finally {
       setLoading(false);

@@ -38,7 +38,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect('http://192.168.72:5173/home');
+    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
   }
 
   @Get('kakao')

@@ -7,13 +7,11 @@ import "../css/Header.css";
 import Community_Find from "./Community_find";
 import Community_Stats from "./Community_stats";
 import CommunityAll from "./Community_all";
-import Community_Rules from "./Community_rules";
 import Header from "../../components/Header";
 import flag from "../../assets/community_flag.svg";
 import plus from "../../assets/plus_icon.svg";
 import find from "../../assets/find_icon.svg";
 import bell from "../../assets/bell_icon.svg";
-import exmple from "../../assets/ex2.jpg";
 
 // 날짜 포맷 함수 추가
 function formatDate(dateString: string) {
@@ -59,38 +57,12 @@ function formatRelativeDate(dateString: string) {
 const Community = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [currentSection, setCurrentSection] = useState("default");
-  // const posts = useAppSelector((state) => state.user.communityPosts);
-  const dummyPosts = [
-    {
-      postIdx: 1,
-      userName: "홍길동",
-      userProfile: "",
-      postTitle: "첫 번째 더미 게시글",
-      postContent: "이것은 더미 게시글 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: exmple,
-      postCount: 10,
-      likeCount: 5,
-      isLiked: false,
-    },
-    {
-      postIdx: 2,
-      userName: "김철수",
-      userProfile: "",
-      postTitle: "두 번째 더미 게시글",
-      postContent: "두 번째 더미 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 3,
-      likeCount: 2,
-      isLiked: true,
-    },
-  ];
-  const safePosts = dummyPosts;
-  // console.log(posts); // 더미데이터 사용 시 필요 없음
+  const posts = useAppSelector((state) => state.user.communityPosts);
+  const safePosts = Array.isArray(posts) ? posts : [];
+  console.log(posts);
+
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
 
@@ -104,14 +76,6 @@ const Community = () => {
     .slice(0, 3);
   // 최근 게시물
   const recentPosts = safePosts;
-
-  const handleLike = (postId: number) => {
-    setLikedPosts((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId]
-    );
-  };
 
   // 좋아요 토글 핸들러
   const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
@@ -136,7 +100,7 @@ const Community = () => {
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
-    } catch (err) {
+    } catch {
       alert("좋아요 처리 중 오류가 발생했습니다.");
     }
   };
@@ -215,7 +179,7 @@ const Community = () => {
                       >
                         <div className="profile-header">
                           <img
-                            src={post.userProfile || ""}
+                            src={post.userProfile}
                             className="post-profile"
                           />
                           <span className="username">{post.userName}</span>
@@ -228,9 +192,9 @@ const Community = () => {
                           //   className="map-image"
                           // />
                           <img
-                            src={post.postUploadImg}
+                            src={`/api/public${post.postUploadImg}`}
                             alt="게시글 이미지"
-                            className="detail-image"
+                            className="main-detail-image"
                           />
                         )}
                         <div className="post-info">
@@ -241,7 +205,7 @@ const Community = () => {
                             </span>
                             <Community_Stats
                               views={post.postCount}
-                              comments={0}
+                              comments={post.commentCount || 0}
                               likeCount={post.likeCount}
                               postId={post.postIdx}
                               isLiked={post.isLiked}
@@ -288,7 +252,7 @@ const Community = () => {
                         <h4 className="title">{post.postTitle}</h4>
                         <Community_Stats
                           views={post.postCount}
-                          comments={0}
+                          comments={post.commentCount || 0}
                           likeCount={post.likeCount}
                           postId={post.postIdx}
                           isLiked={post.isLiked}
@@ -305,7 +269,7 @@ const Community = () => {
                           //   className="recent-post-map"
                           // />
                           <img
-                            src={post.postUploadImg}
+                            src={`/api/public${post.postUploadImg}`}
                             alt="게시글 이미지"
                             className="detail-image"
                           />

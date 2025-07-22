@@ -10,6 +10,8 @@ import bell from "../../assets/bell_icon.svg";
 function Mypage() {
   const [currentSection, setCurrentSection] = useState<mypage_section>("main");
 
+  const hideHeaderSections: mypage_section[] = ["posts", "purchase"];
+
   const handleChangeSection = (section: mypage_section) => {
     setCurrentSection(section);
   };
@@ -49,17 +51,22 @@ function Mypage() {
     }
   };
   return (
-    <div className="mypage_container">
-      {" "}
-      <Header
-        title="마이워키"
-        rightIcons={[
-          {
-            icon: <img src={bell} alt="plus icon" />,
-            onClick: () => console.log("알림 클릭"),
-          },
-        ]}
-      />
+    <div
+      className={`mypage_container ${
+        hideHeaderSections.includes(currentSection) ? "no-header" : ""
+      }`}
+    >
+      {!hideHeaderSections.includes(currentSection) && (
+        <Header
+          title="마이워키"
+          rightIcons={[
+            {
+              icon: <img src={bell} alt="plus icon" />,
+              onClick: () => console.log("알림 클릭"),
+            },
+          ]}
+        />
+      )}
       {renderSection()}
     </div>
   );

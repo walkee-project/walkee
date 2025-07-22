@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import chart from "../../assets/chart-icon.svg";
 import comment from "../../assets/comment-icon.svg";
 import thumb from "../../assets/thumbs-up-regular.svg";
@@ -22,7 +21,6 @@ const Community_Stats = ({
   onLike,
   variant = "recent",
 }: Community_StatsProps) => {
-
   const handleLikeClick = (e: React.MouseEvent) => {
     onLike(e, postId);
   };

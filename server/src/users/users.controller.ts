@@ -107,9 +107,11 @@ export class UsersController {
 
   @Get('community-posts')
   async getCommunityPosts(@Query('userIdx') userIdx?: string) {
-    return this.usersService.getCommunityPosts(userIdx ? Number(userIdx) : undefined);
+    return this.usersService.getCommunityPosts(
+      userIdx ? Number(userIdx) : undefined,
+    );
   }
-  
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
@@ -140,8 +142,6 @@ export class UsersController {
       userFollows,
     };
   }
-
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

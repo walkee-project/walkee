@@ -25,6 +25,20 @@ export class CommentsController {
     return this.commentsService.findAll();
   }
 
+  @Get('by-post/:postIdx')
+  async findByPost(@Param('postIdx') postIdx: string) {
+    const comments = await this.commentsService.findByPost(Number(postIdx));
+    // userName, userProfile 등 user 정보도 함께 반환
+    return comments.map((c) => ({
+      commentIdx: c.commentIdx,
+      userIdx: c.userIdx,
+      userName: c.user?.userName || '',
+      userProfile: c.user?.userProfile || '',
+      commentContent: c.commentContent,
+      commentCreatedAt: c.commentCreatedAt,
+    }));
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.commentsService.findOne(+id);

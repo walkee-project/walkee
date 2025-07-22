@@ -132,27 +132,49 @@ export class UsersService {
 
       // 3. post_likes count group by postIdx
       const likeCountsRaw = await this.postRepository.manager.query(
-        `SELECT post_idx as postIdx, COUNT(*) as likeCount FROM post_likes WHERE post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0}) GROUP BY post_idx`
+        `SELECT post_idx as postIdx, COUNT(*) as likeCount FROM post_likes WHERE post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0}) GROUP BY post_idx`,
       );
-      const likeCountMap = new Map(likeCountsRaw.map((row: any) => [Number(row.postIdx), Number(row.likeCount)]));
+      const likeCountMap = new Map(
+        (Array.isArray(likeCountsRaw) ? likeCountsRaw : []).map((row) => {
+          const r = row as { postIdx: number; likeCount: number };
+          return [Number(r.postIdx), Number(r.likeCount)];
+        }),
+      );
 
-      // 4. user가 좋아요한 postIdx 목록
+      // 4. 댓글 수 집계
+      const commentCountsRaw = await this.postRepository.manager.query(
+        `SELECT post_idx as postIdx, COUNT(*) as commentCount FROM comments WHERE post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0}) AND comment_deleted_at IS NULL GROUP BY post_idx`,
+      );
+      const commentCountMap = new Map(
+        (Array.isArray(commentCountsRaw) ? commentCountsRaw : []).map((row) => {
+          const r = row as { postIdx: number; commentCount: number };
+          return [Number(r.postIdx), Number(r.commentCount)];
+        }),
+      );
+
+      // 5. user가 좋아요한 postIdx 목록
       let likedPostIdxSet = new Set();
       if (userIdx) {
         const likedRows = await this.postRepository.manager.query(
           `SELECT post_idx FROM post_likes WHERE user_idx = ? AND post_idx IN (${postIdxs.length ? postIdxs.join(',') : 0})`,
-          [userIdx]
+          [userIdx],
         );
-        likedPostIdxSet = new Set(likedRows.map((row: any) => Number(row.post_idx)));
+        likedPostIdxSet = new Set(
+          (Array.isArray(likedRows) ? likedRows : []).map((row) => {
+            const r = row as { post_idx: number };
+            return Number(r.post_idx);
+          }),
+        );
       }
 
-      // 5. posts에 user, likeCount, isLiked 포함해서 반환
+      // 6. posts에 user, likeCount, commentCount, isLiked 포함해서 반환
       return posts.map((p) => ({
         ...p,
         userIdx: Number(p.userIdx),
         userName: p.user?.userName || '',
         userProfile: p.user?.userProfile || '',
         likeCount: likeCountMap.get(p.postIdx) || 0,
+        commentCount: commentCountMap.get(p.postIdx) || 0,
         isLiked: userIdx ? likedPostIdxSet.has(p.postIdx) : false,
       }));
     } catch (e) {

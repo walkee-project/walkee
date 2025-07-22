@@ -3,7 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Entity('comments')
 export class CommentEntity {
@@ -12,6 +15,10 @@ export class CommentEntity {
 
   @Column({ name: 'user_idx' })
   userIdx: number;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'user_idx' })
+  user: UserEntity;
 
   @Column({ name: 'post_idx' })
   postIdx: number;
