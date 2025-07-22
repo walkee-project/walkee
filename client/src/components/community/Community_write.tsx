@@ -49,7 +49,9 @@ const Community_write = () => {
             `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`,
             {
               headers: {
-                Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_REST_API_KEY}`,
+                Authorization: `KakaoAK ${
+                  import.meta.env.VITE_KAKAO_REST_API_KEY
+                }`,
               },
             }
           );
@@ -140,7 +142,11 @@ const Community_write = () => {
           ✕
         </button>
         <span className="write-title">글쓰기</span>
-        <button className="write-submit" onClick={handleSubmit} disabled={loading}>
+        <button
+          className="write-submit"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
           {loading ? "등록 중..." : "완료"}
         </button>
       </header>
@@ -165,7 +171,16 @@ const Community_write = () => {
         />
         {imagePreview && (
           <div className="write-img-preview">
-            <img src={imagePreview} alt="미리보기" style={{ maxWidth: 200, maxHeight: 200, borderRadius: 8 }} />
+            <img
+              src={imagePreview}
+              alt="미리보기"
+              style={{
+                maxWidth: 200,
+                maxHeight: 200,
+                borderRadius: 8,
+                marginBottom: 20,
+              }}
+            />
           </div>
         )}
         <input

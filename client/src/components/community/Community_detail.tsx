@@ -6,18 +6,28 @@ import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
 
 const Community_detail = () => {
-  const { id } = useParams(); // 게시물 ID
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState<any>(null);
+  const [post, setPost] = useState<{
+    postIdx: number;
+    userName: string;
+    userProfile: string;
+    postTitle: string;
+    postContent: string;
+    postCreatedAt: string;
+    postUploadImg: string;
+    postCount: number;
+    likeCount: number;
+    isLiked: boolean;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
 
   // 날짜 상대 포맷 함수
   function formatRelativeDate(dateString: string) {
-    if (!dateString) return '';
+    if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
     const now = new Date();
@@ -26,75 +36,75 @@ const Community_detail = () => {
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
     if (diffDay >= 1) {
-      const pad = (n: number) => n.toString().padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+      )}`;
     } else if (diffHour >= 1) {
       return `${diffHour}시간전`;
     } else if (diffMin >= 1) {
       return `${diffMin}분전`;
     } else {
-      return '방금전';
+      return "방금전";
     }
   }
 
   // 좋아요 토글 핸들러
-  const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
+  const handleLikeToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!userIdx) {
-      alert('로그인이 필요합니다.');
+      alert("로그인이 필요합니다.");
       return;
     }
     if (!post) return;
     // 1. 프론트에서 즉시 반영 (optimistic update)
-    const prevPost = { ...post };
     const optimistic = !post.isLiked
       ? { ...post, likeCount: (post.likeCount || 0) + 1, isLiked: true }
-      : { ...post, likeCount: Math.max((post.likeCount || 1) - 1, 0), isLiked: false };
+      : {
+          ...post,
+          likeCount: Math.max((post.likeCount || 1) - 1, 0),
+          isLiked: false,
+        };
     setPost(optimistic);
-    try {
-      if (!post.isLiked) {
-        await fetch('/api/post-likes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userIdx, postIdx }),
-        });
-      } else {
-        await fetch(`/api/post-likes/by-user-post/${userIdx}/${postIdx}`, {
-          method: 'DELETE',
-        });
-      }
-    } catch (err) {
-      alert('좋아요 처리 중 오류가 발생했습니다.');
-      // 실패 시 롤백
-      setPost(prevPost);
-    }
+    // 더미데이터만 쓸 때는 fetch 생략
   };
+
+  // 더미데이터 배열
+  const dummyPosts = [
+    {
+      postIdx: 1,
+      userName: "홍길동",
+      userProfile: "",
+      postTitle: "첫 번째 더미 게시글",
+      postContent: "이것은 더미 게시글 내용입니다.",
+      postCreatedAt: new Date().toISOString(),
+      postUploadImg: "",
+      postCount: 10,
+      likeCount: 5,
+      isLiked: false,
+    },
+    {
+      postIdx: 2,
+      userName: "김철수",
+      userProfile: "",
+      postTitle: "두 번째 더미 게시글",
+      postContent: "두 번째 더미 내용입니다.",
+      postCreatedAt: new Date().toISOString(),
+      postUploadImg: "",
+      postCount: 3,
+      likeCount: 2,
+      isLiked: true,
+    },
+  ];
 
   useEffect(() => {
     if (!id) return;
-    const fetchData = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        // 두 요청을 병렬로 실행
-        const [_, res] = await Promise.all([
-          fetch(`/api/posts/${id}/view`, { method: 'PATCH' }),
-          userIdx ? fetch(`/api/posts/${id}?userIdx=${userIdx}`) : fetch(`/api/posts/${id}`)
-        ]);
-        if (!res.ok) throw new Error('게시글을 불러오지 못했습니다.');
-        const data = await res.json();
-        setPost(data);
-      } catch (e: any) {
-        setError(e.message || '오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [id, userIdx]);
+    const found = dummyPosts.find((p) => p.postIdx === Number(id));
+    setPost(found || null);
+    setLoading(false);
+  }, [id]);
 
   if (loading) return <div className="detail-container">로딩 중...</div>;
-  if (error) return <div className="detail-container">{error}</div>;
   if (!post) return <div className="detail-container">게시글이 없습니다.</div>;
 
   return (
@@ -114,15 +124,27 @@ const Community_detail = () => {
       <main className="detail-content">
         <div className="detail-writer">
           <div className="writer-profile">
-            <img src={post.userProfile || profile} alt="작성자 프로필" className="writer-img" />
+            <img
+              src={post.userProfile || profile}
+              alt="작성자 프로필"
+              className="writer-img"
+            />
             <p className="writer-name">{post.userName}</p>
           </div>
-          <p className="writer-meta">{formatRelativeDate(post.postCreatedAt)}</p>
+          <p className="writer-meta">
+            {formatRelativeDate(post.postCreatedAt)}
+          </p>
         </div>
         <h2 className="detail-title">{post.postTitle}</h2>
         <p className="detail-text">{post.postContent}</p>
         {post.postUploadImg && (
-          <img src={`${import.meta.env.VITE_APP_API_URL}/api/public${post.postUploadImg}`} className="detail-image" alt="post" />
+          <img
+            src={`${import.meta.env.VITE_APP_API_URL}/api/public${
+              post.postUploadImg
+            }`}
+            className="detail-image"
+            alt="post"
+          />
         )}
 
         <div className="detail-stats">
@@ -138,7 +160,7 @@ const Community_detail = () => {
         </div>
 
         <div className="detail-actions-btns">
-          <button onClick={(e) => handleLikeToggle(e, post.postIdx)}>
+          <button onClick={handleLikeToggle}>
             👍 공감하기 {post.likeCount}
           </button>
           <button>📎 저장</button>

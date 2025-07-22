@@ -15,21 +15,23 @@ import bell from "../../assets/bell_icon.svg";
 
 // 날짜 포맷 함수 추가
 function formatDate(dateString: string) {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
   let hours = date.getHours();
   const minutes = date.getMinutes();
-  const ampm = hours < 12 ? 'AM' : 'PM';
+  const ampm = hours < 12 ? "AM" : "PM";
   hours = hours % 12;
   if (hours === 0) hours = 12;
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${ampm} ${pad(hours)}:${pad(minutes)}`;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${ampm} ${pad(hours)}:${pad(minutes)}`;
 }
 
 // 날짜 상대 포맷 함수 추가
 function formatRelativeDate(dateString: string) {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
   const now = new Date();
@@ -39,14 +41,16 @@ function formatRelativeDate(dateString: string) {
   const diffDay = Math.floor(diffHour / 24);
 
   if (diffDay >= 1) {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate()
+    )}`;
   } else if (diffHour >= 1) {
     return `${diffHour}시간전`;
   } else if (diffMin >= 1) {
     return `${diffMin}분전`;
   } else {
-    return '방금전';
+    return "방금전";
   }
 }
 
@@ -56,9 +60,35 @@ const Community = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [currentSection, setCurrentSection] = useState("default");
-  const posts = useAppSelector((state) => state.user.communityPosts);
-  const safePosts = Array.isArray(posts) ? posts : [];
-  console.log(posts);
+  // const posts = useAppSelector((state) => state.user.communityPosts);
+  const dummyPosts = [
+    {
+      postIdx: 1,
+      userName: "홍길동",
+      userProfile: "",
+      postTitle: "첫 번째 더미 게시글",
+      postContent: "이것은 더미 게시글 내용입니다.",
+      postCreatedAt: new Date().toISOString(),
+      postUploadImg: "",
+      postCount: 10,
+      likeCount: 5,
+      isLiked: false,
+    },
+    {
+      postIdx: 2,
+      userName: "김철수",
+      userProfile: "",
+      postTitle: "두 번째 더미 게시글",
+      postContent: "두 번째 더미 내용입니다.",
+      postCreatedAt: new Date().toISOString(),
+      postUploadImg: "",
+      postCount: 3,
+      likeCount: 2,
+      isLiked: true,
+    },
+  ];
+  const safePosts = dummyPosts;
+  // console.log(posts); // 더미데이터 사용 시 필요 없음
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
 
@@ -85,27 +115,27 @@ const Community = () => {
   const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
     e.stopPropagation(); // 카드 클릭 이벤트 막기
     if (!userIdx) {
-      alert('로그인이 필요합니다.');
+      alert("로그인이 필요합니다.");
       return;
     }
     const post = safePosts.find((p) => p.postIdx === postIdx);
     if (!post) return;
     try {
       if (!post.isLiked) {
-        await fetch('/api/post-likes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/post-likes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIdx, postIdx }),
         });
       } else {
         await fetch(`/api/post-likes/by-user-post/${userIdx}/${postIdx}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
     } catch (err) {
-      alert('좋아요 처리 중 오류가 발생했습니다.');
+      alert("좋아요 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -165,21 +195,38 @@ const Community = () => {
               <div className="popular-scroll-wrapper">
                 <div className="popular-cards">
                   {popularPosts.length === 0 ? (
-                    <div className="no-posts-message">게시글이 없습니다. 글을 써보세요!</div>
+                    <div className="no-posts-message">
+                      게시글이 없습니다. 글을 써보세요!
+                    </div>
                   ) : (
                     popularPosts.map((post) => (
-                      <div key={post.postIdx} className="post-card" onClick={() => handleCardClick(post.postIdx)} style={{ cursor: 'pointer' }}>
+                      <div
+                        key={post.postIdx}
+                        className="post-card"
+                        onClick={() => handleCardClick(post.postIdx)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <div className="profile-header">
-                          <img src={post.userProfile || ""} className="post-profile" />
+                          <img
+                            src={post.userProfile || ""}
+                            className="post-profile"
+                          />
                           <span className="username">{post.userName}</span>
                         </div>
                         {post.postUploadImg && (
-                          <img src={`${import.meta.env.VITE_APP_API_URL}/api/public${post.postUploadImg}`} className="map-image" />
+                          <img
+                            src={`${
+                              import.meta.env.VITE_APP_API_URL
+                            }/api/public${post.postUploadImg}`}
+                            className="map-image"
+                          />
                         )}
                         <div className="post-info">
                           <p className="post-title">{post.postTitle}</p>
                           <div className="post-meta">
-                            <span className="post-date">{formatDate(post.postCreatedAt)}</span>
+                            <span className="post-date">
+                              {formatDate(post.postCreatedAt)}
+                            </span>
                             <Community_Stats
                               views={post.postCount}
                               comments={0}
@@ -202,15 +249,29 @@ const Community = () => {
             <section className="recent-section">
               <h3>최근 게시물</h3>
               {recentPosts.length === 0 ? (
-                <div className="no-posts-message">게시글이 없습니다. 글을 써보세요!</div>
+                <div className="no-posts-message">
+                  게시글이 없습니다. 글을 써보세요!
+                </div>
               ) : (
                 recentPosts.map((post) => (
-                  <div key={post.postIdx} className="recent-post" onClick={() => handleCardClick(post.postIdx)} style={{ cursor: 'pointer' }}>
+                  <div
+                    key={post.postIdx}
+                    className="recent-post"
+                    onClick={() => handleCardClick(post.postIdx)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div className="recent-post-top">
                       <div className="recent-post-left">
                         <div className="user-info">
-                          <span className="username" style={{ fontWeight: 'bold' }}>{post.userName}</span>
-                          <span className="date">{formatRelativeDate(post.postCreatedAt)}</span>
+                          <span
+                            className="username"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            {post.userName}
+                          </span>
+                          <span className="date">
+                            {formatRelativeDate(post.postCreatedAt)}
+                          </span>
                         </div>
                         <h4 className="title">{post.postTitle}</h4>
                         <Community_Stats
@@ -225,7 +286,9 @@ const Community = () => {
                       <div className="recent-post-right">
                         {post.postUploadImg ? (
                           <img
-                            src={`${import.meta.env.VITE_APP_API_URL}/api/public${post.postUploadImg}`}
+                            src={`${
+                              import.meta.env.VITE_APP_API_URL
+                            }/api/public${post.postUploadImg}`}
                             alt="post"
                             className="recent-post-map"
                           />
