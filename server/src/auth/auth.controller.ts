@@ -34,12 +34,12 @@ export class AuthController {
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
       secure: this.configService.get<string>('NODE_ENV') === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 1000 * 60 * 60 * 24,
     });
 
     return res.redirect(
-      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+      'https://d1i3d05ur40jbn.cloudfront.net/home',
     );
   }
 
@@ -58,13 +58,13 @@ export class AuthController {
 
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
-      sameSite: 'lax', // 또는 'none' + secure:true (HTTPS 필수)
-      secure: false, // HTTP면 false로 설정
+      sameSite: 'none', // 또는 'none' + secure:true (HTTPS 필수)
+      secure: true, // HTTP면 false로 설정
       maxAge: 1000 * 60 * 60 * 24,
     });
 
     return res.redirect(
-      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+      'https://d1i3d05ur40jbn.cloudfront.net/home',
     );
   }
 
@@ -83,12 +83,12 @@ export class AuthController {
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
       secure: this.configService.get<string>('NODE_ENV') === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 1000 * 60 * 60 * 24,
     });
 
     return res.redirect(
-      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+      'https://d1i3d05ur40jbn.cloudfront.net/home',
     );
   }
 

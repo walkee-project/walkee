@@ -32,7 +32,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform-origin: 50% 85%; /* 회전 기준점: 이미지의 아래 중앙 근처 */
+  transform-origin: 50% 50%; /* 중앙 회전 */
   transform: translate(-50%, -50%) rotate(0deg); /* 중심 정렬 후 회전 */
   transition: transform 0.3s ease-out;
   pointer-events: none;

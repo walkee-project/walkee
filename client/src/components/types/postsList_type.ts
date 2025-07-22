@@ -7,4 +7,5 @@ export interface postsItem {
   postCreatedAt: string; // ISO 날짜 문자열
   postUploadImg?: string;
   postCount: number;
+  likeCount?: number;
 }

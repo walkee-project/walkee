@@ -88,4 +88,16 @@ export const api = {
 
     return response.json();
   },
+
+  // 회원탈퇴
+  deleteUser: async (userIdx: number) => {
+    const response = await fetch(`${API_BASE_URL}/users/${userIdx}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("회원탈퇴 실패");
+    }
+    return response.json();
+  },
 };

@@ -79,7 +79,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       email: _json.kakao_account?.email || '',
       name: getRandomKoreanName(),
       picture:
-        'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/src/assets/profile.png',
+        'https://d1i3d05ur40jbn.cloudfront.net/src/assets/profile.png',
       provider: 'kakao',
       providerId: profile.id,
     };

@@ -75,7 +75,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       email: _json.email,
       name: getRandomKoreanName(),
       picture:
-        'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/src/assets/profile.png',
+        'https://d1i3d05ur40jbn.cloudfront.net/src/assets/profile.png',
       provider: 'naver',
       providerId: _json.id,
     };

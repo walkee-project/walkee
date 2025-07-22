@@ -5,6 +5,7 @@ import type { mypage_props } from "../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
 import { api } from "../../utils/api";
+import Loading from "../Loading";
 
 export default function Mypage_main({ onChangeSection }: mypage_props) {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
 
   //로딩 중일 때 표시
   if (loading) {
-    return <div className="main">로딩 중...</div>;
+    return <Loading />;
   }
 
   // 에러가 있을 때 표시

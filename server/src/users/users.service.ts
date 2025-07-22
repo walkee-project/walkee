@@ -70,7 +70,7 @@ export class UsersService {
       const isDefault = !oldProfile || oldProfile.includes('profile.png');
       if (oldProfile && !isDefault && oldProfile !== newProfile) {
         // 파일 경로에서 api/public/ 부분 제거
-        const fileName = oldProfile.replace('api/public/profile-images/', '');
+        const fileName = oldProfile.replace('https://walkee.duckdns.org/public/profile-images/', '');
         const filePath = path.join(
           __dirname,
           '../../public/profile-images',

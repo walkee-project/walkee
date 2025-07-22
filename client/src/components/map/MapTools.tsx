@@ -54,7 +54,7 @@ const MapTools: React.FC<MapToolsProps> = ({
           src={compass_needle}
           alt="나침반 바늘"
           className="compass_needle"
-          style={{ transform: `translate(-50%, -50%) rotate(${heading}deg)` }}
+          style={{ transform: `translate(-50%, -50%) rotate(${-heading}deg)` }}
         />
       </div>
       {/* 📍 현재 위치 이동 버튼 (오른쪽 위 고정) */}

@@ -4,12 +4,15 @@ import { Repository, IsNull, Like } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
+import { PostLikeEntity } from '../post_likes/entities/post_like.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(PostLikeEntity)
+    private readonly postLikeRepository: Repository<PostLikeEntity>,
   ) {}
 
   async create(createPostDto: CreatePostDto) {
@@ -55,10 +58,20 @@ export class PostsService {
   }
 
   async findByUser(userId: number) {
-    return this.postRepository.find({
+    const posts = await this.postRepository.find({
       where: { userIdx: userId, postDeletedAt: IsNull() },
       order: { postCreatedAt: 'DESC' }, // 최신순 정렬
     });
+
+    // 각 게시글에 likeCount 추가
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const likeCount = await this.getLikeCount(post.postIdx);
+        return { ...post, likeCount };
+      })
+    );
+
+    return postsWithLikes;
   }
 
   async incrementView(id: number) {
@@ -76,5 +89,9 @@ export class PostsService {
       ],
       order: { postCreatedAt: 'DESC' },
     });
+  }
+
+  async getLikeCount(postIdx: number): Promise<number> {
+    return this.postLikeRepository.count({ where: { postIdx } });
   }
 }

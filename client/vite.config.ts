@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      "walkeeteam.s3-website.ap-northeast-2.amazonaws.com",
+      "d1i3d05ur40jbn.cloudfront.net",
       "localhost",
       "192.168.0.82",
     ],
