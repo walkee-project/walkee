@@ -2,10 +2,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../css/Community_detail.css";
 import profile from "../../assets/profile.png";
 import { useEffect, useState } from "react";
+import type { KeyboardEvent } from "react";
 import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
-import example from "../../assets/ex2.jpg";
 import arrow from "../../assets/arrow_top.png";
+
+interface CommentType {
+  userIdx: string;
+  commentContent: string;
+  commentCreatedAt: string;
+}
 
 const Community_detail = () => {
   const { id } = useParams(); // 게시물 ID
@@ -27,12 +33,10 @@ const Community_detail = () => {
 
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
-
+  console.log(user);
   // 💬 댓글 관련 state
   const [commentInput, setCommentInput] = useState("");
-  const [comments, setComments] = useState<
-    { userName: string; content: string; createdAt: string }[]
-  >([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
 
   function formatRelativeDate(dateString: string) {
     if (!dateString) return "";
@@ -57,22 +61,53 @@ const Community_detail = () => {
     }
   }
 
-  // 좋아요 토글
   const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
     e.stopPropagation();
     if (!userIdx) {
       alert("로그인이 필요합니다.");
       return;
     }
-    if (!post) return;
-    if (post.postIdx !== postIdx) return;
+    if (!post || post.postIdx !== postIdx) return;
+    const currentLikeCount =
+      typeof post.likeCount === "number" ? post.likeCount : 0;
 
-    const optimistic = !post.isLiked
-      ? { ...post, likeCount: post.likeCount + 1, isLiked: true }
-      : { ...post, likeCount: Math.max(post.likeCount - 1, 0), isLiked: false };
+    // optimistic UI 업데이트
+    const prevPost = { ...post };
+    const updatedPost = !post.isLiked
+      ? { ...post, likeCount: currentLikeCount + 1, isLiked: true }
+      : {
+          ...post,
+          likeCount: Math.max(currentLikeCount - 1, 0),
+          isLiked: false,
+        };
 
-    setPost(optimistic);
-    // TODO: 서버 반영
+    setPost(updatedPost);
+
+    try {
+      if (!post.isLiked) {
+        // 좋아요 추가
+        const res = await fetch("/api/post-likes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userIdx, postIdx }),
+        });
+        if (!res.ok) throw new Error("좋아요 추가 실패");
+      } else {
+        // 좋아요 제거
+        const res = await fetch(
+          `/api/post-likes/by-user-post/${userIdx}/${postIdx}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!res.ok) throw new Error("좋아요 취소 실패");
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류:", error);
+      alert("좋아요 처리 중 문제가 발생했습니다.");
+      // 실패 시 이전 상태로 롤백
+      setPost(prevPost);
+    }
   };
 
   // 💬 댓글 등록
@@ -82,7 +117,6 @@ const Community_detail = () => {
       alert("로그인이 필요합니다.");
       return;
     }
-
     try {
       const res = await fetch("/api/comments", {
         method: "POST",
@@ -90,14 +124,16 @@ const Community_detail = () => {
         body: JSON.stringify({
           postIdx: post.postIdx,
           userIdx: userIdx,
-          content: commentInput,
+          commentContent: commentInput,
         }),
       });
-
       if (!res.ok) throw new Error("댓글 등록 실패");
-
-      const newComment = await res.json();
-      setComments((prev) => [...prev, newComment]);
+      // 댓글 등록 후 최신 댓글 목록 다시 fetch
+      const commentsRes = await fetch(`/api/comments?postIdx=${post.postIdx}`);
+      if (commentsRes.ok) {
+        const commentsData = await commentsRes.json();
+        setComments(commentsData);
+      }
       setCommentInput("");
     } catch (err) {
       console.error(err);
@@ -105,74 +141,43 @@ const Community_detail = () => {
     }
   };
 
-  // 더미 게시글
-  const dummyPosts = [
-    {
-      postIdx: 1,
-      userName: "홍길동",
-      userProfile: "",
-      postTitle: "첫 번째 더미 게시글",
-      postContent:
-        "이것은 더미 게시글 내용입니다.이것은 더미 게시글 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: example,
-      postCount: 10,
-      likeCount: 5,
-      isLiked: false,
-    },
-    {
-      postIdx: 2,
-      userName: "김철수",
-      userProfile: "",
-      postTitle: "두 번째 더미 게시글",
-      postContent: "두 번째 더미 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 3,
-      likeCount: 2,
-      isLiked: true,
-    },
-  ];
+  // 댓글 입력창에서 Enter로 등록
+  const handleCommentKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && commentInput.trim()) {
+      handleCommentSubmit();
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     setError("");
-    // 더미데이터 배열
-    const dummyPosts = [
-      {
-        postIdx: 1,
-        userName: "홍길동",
-        userProfile: "",
-        postTitle: "첫 번째 더미 게시글",
-        postContent: "이것은 더미 게시글 내용입니다.",
-        postCreatedAt: new Date().toISOString(),
-        postUploadImg: "",
-        postCount: 10,
-        likeCount: 5,
-        isLiked: false,
-      },
-      {
-        postIdx: 2,
-        userName: "김철수",
-        userProfile: "",
-        postTitle: "두 번째 더미 게시글",
-        postContent: "두 번째 더미 내용입니다.",
-        postCreatedAt: new Date().toISOString(),
-        postUploadImg: "",
-        postCount: 3,
-        likeCount: 2,
-        isLiked: true,
-      },
-    ];
-    const found = dummyPosts.find((p) => p.postIdx === Number(id));
-    setPost(found || null);
-    setLoading(false);
-  }, [id]);
-
+    Promise.all([
+      fetch(`/api/posts/${id}/view`, { method: "PATCH" }),
+      userIdx
+        ? fetch(`/api/posts/${id}?userIdx=${userIdx}`)
+        : fetch(`/api/posts/${id}`),
+      fetch(`/api/comments?postIdx=${id}`), // 댓글 목록도 fetch
+    ])
+      .then(([, res, commentsRes]) => {
+        if (!res.ok) throw new Error("게시글을 불러오지 못했습니다.");
+        if (!commentsRes.ok) throw new Error("댓글을 불러오지 못했습니다.");
+        return Promise.all([res.json(), commentsRes.json()]);
+      })
+      .then(([postData, commentsData]) => {
+        setPost(postData);
+        setComments(commentsData);
+      })
+      .catch(() => setError("오류가 발생했습니다."))
+      .finally(() => setLoading(false));
+  }, [id, userIdx]);
+  console.log(comments);
   if (loading) return <div className="detail-container">로딩 중...</div>;
   if (error) return <div className="detail-container">{error}</div>;
   if (!post) return <div className="detail-container">게시글이 없습니다.</div>;
+
+  // userName fallback: post.userName 없으면 전역 user.userName 사용
+  const displayUserName = post.userName || user?.userName || "익명";
 
   return (
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
@@ -190,7 +195,7 @@ const Community_detail = () => {
               alt="작성자 프로필"
               className="writer-img"
             />
-            <p className="writer-name">{post.userName}</p>
+            <p className="writer-name">{displayUserName}</p>
           </div>
           <p className="writer-meta">
             {formatRelativeDate(post.postCreatedAt)}
@@ -199,15 +204,9 @@ const Community_detail = () => {
 
         <h2 className="detail-title">{post.postTitle}</h2>
 
-        {post.postUploadImg && (
-          // <img
-          //   src={`${
-          //     import.meta.env.VITE_APP_API_URL
-          //   }/api/public${post.postUploadImg}`}
-          //   className="map-image"
-          // />
+        {post.postUploadImg && post.postUploadImg !== "" && (
           <img
-            src={post.postUploadImg}
+            src={`/api/public${post.postUploadImg}`}
             alt="게시글 이미지"
             className="detail-image"
           />
@@ -237,11 +236,11 @@ const Community_detail = () => {
           ) : (
             comments.map((c, idx) => (
               <div key={idx} className="comment">
-                <strong>{c.userName}</strong>{" "}
+                <strong>{c.userIdx}</strong>{" "}
                 <span style={{ color: "#888", fontSize: "13px" }}>
-                  {formatRelativeDate(c.createdAt)}
+                  {formatRelativeDate(c.commentCreatedAt)}
                 </span>
-                <p>{c.content}</p>
+                <p>{c.commentContent}</p>
               </div>
             ))
           )}
@@ -249,13 +248,13 @@ const Community_detail = () => {
       </main>
 
       {/* 댓글 입력창 */}
-
       <footer className="detail-footer">
         <input
           type="text"
           placeholder="댓글을 입력해 주세요"
           value={commentInput}
           onChange={(e) => setCommentInput(e.target.value)}
+          onKeyDown={handleCommentKeyDown}
           className="comment-input"
         />
         <button

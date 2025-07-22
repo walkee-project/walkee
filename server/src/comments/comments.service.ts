@@ -20,12 +20,23 @@ export class CommentsService {
   async findAll() {
     return await this.commentRepository.find({
       where: { commentDeletedAt: IsNull() },
+      relations: ['user'],
     });
   }
 
   async findOne(id: number) {
     return await this.commentRepository.findOne({
       where: { commentIdx: id, commentDeletedAt: IsNull() },
+      relations: ['user'],
+    });
+  }
+
+  // postIdx별 댓글 목록
+  async findByPost(postIdx: number) {
+    return await this.commentRepository.find({
+      where: { postIdx, commentDeletedAt: IsNull() },
+      relations: ['user'],
+      order: { commentCreatedAt: 'ASC' },
     });
   }
 
