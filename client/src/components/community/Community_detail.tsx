@@ -8,8 +8,13 @@ import Community_Stats from "./Community_stats";
 import arrow from "../../assets/arrow_top.png";
 import back from "../../assets/arrow_back.png";
 
+interface CommentUser {
+  userName: string;
+  userProfile?: string; // 필요 시 추가
+}
 interface CommentType {
   userIdx: string;
+  user: CommentUser;
   commentContent: string;
   commentCreatedAt: string;
 }
@@ -241,10 +246,14 @@ const Community_detail = () => {
           ) : (
             comments.map((c, idx) => (
               <div key={idx} className="comment">
-                <strong>{c.userIdx}</strong>{" "}
-                <span style={{ color: "#888", fontSize: "13px" }}>
-                  {formatRelativeDate(c.commentCreatedAt)}
-                </span>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <strong>{c.user.userName || c.userIdx}</strong>
+                  <span style={{ color: "#888", fontSize: "13px" }}>
+                    {formatRelativeDate(c.commentCreatedAt)}
+                  </span>
+                </div>
                 <p>{c.commentContent}</p>
               </div>
             ))
