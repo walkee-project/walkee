@@ -6,7 +6,7 @@ import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
 
 const Community_detail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // 게시물 ID
   const navigate = useNavigate();
   const [post, setPost] = useState<{
     postIdx: number;
@@ -21,6 +21,7 @@ const Community_detail = () => {
     isLiked: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
@@ -69,42 +70,44 @@ const Community_detail = () => {
     // 더미데이터만 쓸 때는 fetch 생략
   };
 
-  // 더미데이터 배열
-  const dummyPosts = [
-    {
-      postIdx: 1,
-      userName: "홍길동",
-      userProfile: "",
-      postTitle: "첫 번째 더미 게시글",
-      postContent: "이것은 더미 게시글 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 10,
-      likeCount: 5,
-      isLiked: false,
-    },
-    {
-      postIdx: 2,
-      userName: "김철수",
-      userProfile: "",
-      postTitle: "두 번째 더미 게시글",
-      postContent: "두 번째 더미 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 3,
-      likeCount: 2,
-      isLiked: true,
-    },
-  ];
-
   useEffect(() => {
     if (!id) return;
+    setLoading(true);
+    setError("");
+    // 더미데이터 배열
+    const dummyPosts = [
+      {
+        postIdx: 1,
+        userName: "홍길동",
+        userProfile: "",
+        postTitle: "첫 번째 더미 게시글",
+        postContent: "이것은 더미 게시글 내용입니다.",
+        postCreatedAt: new Date().toISOString(),
+        postUploadImg: "",
+        postCount: 10,
+        likeCount: 5,
+        isLiked: false,
+      },
+      {
+        postIdx: 2,
+        userName: "김철수",
+        userProfile: "",
+        postTitle: "두 번째 더미 게시글",
+        postContent: "두 번째 더미 내용입니다.",
+        postCreatedAt: new Date().toISOString(),
+        postUploadImg: "",
+        postCount: 3,
+        likeCount: 2,
+        isLiked: true,
+      },
+    ];
     const found = dummyPosts.find((p) => p.postIdx === Number(id));
     setPost(found || null);
     setLoading(false);
   }, [id]);
 
   if (loading) return <div className="detail-container">로딩 중...</div>;
+  if (error) return <div className="detail-container">{error}</div>;
   if (!post) return <div className="detail-container">게시글이 없습니다.</div>;
 
   return (
@@ -160,7 +163,7 @@ const Community_detail = () => {
         </div>
 
         <div className="detail-actions-btns">
-          <button onClick={handleLikeToggle}>
+          <button onClick={(e) => handleLikeToggle(e)}>
             👍 공감하기 {post.likeCount}
           </button>
           <button>📎 저장</button>

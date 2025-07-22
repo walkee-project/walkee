@@ -60,35 +60,9 @@ const Community = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [currentSection, setCurrentSection] = useState("default");
-  // const posts = useAppSelector((state) => state.user.communityPosts);
-  const dummyPosts = [
-    {
-      postIdx: 1,
-      userName: "홍길동",
-      userProfile: "",
-      postTitle: "첫 번째 더미 게시글",
-      postContent: "이것은 더미 게시글 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 10,
-      likeCount: 5,
-      isLiked: false,
-    },
-    {
-      postIdx: 2,
-      userName: "김철수",
-      userProfile: "",
-      postTitle: "두 번째 더미 게시글",
-      postContent: "두 번째 더미 내용입니다.",
-      postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
-      postCount: 3,
-      likeCount: 2,
-      isLiked: true,
-    },
-  ];
-  const safePosts = dummyPosts;
-  // console.log(posts); // 더미데이터 사용 시 필요 없음
+  const posts = useAppSelector((state) => state.user.communityPosts);
+  const safePosts = Array.isArray(posts) ? posts : [];
+  console.log(posts);
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
 
