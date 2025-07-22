@@ -27,6 +27,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://192.168.0.82:5173',
+      'http://192.168.0.70:5173',
+      'http://192.168.0.72:5173',
       'http://localhost:5173',
       'https://trusted-hippo-finally.ngrok-free.app', // 프론트엔드 ngrok
     ],
