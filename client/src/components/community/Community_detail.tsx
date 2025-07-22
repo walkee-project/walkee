@@ -4,6 +4,8 @@ import profile from "../../assets/profile.png";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
+import example from "../../assets/ex2.jpg";
+import arrow from "../../assets/arrow_top.png";
 
 const Community_detail = () => {
   const { id } = useParams();
@@ -25,7 +27,12 @@ const Community_detail = () => {
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
 
-  // 날짜 상대 포맷 함수
+  // 💬 댓글 관련 state
+  const [commentInput, setCommentInput] = useState("");
+  const [comments, setComments] = useState<
+    { userName: string; content: string; createdAt: string }[]
+  >([]);
+
   function formatRelativeDate(dateString: string) {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -49,36 +56,65 @@ const Community_detail = () => {
     }
   }
 
-  // 좋아요 토글 핸들러
-  const handleLikeToggle = async (e: React.MouseEvent) => {
+  // 좋아요 토글
+  const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
     e.stopPropagation();
     if (!userIdx) {
       alert("로그인이 필요합니다.");
       return;
     }
     if (!post) return;
-    // 1. 프론트에서 즉시 반영 (optimistic update)
+    if (post.postIdx !== postIdx) return;
+
     const optimistic = !post.isLiked
-      ? { ...post, likeCount: (post.likeCount || 0) + 1, isLiked: true }
-      : {
-          ...post,
-          likeCount: Math.max((post.likeCount || 1) - 1, 0),
-          isLiked: false,
-        };
+      ? { ...post, likeCount: post.likeCount + 1, isLiked: true }
+      : { ...post, likeCount: Math.max(post.likeCount - 1, 0), isLiked: false };
+
     setPost(optimistic);
-    // 더미데이터만 쓸 때는 fetch 생략
+    // TODO: 서버 반영
   };
 
-  // 더미데이터 배열
+  // 💬 댓글 등록
+  const handleCommentSubmit = async () => {
+    if (!commentInput.trim()) return;
+    if (!userIdx || !post?.postIdx) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postIdx: post.postIdx,
+          userIdx: userIdx,
+          content: commentInput,
+        }),
+      });
+
+      if (!res.ok) throw new Error("댓글 등록 실패");
+
+      const newComment = await res.json();
+      setComments((prev) => [...prev, newComment]);
+      setCommentInput("");
+    } catch (err) {
+      console.error(err);
+      alert("댓글 등록 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 더미 게시글
   const dummyPosts = [
     {
       postIdx: 1,
       userName: "홍길동",
       userProfile: "",
       postTitle: "첫 번째 더미 게시글",
-      postContent: "이것은 더미 게시글 내용입니다.",
+      postContent:
+        "이것은 더미 게시글 내용입니다.이것은 더미 게시글 내용입니다.",
       postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
+      postUploadImg: example,
       postCount: 10,
       likeCount: 5,
       isLiked: false,
@@ -108,20 +144,14 @@ const Community_detail = () => {
   if (!post) return <div className="detail-container">게시글이 없습니다.</div>;
 
   return (
-    <div className="detail-container">
-      {/* 상단 헤더 */}
+    <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
           ←
         </button>
-        <div className="detail-actions">
-          <button>🔔</button>
-          <button>⋯</button>
-        </div>
       </header>
 
-      {/* 본문 영역 */}
-      <main className="detail-content">
+      <main className="detail-content" style={{ overflowY: "auto" }}>
         <div className="detail-writer">
           <div className="writer-profile">
             <img
@@ -135,50 +165,76 @@ const Community_detail = () => {
             {formatRelativeDate(post.postCreatedAt)}
           </p>
         </div>
+
         <h2 className="detail-title">{post.postTitle}</h2>
-        <p className="detail-text">{post.postContent}</p>
+
         {post.postUploadImg && (
+          // <img
+          //   src={`${
+          //     import.meta.env.VITE_APP_API_URL
+          //   }/api/public${post.postUploadImg}`}
+          //   className="map-image"
+          // />
           <img
-            src={`${import.meta.env.VITE_APP_API_URL}/api/public${
-              post.postUploadImg
-            }`}
+            src={post.postUploadImg}
+            alt="게시글 이미지"
             className="detail-image"
-            alt="post"
           />
         )}
 
         <div className="detail-stats">
           <Community_Stats
             views={post.postCount}
-            comments={0}
+            comments={comments.length}
             likeCount={post.likeCount}
             postId={post.postIdx}
             isLiked={post.isLiked}
-            onLike={() => {}} // 클릭 불가, 단순 표시만
+            onLike={handleLikeToggle}
           />
-          {`👁 ${post.postCount}명이 봤어요`}
         </div>
 
-        <div className="detail-actions-btns">
-          <button onClick={handleLikeToggle}>
-            👍 공감하기 {post.likeCount}
-          </button>
-          <button>📎 저장</button>
-        </div>
+        <p className="detail-text">{post.postContent}</p>
 
+        {/* 댓글 목록 */}
         <div className="detail-comments">
-          <h4>댓글 0</h4>
-          <p className="no-comments">
-            아직 댓글이 없어요.
-            <br />
-            가장 먼저 댓글을 남겨보세요.
-          </p>
+          <h4>댓글 {comments.length}</h4>
+          {comments.length === 0 ? (
+            <p className="no-comments">
+              아직 댓글이 없어요.
+              <br />
+              가장 먼저 댓글을 남겨보세요.
+            </p>
+          ) : (
+            comments.map((c, idx) => (
+              <div key={idx} className="comment">
+                <strong>{c.userName}</strong>{" "}
+                <span style={{ color: "#888", fontSize: "13px" }}>
+                  {formatRelativeDate(c.createdAt)}
+                </span>
+                <p>{c.content}</p>
+              </div>
+            ))
+          )}
         </div>
       </main>
 
-      {/* 하단 댓글 입력창 */}
+      {/* 댓글 입력창 */}
+
       <footer className="detail-footer">
-        <input type="text" placeholder="댓글을 입력해주세요." />
+        <input
+          type="text"
+          placeholder="댓글을 입력해 주세요"
+          value={commentInput}
+          onChange={(e) => setCommentInput(e.target.value)}
+          className="comment-input"
+        />
+        <button
+          onClick={handleCommentSubmit}
+          disabled={!commentInput.trim()}
+          className={`comment-submit ${commentInput.trim() ? "active" : ""}`}
+        >
+          <img src={arrow} alt="submit" />
+        </button>
       </footer>
     </div>
   );

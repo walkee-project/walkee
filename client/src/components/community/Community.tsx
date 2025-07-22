@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { fetchCommunityPostsThunk } from "../../store/userSlice";
 import "../css/Community.css";
@@ -7,11 +7,13 @@ import "../css/Header.css";
 import Community_Find from "./Community_find";
 import Community_Stats from "./Community_stats";
 import CommunityAll from "./Community_all";
+import Community_Rules from "./Community_rules";
 import Header from "../../components/Header";
 import flag from "../../assets/community_flag.svg";
 import plus from "../../assets/plus_icon.svg";
 import find from "../../assets/find_icon.svg";
 import bell from "../../assets/bell_icon.svg";
+import exmple from "../../assets/ex2.jpg";
 
 // 날짜 포맷 함수 추가
 function formatDate(dateString: string) {
@@ -69,7 +71,7 @@ const Community = () => {
       postTitle: "첫 번째 더미 게시글",
       postContent: "이것은 더미 게시글 내용입니다.",
       postCreatedAt: new Date().toISOString(),
-      postUploadImg: "",
+      postUploadImg: exmple,
       postCount: 10,
       likeCount: 5,
       isLiked: false,
@@ -180,13 +182,18 @@ const Community = () => {
           />
           <div className="community-container">
             <section className="community-top-ui">
-              <header className="community-header">
-                <div>
-                  <img src={flag} alt="community flag" />
-                  <h2>WALKEE 커뮤니티 이용 가이드 보기</h2>
+              <Link
+                to="/community/rules"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div className="community-header">
+                  <div>
+                    <img src={flag} alt="community flag" />
+                    <h2>WALKEE 커뮤니티 이용 가이드 보기</h2>
+                  </div>
+                  <p>{">"}</p>
                 </div>
-                <p>{">"}</p>
-              </header>
+              </Link>
             </section>
 
             {/* 인기 TOP3 */}
@@ -214,11 +221,16 @@ const Community = () => {
                           <span className="username">{post.userName}</span>
                         </div>
                         {post.postUploadImg && (
+                          // <img
+                          //   src={`${
+                          //     import.meta.env.VITE_APP_API_URL
+                          //   }/api/public${post.postUploadImg}`}
+                          //   className="map-image"
+                          // />
                           <img
-                            src={`${
-                              import.meta.env.VITE_APP_API_URL
-                            }/api/public${post.postUploadImg}`}
-                            className="map-image"
+                            src={post.postUploadImg}
+                            alt="게시글 이미지"
+                            className="detail-image"
                           />
                         )}
                         <div className="post-info">
@@ -285,12 +297,17 @@ const Community = () => {
                       </div>
                       <div className="recent-post-right">
                         {post.postUploadImg ? (
+                          // <img
+                          //   src={`${
+                          //     import.meta.env.VITE_APP_API_URL
+                          //   }/api/public${post.postUploadImg}`}
+                          //   alt="post"
+                          //   className="recent-post-map"
+                          // />
                           <img
-                            src={`${
-                              import.meta.env.VITE_APP_API_URL
-                            }/api/public${post.postUploadImg}`}
-                            alt="post"
-                            className="recent-post-map"
+                            src={post.postUploadImg}
+                            alt="게시글 이미지"
+                            className="detail-image"
                           />
                         ) : (
                           <div className="no-image-placeholder"></div>
