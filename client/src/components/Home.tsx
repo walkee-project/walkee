@@ -6,6 +6,7 @@ import DrawingSectionComponent from "./home/DrawingSectionComponent";
 import Header from "./Header";
 import bell from "../assets/bell_icon.svg";
 import { useAppSelector } from "../store/hooks";
+import Loading from "./Loading";
 
 const Home = () => {
   const recommendRoute = useAppSelector((state) => state.user.recommendRoute);
@@ -13,7 +14,7 @@ const Home = () => {
   const user = useAppSelector((state) => state.user.user);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   // summary?.userRoute, summary?.userRouteLike, summary?.userPost 등 사용 가능

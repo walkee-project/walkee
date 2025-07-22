@@ -7,6 +7,7 @@
   padding: clamp(1vh, 1vh + 1%, 80px) 16px;
   justify-content: space-evenly;
   padding-top: 50px;
+  position: relative;
 }
 
 /* 상단 인사 */

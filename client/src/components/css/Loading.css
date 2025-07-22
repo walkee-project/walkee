@@ -1,0 +1,80 @@
+/* ProgressBar.css */
+.loading {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.loading > p {
+  text-align: center;
+  padding: 1em;
+  width: 100%;
+  background-color: #acddf6;
+  font-weight: 700;
+  font-size: 2em;
+  margin-bottom: -5px;
+}
+
+.load_box {
+  position: relative;
+  width: 100%;
+  height: 20vh;
+  overflow-x: hidden;
+  background-image: url("../../assets//load_bg.png");
+  background-repeat: repeat-x;
+  background-size: cover;
+  animation: bg-scroll 50s linear infinite;
+}
+
+.bar_container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.bar_bg {
+  height: 50px;
+  background-color: #5d5d5d;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+.bar_bg::before {
+  content: "";
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  height: 5px;
+  width: 100%;
+  background-color: #aed9ff;
+}
+
+.bar_mascot {
+  position: absolute;
+  top: -65px; /* 바 위로 올라오게 */
+  left: 40%;
+  width: 70px;
+  animation: move_mascot 0.5s linear infinite alternate;
+  transform-origin: bottom center;
+}
+
+@keyframes move_mascot {
+  0% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes bg-scroll {
+  from {
+    background-position: -2977px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
