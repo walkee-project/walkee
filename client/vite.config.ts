@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/",
   plugins: [react()],
   server: {
     host: true, // 외부 IP에서도 접근 가능하게
