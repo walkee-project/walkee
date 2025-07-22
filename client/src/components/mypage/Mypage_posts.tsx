@@ -56,11 +56,9 @@ const Mypage_posts: React.FC<mypage_props> = ({ onChangeSection }) => {
               <div
                 key={post.postIdx}
                 onClick={() =>
-                  navigate("/map", {
+                  navigate("/community/detail", {
                     state: {
-                      tab: "course",
                       post: post,
-                      openOverlay: true,
                       from: "postList",
                     },
                   })
