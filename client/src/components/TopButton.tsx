@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import arrow_top from "../assets/arrow_top.png";
 import "../components/css/TopButton.css";
 

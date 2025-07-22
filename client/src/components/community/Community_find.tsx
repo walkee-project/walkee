@@ -15,16 +15,18 @@ type SearchResult = {
 
 // 날짜 포맷 함수 추가
 function formatDate(dateString: string) {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
   let hours = date.getHours();
   const minutes = date.getMinutes();
-  const ampm = hours < 12 ? 'AM' : 'PM';
+  const ampm = hours < 12 ? "AM" : "PM";
   hours = hours % 12;
   if (hours === 0) hours = 12;
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${ampm} ${pad(hours)}:${pad(minutes)}`;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${ampm} ${pad(hours)}:${pad(minutes)}`;
 }
 
 const Community_Find = ({ onBack }: { onBack?: () => void }) => {
@@ -52,8 +54,10 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
       setShowError(false);
       setCurrentPage(1); // 검색할 때마다 페이지 초기화
       try {
-        const res = await fetch(`/api/posts/search?query=${encodeURIComponent(searchTerm)}`);
-        if (!res.ok) throw new Error('검색 결과를 불러오지 못했습니다.');
+        const res = await fetch(
+          `${__API_URL__}/posts/search?query=${encodeURIComponent(searchTerm)}`
+        );
+        if (!res.ok) throw new Error("검색 결과를 불러오지 못했습니다.");
         const data = await res.json();
         // 서버에서 내려온 필드명을 프론트에서 사용하는 필드명으로 매핑
         const mapped = data.map((post: any) => ({
@@ -130,7 +134,7 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
             <div
               key={result.postIdx || result.id || idx}
               className="search-result-card"
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
               onClick={() => navigate(`/community/${result.postIdx}`)}
             >
               <h4 className="result-title">{result.title}</h4>

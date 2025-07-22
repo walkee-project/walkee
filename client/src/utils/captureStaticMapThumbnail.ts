@@ -9,13 +9,10 @@ export const captureStaticMapThumbnail = async (
     const blob = await response.blob();
     const formData = new FormData();
     formData.append("thumbnail", blob, "route-thumbnail.png");
-    const uploadRes = await fetch(
-      "https://trusted-hippo-finally.ngrok-free.app/api/upload-thumbnail",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const uploadRes = await fetch(`${__API_URL__}/upload-thumbnail`, {
+      method: "POST",
+      body: formData,
+    });
     if (!uploadRes.ok) throw new Error("썸네일 업로드 실패");
     const data = await uploadRes.json();
     return data.url;

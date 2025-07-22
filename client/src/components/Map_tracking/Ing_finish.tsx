@@ -1,17 +1,13 @@
 import "../css/Ing_finish.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, type ChangeEvent } from "react";
-import {
-  useAppSelector,
-  useAppDispatch,
-} from "../../store/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import {
   fetchUserSummaryThunk,
   fetchAllRouteThunk,
 } from "../../store/userSlice";
 import { encodePolyline } from "../../utils/encodePolyline";
 import { captureStaticMapThumbnail } from "../../utils/captureStaticMapThumbnail";
-import { getStaticMapImageUrl } from "../../utils/getStaticMapImageUrl";
 import { getDifficulty } from "../../utils/difficulty";
 
 interface IngFinishProps {
@@ -92,7 +88,7 @@ export default function Ing_finish({
     // }
 
     const encodedPolyline = encodePolyline(
-      trackedPoints.map((p) => ({ lat: p.getLat(), lng: p.getLng() })),
+      trackedPoints.map((p) => ({ lat: p.getLat(), lng: p.getLng() }))
     );
     const startPoint = trackedPoints[0];
     const endPoint = trackedPoints[trackedPoints.length - 1];
@@ -120,7 +116,7 @@ export default function Ing_finish({
     }
 
     try {
-      const response = await fetch("/api/follows", {
+      const response = await fetch(`${__API_URL__}/follows`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(followData),
@@ -180,14 +176,7 @@ export default function Ing_finish({
         routeDifficulty,
       };
 
-      const apiUrl = import.meta.env.VITE_APP_API_URL;
-      if (!apiUrl) {
-        alert("API URL이 설정되지 않았습니다.");
-        setSaving(false);
-        return;
-      }
-
-      const response = await fetch(`${apiUrl}/api/routes`, {
+      const response = await fetch(`${__API_URL__}/routes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -230,9 +219,7 @@ export default function Ing_finish({
       <div className="finish_map">
         {routeThumbnailUrl ? (
           <img
-            src={`${
-              import.meta.env.VITE_APP_API_URL
-            }/api/public${routeThumbnailUrl}`}
+            src={`${__API_URL__}/public${routeThumbnailUrl}`}
             alt="경로 썸네일"
           />
         ) : (
@@ -316,10 +303,7 @@ export default function Ing_finish({
               </div>
             </>
           ) : (
-            <div
-              className="btn btn_one finish_btn"
-              onClick={saveFollowRecord}
-            >
+            <div className="btn btn_one finish_btn" onClick={saveFollowRecord}>
               러닝 기록 저장
             </div>
           )}

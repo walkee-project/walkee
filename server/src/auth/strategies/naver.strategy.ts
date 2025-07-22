@@ -59,8 +59,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     super({
       clientID,
       clientSecret,
-      callbackURL:
-        'https://trusted-hippo-finally.ngrok-free.app/api/auth/naver/callback',
+      callbackURL: 'https://walkee.duckdns.org/auth/naver/callback',
     });
   }
 
@@ -76,7 +75,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       email: _json.email,
       name: getRandomKoreanName(),
       picture:
-        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
+        'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/src/assets/profile.png',
       provider: 'naver',
       providerId: _json.id,
     };

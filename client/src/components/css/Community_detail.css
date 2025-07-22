@@ -197,13 +197,13 @@ h4 {
   margin-bottom: 10px;
 }
 
-.comment {
+.comment-in {
   padding: 10px;
   border-bottom: 1px solid #d9d9d9;
 }
 
-.comment strong,
-.comment p,
-.comment span {
+.comment-in strong,
+.comment-in p,
+.comment-in span {
   padding: 5px;
 }

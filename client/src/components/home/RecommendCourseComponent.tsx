@@ -35,7 +35,10 @@ function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
         )}
       </div>
       <div className="recommend_img">
-        <img src={`api/public${route.routeThumbnail}`} alt="추천코스" />
+        <img
+          src={`${__API_URL__}/public${route.routeThumbnail}`}
+          alt="추천코스"
+        />
         <div className="recommend_detail">
           <p>{route.routeTotalKm} km</p>
           <p>

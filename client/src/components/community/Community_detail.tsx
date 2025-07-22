@@ -92,7 +92,7 @@ const Community_detail = () => {
     try {
       if (!post.isLiked) {
         // 좋아요 추가
-        const res = await fetch("/api/post-likes", {
+        const res = await fetch(`${__API_URL__}/post-likes`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIdx, postIdx }),
@@ -101,7 +101,7 @@ const Community_detail = () => {
       } else {
         // 좋아요 제거
         const res = await fetch(
-          `/api/post-likes/by-user-post/${userIdx}/${postIdx}`,
+          `${__API_URL__}/post-likes/by-user-post/${userIdx}/${postIdx}`,
           {
             method: "DELETE",
           }
@@ -124,7 +124,7 @@ const Community_detail = () => {
       return;
     }
     try {
-      const res = await fetch("/api/comments", {
+      const res = await fetch(`${__API_URL__}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -135,7 +135,9 @@ const Community_detail = () => {
       });
       if (!res.ok) throw new Error("댓글 등록 실패");
       // 댓글 등록 후 최신 댓글 목록 다시 fetch
-      const commentsRes = await fetch(`/api/comments?postIdx=${post.postIdx}`);
+      const commentsRes = await fetch(
+        `${__API_URL__}/comments?postIdx=${post.postIdx}`
+      );
       if (commentsRes.ok) {
         const commentsData = await commentsRes.json();
         setComments(commentsData);
@@ -159,11 +161,11 @@ const Community_detail = () => {
     setLoading(true);
     setError("");
     Promise.all([
-      fetch(`/api/posts/${id}/view`, { method: "PATCH" }),
+      fetch(`${__API_URL__}/posts/${id}/view`, { method: "PATCH" }),
       userIdx
-        ? fetch(`/api/posts/${id}?userIdx=${userIdx}`)
-        : fetch(`/api/posts/${id}`),
-      fetch(`/api/comments?postIdx=${id}`), // 댓글 목록도 fetch
+        ? fetch(`${__API_URL__}/posts/${id}?userIdx=${userIdx}`)
+        : fetch(`${__API_URL__}/posts/${id}`),
+      fetch(`${__API_URL__}/comments?postIdx=${id}`), // 댓글 목록도 fetch
     ])
       .then(([, res, commentsRes]) => {
         if (!res.ok) throw new Error("게시글을 불러오지 못했습니다.");
@@ -216,7 +218,7 @@ const Community_detail = () => {
 
         {post.postUploadImg && post.postUploadImg !== "" && (
           <img
-            src={`/api/public${post.postUploadImg}`}
+            src={`${__API_URL__}/public${post.postUploadImg}`}
             alt="게시글 이미지"
             className="detail-image"
           />
@@ -245,7 +247,7 @@ const Community_detail = () => {
             </p>
           ) : (
             comments.map((c, idx) => (
-              <div key={idx} className="comment">
+              <div key={idx} className="comment-in">
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >

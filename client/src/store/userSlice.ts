@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { api, fetchUserSummary, fetchAllRoutes } from "../utils/api";
 import type { RouteItem } from "../components/types/courseList_type";
-import type { Post } from "../components/community/Community_all";
 
 interface UserInfo {
   userIdx: number;
@@ -150,7 +149,9 @@ export const fetchCommunityPostsThunk = createAsyncThunk(
       // userIdx 가져오기
       const state: any = getState();
       const userIdx = state.user?.user?.userIdx;
-      const url = userIdx ? `/api/users/community-posts?userIdx=${userIdx}` : '/api/users/community-posts';
+      const url = userIdx
+        ? `${__API_URL__}/users/community-posts?userIdx=${userIdx}`
+        : `${__API_URL__}/users/community-posts`;
       const res = await fetch(url);
       const data = await res.json();
       return data;

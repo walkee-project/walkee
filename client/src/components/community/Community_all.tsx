@@ -5,7 +5,6 @@ import arrow_back from "../../assets/arrow_back.png";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { fetchCommunityPostsThunk } from "../../store/userSlice";
-import example from "../../assets/ex2.jpg"; // 이미지 더미 있을 경우
 import profile from "../../assets/profile.png"; // 프로필 이미지 더미
 
 export type Post = {
@@ -73,15 +72,18 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
     if (!post) return;
     try {
       if (!post.isLiked) {
-        await fetch("/api/post-likes", {
+        await fetch(`${__API_URL__}/post-likes`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIdx, postIdx }),
         });
       } else {
-        await fetch(`/api/post-likes/by-user-post/${userIdx}/${postIdx}`, {
-          method: "DELETE",
-        });
+        await fetch(
+          `${__API_URL__}/post-likes/by-user-post/${userIdx}/${postIdx}`,
+          {
+            method: "DELETE",
+          }
+        );
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
@@ -126,9 +128,7 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
 
             {post.postUploadImg && (
               <img
-                src={`${import.meta.env.VITE_APP_API_URL}/api/public${
-                  post.postUploadImg
-                }`}
+                src={`${__API_URL__}/public${post.postUploadImg}`}
                 alt="map"
                 className="map-image"
               />

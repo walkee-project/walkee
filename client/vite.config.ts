@@ -5,24 +5,27 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true, // 외부 IP에서도 접근 가능하게
+    host: true,
     port: 5173,
     allowedHosts: [
-      "trusted-hippo-finally.ngrok-free.app",
+      "walkeeteam.s3-website.ap-northeast-2.amazonaws.com",
       "localhost",
       "192.168.0.82",
     ],
-    proxy: {
-      // 모든 환경에서 프록시 사용 (프론트엔드와 백엔드 통합)
-      "/api": {
-        target: "http://3.38.33.247:3000/",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "https://walkee.duckdns.org",
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ""),
+    //   },
+    // },
   },
   define: {
-    // 환경변수를 전역으로 사용 가능하게 설정
+    __API_URL__: JSON.stringify(
+      process.env.NODE_ENV === "production"
+        ? "https://walkee.duckdns.org"
+        : "/api"
+    ),
     "process.env.VITE_KAKAO_APP_KEY": JSON.stringify(
       process.env.VITE_KAKAO_APP_KEY
     ),

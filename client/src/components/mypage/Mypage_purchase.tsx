@@ -1,5 +1,5 @@
 import "../css/Mypage_purchase.css";
-import Construction from "../construction";
+import Construction from "../Construction";
 import type { mypage_props } from "../types/mypage_type";
 import arrow_back from "../../assets/arrow_back.png";
 

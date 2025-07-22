@@ -64,8 +64,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     super({
       clientID,
       clientSecret,
-      callbackURL:
-        'https://trusted-hippo-finally.ngrok-free.app/api/auth/kakao/callback',
+      callbackURL: 'https://walkee.duckdns.org/auth/kakao/callback',
     });
   }
 
@@ -80,7 +79,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       email: _json.kakao_account?.email || '',
       name: getRandomKoreanName(),
       picture:
-        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
+        'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/src/assets/profile.png',
       provider: 'kakao',
       providerId: profile.id,
     };

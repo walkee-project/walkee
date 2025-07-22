@@ -1,4 +1,3 @@
-import { useAppSelector } from "../../store/hooks";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import PostCard from "../PostCard";

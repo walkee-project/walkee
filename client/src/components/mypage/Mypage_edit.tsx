@@ -56,7 +56,7 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
         const formData = new FormData();
         formData.append("file", selectedFile);
         const uploadRes = await fetch(
-          `/api/users/${user.userIdx}/profile-image`,
+          `${__API_URL__}/users/${user.userIdx}/profile-image`,
           {
             method: "POST",
             body: formData,
@@ -68,7 +68,7 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
         profileImageUrl = data.url || data.profileImageUrl;
         setUploading(false);
       }
-      const patchRes = await fetch(`/api/users/${user.userIdx}`, {
+      const patchRes = await fetch(`${__API_URL__}/users/${user.userIdx}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

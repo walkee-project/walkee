@@ -1,4 +1,4 @@
-import Construction from "./construction";
+import Construction from "./Construction";
 
 export default function Store() {
   const divStyle: React.CSSProperties = {

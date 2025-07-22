@@ -38,7 +38,9 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
+    return res.redirect(
+      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+    );
   }
 
   @Get('kakao')
@@ -61,7 +63,9 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect('http://192.168.70:5173/home');
+    return res.redirect(
+      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+    );
   }
 
   @Get('naver')
@@ -83,7 +87,9 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.redirect('https://trusted-hippo-finally.ngrok-free.app/home');
+    return res.redirect(
+      'http://walkeeteam.s3-website.ap-northeast-2.amazonaws.com/home',
+    );
   }
 
   @Post('logout')

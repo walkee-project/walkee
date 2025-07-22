@@ -88,15 +88,18 @@ const Community = () => {
     if (!post) return;
     try {
       if (!post.isLiked) {
-        await fetch("/api/post-likes", {
+        await fetch(`${__API_URL__}i/post-likes`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIdx, postIdx }),
         });
       } else {
-        await fetch(`/api/post-likes/by-user-post/${userIdx}/${postIdx}`, {
-          method: "DELETE",
-        });
+        await fetch(
+          `${__API_URL__}/post-likes/by-user-post/${userIdx}/${postIdx}`,
+          {
+            method: "DELETE",
+          }
+        );
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
@@ -192,7 +195,7 @@ const Community = () => {
                           //   className="map-image"
                           // />
                           <img
-                            src={`/api/public${post.postUploadImg}`}
+                            src={`${__API_URL__}/public${post.postUploadImg}`}
                             alt="게시글 이미지"
                             className="main-detail-image"
                           />
@@ -269,7 +272,7 @@ const Community = () => {
                           //   className="recent-post-map"
                           // />
                           <img
-                            src={`/api/public${post.postUploadImg}`}
+                            src={`${__API_URL__}/public${post.postUploadImg}`}
                             alt="게시글 이미지"
                             className="detail-image"
                           />

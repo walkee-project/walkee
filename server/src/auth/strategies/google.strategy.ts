@@ -57,8 +57,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID,
       clientSecret,
-      callbackURL:
-        'https://trusted-hippo-finally.ngrok-free.app/api/auth/google/callback',
+      callbackURL: 'https://walkee.duckdns.org/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -73,8 +72,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const user = {
       email: emails[0]?.value || '',
       name: getRandomKoreanName(),
-      picture:
-        'https://trusted-hippo-finally.ngrok-free.app/src/assets/profile.png',
+      picture: 'https://d3tmopy3l2k2mm.cloudfront.net/src/assets/profile.png',
       provider: 'google',
       providerId: profile.id,
     };

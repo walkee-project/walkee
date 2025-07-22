@@ -39,7 +39,7 @@ function DrawingSectionComponent() {
           summary.userRoute.length > 0 &&
           summary.userRoute[0].routeThumbnail ? (
             <img
-              src={`api/public${summary.userRoute[0].routeThumbnail}`}
+              src={`${__API_URL__}/public${summary.userRoute[0].routeThumbnail}`}
               alt="내그림보기"
             />
           ) : (

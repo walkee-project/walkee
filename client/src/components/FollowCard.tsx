@@ -26,9 +26,7 @@ const FollowCard: React.FC<FollowCardProps> = ({ follow }) => {
       <div className="follow_imgDiv">
         {follow.followThumbnail ? (
           <img
-            src={`${import.meta.env.VITE_APP_API_URL}/api/public${
-              follow.followThumbnail
-            }`}
+            src={`${__API_URL__}/public${follow.followThumbnail}`}
             alt={follow.followTitle}
           />
         ) : (
@@ -57,4 +55,4 @@ const FollowCard: React.FC<FollowCardProps> = ({ follow }) => {
   );
 };
 
-export default FollowCard; 
+export default FollowCard;

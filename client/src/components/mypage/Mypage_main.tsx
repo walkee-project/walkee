@@ -31,7 +31,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
   const handleUserOut = async () => {
     if (!window.confirm("정말로 회원탈퇴 하시겠습니까?")) return;
     try {
-      await fetch(`/api/users/${user.userIdx}`, { method: "DELETE" });
+      await fetch(`${__API_URL__}/users/${user.userIdx}`, { method: "DELETE" });
       // 로그아웃 처리 및 메인/로그인 페이지로 이동
       navigate("/");
     } catch (err) {
