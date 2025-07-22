@@ -5,17 +5,18 @@ import arrow_back from "../../assets/arrow_back.png";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { fetchCommunityPostsThunk } from "../../store/userSlice";
+import example from "../../assets/ex2.jpg"; // 이미지 더미 있을 경우
+import profile from "../../assets/profile.png"; // 프로필 이미지 더미
 
 export type Post = {
-  id: number;
-  username: string;
-  profile: string;
-  image: string;
-  content: string;
-  date: string;
-  views: number;
-  comments: number;
-  likes: number;
+  postIdx: number;
+  userName: string;
+  userProfile: string;
+  postContent: string;
+  postCreatedAt: string;
+  postUploadImg: string;
+  postCount: number;
+  likeCount: number;
   isLiked: boolean;
 };
 
@@ -111,7 +112,7 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
           >
             <div className="profile-header">
               <img
-                src={post.userProfile || ""}
+                src={post.userProfile || profile}
                 alt="profile"
                 className="post-profile"
               />

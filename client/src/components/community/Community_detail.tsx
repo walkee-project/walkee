@@ -6,6 +6,7 @@ import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
 import example from "../../assets/ex2.jpg";
 import arrow from "../../assets/arrow_top.png";
+import back from "../../assets/arrow_back.png";
 
 const Community_detail = () => {
   const { id } = useParams();
@@ -147,7 +148,11 @@ const Community_detail = () => {
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
+          <img
+            src={back}
+            alt="뒤로가기"
+            style={{ width: "15px", height: "15px" }}
+          />
         </button>
       </header>
 

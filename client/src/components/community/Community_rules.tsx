@@ -37,7 +37,7 @@ const Community_Rules: React.FC = () => {
           <img
             src={back}
             alt="뒤로가기"
-            style={{ width: "20px", height: "20px" }}
+            style={{ width: "15px", height: "15px" }}
           />
         </button>
 
