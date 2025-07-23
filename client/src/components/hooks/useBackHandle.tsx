@@ -48,12 +48,7 @@ function useBackHandler() {
     setShowExitModal(false);
     setExitFrom(null);
     setIsMapModalOpen(false);
-
-    if (exitFrom === "Map") {
-      navigate("home");
-    } else if (exitFrom === "Community") {
-      navigate(-1);
-    }
+    navigate("/home");
   };
 
   const handleCancelModal = () => {
