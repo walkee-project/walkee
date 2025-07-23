@@ -14,7 +14,7 @@ interface CommentUser {
 }
 interface CommentType {
   commentIdx: number;
-  userIdx: string;
+  userIdx: number;
   user: CommentUser;
   commentContent: string;
   commentCreatedAt: string;
@@ -38,6 +38,7 @@ const Community_detail = () => {
 
   const [post, setPost] = useState<{
     postIdx: number;
+    userIdx: number;
     userName: string;
     userProfile: string;
     postTitle: string;
@@ -53,6 +54,7 @@ const Community_detail = () => {
 
   const user = useAppSelector((state) => state.user.user);
   const userIdx = user?.userIdx;
+
   console.log(user);
   // 💬 댓글 관련 state
   const [commentInput, setCommentInput] = useState("");
@@ -285,6 +287,48 @@ const Community_detail = () => {
         </div>
 
         <h2 className="detail-title">{post.postTitle}</h2>
+        {/* ✨ 게시글 수정/삭제 버튼 */}
+        {post.userIdx === userIdx && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+              marginBottom: "10px",
+            }}
+          >
+            <button
+              onClick={() => navigate(`/community/edit/${post.postIdx}`)}
+              style={{ fontSize: "14px" }}
+            >
+              ✏️ 수정
+            </button>
+            <button
+              onClick={async () => {
+                const ok = window.confirm("게시글을 삭제할까요?");
+                if (!ok) return;
+
+                try {
+                  const res = await fetch(
+                    `${__API_URL__}/posts/${post.postIdx}`,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+                  if (!res.ok) throw new Error("삭제 실패");
+                  alert("삭제 완료!");
+                  navigate(from === "all" ? "/community/all" : "/community");
+                } catch (err) {
+                  alert("삭제 중 오류 발생");
+                  console.error(err);
+                }
+              }}
+              style={{ fontSize: "14px", color: "red" }}
+            >
+              🗑 삭제
+            </button>
+          </div>
+        )}
 
         {post.postUploadImg && post.postUploadImg !== "" && (
           <img
@@ -317,9 +361,7 @@ const Community_detail = () => {
             </p>
           ) : (
             comments.map((c, idx) => {
-              if (!userIdx) return null;
-
-              const isMine = c.userIdx === String(userIdx);
+              const isMine = c.userIdx === userIdx;
               const isEditing = editCommentId === c.commentIdx;
               return (
                 <div key={idx} className="comment-in">

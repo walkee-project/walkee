@@ -20,6 +20,7 @@ import Community_detail from "./components/community/Community_detail";
 import Community_Rules from "./components/community/Community_rules";
 import useBackHandler from "./components/hooks/useBackHandle";
 import ConfirmExitModal from "./components/ConfirmExitModal";
+import Community_edit from "./components/community/Community_edit";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -37,8 +38,11 @@ function AppContent() {
   const location = useLocation();
   const hideNavRoutes = ["/", "/map/ing", "/courseList", "/community/write"]; // 네비게이션 숨길 경로
   const isDynamicDetail = matchPath("/community/:id", location.pathname);
+
+  const isEdit = matchPath("/community/edit/:id", location.pathname);
+
   const isNavHidden =
-    hideNavRoutes.includes(location.pathname) || !!isDynamicDetail;
+    hideNavRoutes.includes(location.pathname) || !!isDynamicDetail || !!isEdit;
 
   const backHandler = useBackHandler();
 
@@ -102,6 +106,7 @@ function AppContent() {
           path="/community/:id"
           element={<Community_detail key={resetKey.community} />}
         />
+        <Route path="/community/edit/:id" element={<Community_edit />} />
         <Route path="/community/rules" element={<Community_Rules />} />
 
         <Route path="/map" element={<Map />} />
