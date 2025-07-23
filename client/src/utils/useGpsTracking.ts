@@ -10,7 +10,8 @@ interface GpsTrackingOptions {
 export default function useGpsTracking(
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>,
   mapInstance: kakao.maps.Map | null,
-  options: GpsTrackingOptions
+  options: GpsTrackingOptions,
+  isPause: boolean = false
 ) {
   const [isTracking, setIsTracking] = useState(false);
   const [totalDistance, setTotalDistance] = useState(0);
@@ -29,6 +30,12 @@ export default function useGpsTracking(
     isFollowingActiveRef.current = val;
     setIsFollowingActive(val);
   };
+
+  // isPause 최신값을 항상 참조하도록 useRef 사용
+  const isPauseRef = useRef(isPause);
+  useEffect(() => {
+    isPauseRef.current = isPause;
+  }, [isPause]);
 
   // 시간 추적 useEffect
   useEffect(() => {
@@ -97,7 +104,7 @@ export default function useGpsTracking(
                 options.targetStartPoint!.lng
               );
 
-              if (distanceToStart <= 10) {
+              if (distanceToStart <= 20) {
                 setAndRefIsFollowingActive(true);
                 setStartTime(new Date());
                 setTotalDistance(0);
@@ -109,6 +116,7 @@ export default function useGpsTracking(
             }
 
             if (isFollowingActiveRef.current) {
+              if (isPauseRef.current) return;
               if (lastPositionRef.current) {
                 const distance = calculateDistance(
                   lastPositionRef.current.lat,

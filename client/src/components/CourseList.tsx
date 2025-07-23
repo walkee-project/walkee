@@ -1,4 +1,4 @@
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import RouteCard from "./RouteCard";
@@ -10,11 +10,22 @@ import type {
   Follow,
   RouteItem,
 } from "./types/courseList_type";
+import { fetchUserSummaryThunk } from "../store/userSlice";
+
+async function deleteRouteApi(routeIdx: number) {
+  const res = await fetch(`${__API_URL__}/routes/${routeIdx}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("경로 삭제 실패");
+}
 
 const CourseList: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const summary = useAppSelector((state) => state.user.summary);
+  const dispatch = useAppDispatch();
+  const userIdx = useAppSelector((state) => state.user.user?.userIdx);
 console.log(summary?.userFollows);
   // sectionType은 location.state에서만 fallback (찜한 경로 등)
   const sectionType: course_section_type =
@@ -25,9 +36,7 @@ console.log(summary?.userFollows);
 
   let listData: (RouteItem | Follow)[] = [];
   let title = "";
-
   if (sectionType === "mycourse") {
-    // 내 경로 페이지에서 탭 분기
     if (activeTab === "mycourse") {
       listData = summary?.userRoute ?? [];
       title = "내 경로";
@@ -48,8 +57,25 @@ console.log(summary?.userFollows);
           tab: "course",
         },
       });
-    } else {
+    } else if (window.history.length > 1) {
       navigate(-1);
+    } else {
+      // 기본 경로를 명시적으로 지정 (예: 마이페이지)
+      navigate("/mypage");
+    }
+  };
+
+  // 경로 삭제 핸들러
+  const handleDeleteRoute = async (routeIdx: number) => {
+    if (!window.confirm("정말로 이 경로를 삭제하시겠습니까?")) return;
+    try {
+      await deleteRouteApi(routeIdx);
+      if (userIdx) {
+        await dispatch(fetchUserSummaryThunk(userIdx));
+      }
+      alert("경로가 삭제되었습니다.");
+    } catch (err) {
+      alert("경로 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -99,12 +125,17 @@ console.log(summary?.userFollows);
                           route: item,
                           openOverlay: true,
                           from: "courseList",
-                          fromState: sectionType,
+                          sectionType,
+                          activeTab,
                         },
                       })
                     }
                   >
-                    <RouteCard route={item as RouteItem} />
+                    <RouteCard
+                      route={item as RouteItem}
+                      showDeleteButton={true}
+                      onDelete={handleDeleteRoute}
+                    />
                   </div>
                 );
               }
@@ -120,7 +151,8 @@ console.log(summary?.userFollows);
                           route: item,
                           openOverlay: true,
                           from: "courseList",
-                          fromState: sectionType,
+                          sectionType,
+                          activeTab,
                         },
                       })
                     }

@@ -28,7 +28,6 @@ function Map() {
   const summary = useAppSelector((state) => state.user.summary);
   const routeList = summary?.userRouteLike || [];
   const userRouteList = summary?.userRoute || [];
-  const recommendRoute = useAppSelector((state) => state.user.recommendRoute);
 
   return (
     <div className="map_container">
@@ -52,7 +51,6 @@ function Map() {
             isActive={activeTab === "course"}
             routeList={routeList}
             userRouteList={userRouteList}
-            recommendRoute={recommendRoute}
             from={state?.from}
           />
         )}

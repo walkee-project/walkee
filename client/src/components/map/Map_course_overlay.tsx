@@ -12,7 +12,7 @@ export default function Map_course_overlay({
   from,
 }: {
   route: RouteItem;
-  btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기";
+  btnTitle: string;
   handleHideOverlay: () => void;
   from?: string;
 }) {

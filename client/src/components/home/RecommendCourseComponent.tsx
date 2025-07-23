@@ -2,79 +2,139 @@ import { useEffect, useState } from "react";
 import arrow_right from "../../assets/arrow_right.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { RouteItem } from "../types/courseList_type";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { addRouteLikeThunk, removeRouteLikeThunk } from "../../store/userSlice";
+import heart from "../../assets/heart.png";
+import refreshIcon from "../../assets/refresh.png";
 
-// 거리 계산 함수 (Haversine 공식)
-function getDistanceFromLatLonInMeters(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-) {
-  const R = 6371000; // 지구 반지름(m)
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+interface Props {
+  routeList: RouteItem[];
+  onViewRoute?: (route: RouteItem) => void;
 }
 
-function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
+// 두 좌표 간의 거리를 계산하는 함수 (하버사인 공식)
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // 지구의 반지름 (km)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // km 단위
+  return distance * 1000; // m 단위로 변환
+};
+
+function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isNearby, setIsNearby] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [currentRoute, setCurrentRoute] = useState<RouteItem | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number, lon: number} | null>(null);
+  const [nearbyRoutes, setNearbyRoutes] = useState<RouteItem[]>([]);
+  const user = useAppSelector((state) => state.user.user);
+  const userRouteLike = useAppSelector((state) => state.user.summary?.userRouteLike) ?? [];
+  const dispatch = useAppDispatch();
 
+  // 사용자 위치 가져오기
   useEffect(() => {
-    if (!route) {
-      setChecked(true);
-      setIsNearby(false);
-      return;
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("위치 정보를 가져올 수 없습니다:", error);
+          // 위치 정보가 없을 경우 전체 routeList 사용
+          setNearbyRoutes(routeList);
+        }
+      );
+    } else {
+      console.error("Geolocation이 지원되지 않습니다.");
+      // Geolocation이 지원되지 않을 경우 전체 routeList 사용
+      setNearbyRoutes(routeList);
     }
-    if (!navigator.geolocation) {
-      setChecked(true);
-      setIsNearby(false);
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const dist = getDistanceFromLatLonInMeters(
-          pos.coords.latitude,
-          pos.coords.longitude,
-          route.routeStartLat,
-          route.routeStartLng
-        );
-        setIsNearby(dist <= 300); // 300m 이내만 추천
-        setChecked(true);
-      },
-      () => {
-        setIsNearby(false);
-        setChecked(true);
-      }
-    );
-  }, [route]);
+  }, []);
 
-  if (!route || !checked) {
+  // 사용자 위치 기반으로 1500m 이내 경로 필터링
+  useEffect(() => {
+    if (userLocation && routeList && routeList.length > 0) {
+      const filtered = routeList.filter(route => {
+        // RouteItem의 routeStartLat, routeStartLng 사용
+        if (route.routeStartLat && route.routeStartLng) {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lon,
+            route.routeStartLat,
+            route.routeStartLng
+          );
+          return distance <= 1500; // 1500m 이내
+        }
+        return false;
+      });
+      setNearbyRoutes(filtered);
+    } else if (!userLocation) {
+      // 위치 정보가 없을 경우 전체 routeList 사용
+      setNearbyRoutes(routeList);
+    }
+  }, [userLocation, routeList]);
+
+  // 1500m 이내 경로에서만 랜덤 추천
+  useEffect(() => {
+    if (nearbyRoutes && nearbyRoutes.length > 0) {
+      const random = nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
+      setCurrentRoute(random);
+    } else {
+      setCurrentRoute(null);
+    }
+  }, [nearbyRoutes]);
+
+  if (!currentRoute) {
     return (
       <div className="recommend_section empty">
-        등록 되어있는 경로가 없습니다.
+        {userLocation ? "근처 1500m 이내에 추천코스가 없습니다." : "위치 정보를 확인 중입니다..."}
       </div>
-    );
-  }
-  if (!isNearby) {
-    return (
-      <div className="recommend_section empty">근처에 추천코스가 없습니다.</div>
     );
   }
 
   // 초를 분, 초로 변환
-  const totalSeconds = Number(route.routeTotalTime) || 0;
+  const totalSeconds = Number(currentRoute.routeTotalTime) || 0;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
+
+  // 찜 상태
+  const liked = userRouteLike.some((item) => item.routeIdx === currentRoute.routeIdx);
+
+  // 새로고침 핸들러 (1500m 이내 경로 중에서만 랜덤)
+  const handleRefresh = () => {
+    if (!nearbyRoutes || nearbyRoutes.length === 0) return;
+    // 현재 추천 제외, 랜덤 추천
+    const candidates = nearbyRoutes.filter((r) => r.routeIdx !== currentRoute?.routeIdx);
+    if (candidates.length === 0) {
+      // 후보가 없으면 현재 경로 유지하거나 다시 선택
+      const random = nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
+      setCurrentRoute(random);
+      return;
+    }
+    const random = candidates[Math.floor(Math.random() * candidates.length)];
+    setCurrentRoute(random);
+  };
+
+  // 찜 토글
+  const handleLike = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    if (!liked) {
+      dispatch(addRouteLikeThunk({ userIdx: user.userIdx, routeIdx: currentRoute.routeIdx }));
+    } else {
+      dispatch(removeRouteLikeThunk({ userIdx: user.userIdx, routeIdx: currentRoute.routeIdx }));
+    }
+  };
 
   return (
     <div
@@ -85,7 +145,7 @@ function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
     >
       <div className="recommend_title">
         <div>
-          오늘의 추천코스 <span>{route.routeTitle}</span>
+          오늘의 추천코스 <span>{currentRoute.routeTitle}</span>
         </div>
         {location.pathname === "/map" ? null : (
           <img src={arrow_right} alt="화살표" />
@@ -93,17 +153,59 @@ function RecommendCourseComponent({ route }: { route: RouteItem | null }) {
       </div>
       <div className="recommend_img">
         <img
-          src={`${__API_URL__}/public${route.routeThumbnail}`}
+          src={`${__API_URL__}/public${currentRoute.routeThumbnail}`}
           alt="추천코스"
         />
         <div className="recommend_detail">
-          <p>{route.routeTotalKm} km</p>
-          <p>
-            {minutes}분{seconds > 0 ? ` ${seconds}초` : ""}
-          </p>
-          <p>{route.routeDifficulty}난이도</p>
+          {/* 왼쪽 위에 아이콘 */}
+          <div className="recommend-icons">
+            <img
+              src={refreshIcon}
+              alt="새로고침"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRefresh();
+              }}
+            />
+            <img
+              src={heart}
+              alt="찜"
+              style={{ filter: liked ? "" : "brightness(0) saturate(100%)" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+            />
+          </div>
+          {/* 오른쪽에 기존 정보 */}
+          <div className="recommend-info">
+            <p>{currentRoute.routeTotalKm} km</p>
+            <p>
+              {minutes}분{seconds > 0 ? ` ${seconds}초` : ""}
+            </p>
+            <p>{currentRoute.routeDifficulty}난이도</p>
+          </div>
         </div>
+        {/* 경로보기 버튼 */}
+        {onViewRoute && (
+          <button
+            className="recommend_btn btn btn_two"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewRoute(currentRoute);
+            }}
+            style={{ marginTop: 8 }}
+          >
+            경로보기
+          </button>
+        )}
       </div>
+      {/* 디버깅용 - 개발 완료 후 제거 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+          근처 경로: {nearbyRoutes.length}개 / 전체: {routeList.length}개
+        </div>
+      )}
     </div>
   );
 }

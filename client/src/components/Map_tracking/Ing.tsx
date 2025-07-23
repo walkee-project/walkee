@@ -64,7 +64,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
     stopTracking,
     trackedPoints,
     isFollowingActive,
-  } = useGpsTracking(markerRef, mapInstance, trackingOptions);
+  } = useGpsTracking(markerRef, mapInstance, trackingOptions, isPause);
 
   const [internalElapsedTime, setInternalElapsedTime] = useState(0);
 
@@ -214,7 +214,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
   // 타이머 동작 제어
   useEffect(() => {
     if (loading) return;
-    if (!isPause && !isFinish) {
+    if (!isPause && !isFinish && (tab !== "course" || isFollowingActive)) {
       // 계속하기: 타이머 시작
       if (timerId) clearInterval(timerId);
       const id = setInterval(() => {
@@ -227,7 +227,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
       if (timerId) clearInterval(timerId);
       setTimerId(null);
     }
-  }, [isPause, isFinish, loading]);
+  }, [isPause, isFinish, loading, tab, isFollowingActive]);
 
   // 쉬기 시작할 때 시간 저장
   // useEffect(() => {
@@ -244,12 +244,6 @@ export default function Ing({ isMapModalOpen }: Prop) {
   // 트래킹(경로 추가) 제어: isPause일 때는 trackedPoints 업데이트 막기
   // useGpsTracking 내부에서 직접 제어가 안 되면, trackedPoints를 별도 관리 필요
   // 여기서는 경로 그리기만 멈추는 방식으로 처리
-  useEffect(() => {
-    if (loading) return;
-    if (isPause && userPolylineRef.current) {
-      userPolylineRef.current.setMap(null);
-    }
-  }, [isPause, loading]);
 
   // 쉬는 중 위치 이탈 감지
   useEffect(() => {
@@ -293,11 +287,11 @@ export default function Ing({ isMapModalOpen }: Prop) {
   }, [totalDistance, internalElapsedTime]);
 
   const handleFinish = () => {
-    if (totalDistance < 1000) {
-      setShowExitModal(true);
-      setIsPause(true);
-      return;
-    }
+    // if (totalDistance < 1000) {
+    //   setShowExitModal(true);
+    //   setIsPause(true);
+    //   return;
+    // }
     stopTracking();
     setIsFinish(true);
   };

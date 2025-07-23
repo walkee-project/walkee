@@ -9,7 +9,7 @@ import { useAppSelector } from "../store/hooks";
 import Loading from "./Loading";
 
 const Home = () => {
-  const recommendRoute = useAppSelector((state) => state.user.recommendRoute);
+  const routeList = useAppSelector((state) => state.user.allRoute);
 
   const user = useAppSelector((state) => state.user.user);
 
@@ -38,7 +38,7 @@ const Home = () => {
 
       {/* 추천코스 영역 */}
       <div>
-        <RecommendCourseComponent route={recommendRoute} />
+        <RecommendCourseComponent routeList={routeList} />
       </div>
 
       {/* 새그리기 / 내그림보기 */}

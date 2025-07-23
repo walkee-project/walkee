@@ -98,9 +98,37 @@
   top: 10px;
   right: 10px;
   display: flex;
-  gap: 5px;
+  align-items: flex-start;
+  gap: 8px;
   font-weight: 500;
   font-size: 0.65rem;
+  margin-left: 8px;
+  width: 90%;
+  justify-content: space-between;
+}
+
+.recommend-icons {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-right: 4px;
+  gap: 10px;
+}
+
+.recommend-icons img:first-child{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+.recommend-icon:last-child {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.recommend-info {
+  display: flex;
+  gap: 8px;
 }
 
 .recommend_detail p {

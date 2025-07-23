@@ -7,9 +7,11 @@ import "./css/RouteCard.css";
 
 interface Props {
   route: RouteItem;
+  showDeleteButton?: boolean;
+  onDelete?: (routeIdx: number) => void;
 }
 
-const RouteCard: React.FC<Props> = ({ route }) => {
+const RouteCard: React.FC<Props> = ({ route, showDeleteButton, onDelete }) => {
   const dispatch = useAppDispatch();
   const userIdx = useAppSelector((state) => state.user.user?.userIdx);
   const liked = useAppSelector(
@@ -75,6 +77,24 @@ const RouteCard: React.FC<Props> = ({ route }) => {
             <p>{route.routeTotalKm} km</p>
             <p>|</p>
             <p>{speed} km/h</p>
+            {showDeleteButton && (
+              <button
+                style={{
+                  fontSize: "14px",
+                  color: "red",
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  marginLeft: 8,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onDelete) onDelete(route.routeIdx);
+                }}
+              >
+                🗑 삭제
+              </button>
+            )}
           </div>
         </div>
       </div>

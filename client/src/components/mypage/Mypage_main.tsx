@@ -1,6 +1,8 @@
 import "../css/Mypage_main.css";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { fetchUserSummaryThunk } from "../../store/userSlice";
+import { useEffect } from "react";
 import type { mypage_props } from "../types/mypage_type";
 import profile from "../../assets/profile.png";
 import arrow from "../../assets/arrow_right.png";
@@ -13,6 +15,14 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
   const summary = useAppSelector((state) => state.user.summary);
   const loading = useAppSelector((state) => state.user.loading);
   const error = useAppSelector((state) => state.user.error);
+  const dispatch = useAppDispatch();
+  const userIdx = useAppSelector((state) => state.user.user?.userIdx);
+
+  useEffect(() => {
+    if (userIdx) {
+      dispatch(fetchUserSummaryThunk(userIdx));
+    }
+  }, [userIdx, dispatch]);
 
   //로딩 중일 때 표시
   if (loading) {

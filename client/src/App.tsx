@@ -33,8 +33,14 @@ import {
   fetchAllRouteThunk,
 } from "./store/userSlice";
 
+import { api } from "./utils/api";
+
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
+  useEffect(() => {
+    // URL에서 토큰 추출 및 저장
+    api.initializeToken();
+  }, []);
   useEffect(() => {
     // URL에서 토큰 추출
     const urlParams = new URLSearchParams(window.location.search);

@@ -192,7 +192,11 @@ const Community_detail = () => {
         `${__API_URL__}/comments?postIdx=${post?.postIdx}`
       );
       const commentsData = await updated.json();
-      setComments(commentsData);
+      setComments(
+        commentsData.filter(
+          (c: CommentType) => String(c.postIdx) === String(post?.postIdx)
+        )
+      );
 
       setEditCommentId(null);
       setEditCommentContent("");
@@ -216,7 +220,11 @@ const Community_detail = () => {
         `${__API_URL__}/comments?postIdx=${post?.postIdx}`
       );
       const commentsData = await updated.json();
-      setComments(commentsData);
+      setComments(
+        commentsData.filter(
+          (c: CommentType) => String(c.postIdx) === String(post?.postIdx)
+        )
+      );
     } catch (err) {
       alert("댓글 삭제 중 오류 발생");
       console.error(err);
@@ -296,7 +304,7 @@ const Community_detail = () => {
           >
             <button
               onClick={() => navigate(`/community/edit/${post.postIdx}`)}
-              style={{ fontSize: "14px" }}
+              style={{ fontSize: "14px", border: "none", background: "none", cursor: "pointer" }}
             >
               ✏️ 수정
             </button>
@@ -320,7 +328,7 @@ const Community_detail = () => {
                   console.error(err);
                 }
               }}
-              style={{ fontSize: "14px", color: "red" }}
+              style={{ fontSize: "14px", color: "red", border: "none", background: "none", cursor: "pointer" }}
             >
               🗑 삭제
             </button>
@@ -400,10 +408,10 @@ const Community_detail = () => {
 
                   {isMine && !isEditing && (
                     <div
-                      style={{ display: "flex", gap: "6px", marginTop: "4px" }}
+                      style={{ display: "flex", gap: "6px", marginTop: "4px", justifyContent: "flex-end" }}
                     >
                       <button
-                        style={{ fontSize: "12px" }}
+                        style={{ fontSize: "12px", border: "none", background: "none", cursor: "pointer" }}
                         onClick={() => {
                           setEditCommentId(c.commentIdx);
                           setEditCommentContent(c.commentContent);
@@ -412,7 +420,7 @@ const Community_detail = () => {
                         수정
                       </button>
                       <button
-                        style={{ fontSize: "12px", color: "red" }}
+                        style={{ fontSize: "12px", color: "red", border: "none", background: "none", cursor: "pointer" }}
                         onClick={() => handleDelete(c.commentIdx)}
                       >
                         삭제
