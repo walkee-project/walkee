@@ -255,10 +255,7 @@ const Community_detail = () => {
   if (loading) return <div className="detail-container">로딩 중...</div>;
   if (error) return <div className="detail-container">{error}</div>;
   if (!post) return <div className="detail-container">게시글이 없습니다.</div>;
-
-  // userName fallback: post.userName 없으면 전역 user.userName 사용
-  const displayUserName = post.userName || user?.userName || "익명";
-
+  console.log(post);
   return (
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
@@ -279,7 +276,7 @@ const Community_detail = () => {
               alt="작성자 프로필"
               className="writer-img"
             />
-            <p className="writer-name">{displayUserName}</p>
+            <p className="writer-name">{post.userName || "익명"}</p>
           </div>
           <p className="writer-meta">
             {formatRelativeDate(post.postCreatedAt)}

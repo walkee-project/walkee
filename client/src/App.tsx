@@ -35,6 +35,22 @@ import {
 
 // ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
+  useEffect(() => {
+    // URL에서 토큰 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("accessToken");
+
+    if (accessToken) {
+      // localStorage에 저장
+      localStorage.setItem("access_token", accessToken);
+
+      // URL을 깔끔하게 정리
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+
+      console.log("토큰 저장 완료:", accessToken);
+    }
+  }, []);
   const location = useLocation();
   const hideNavRoutes = ["/", "/map/ing", "/courseList", "/community/write"]; // 네비게이션 숨길 경로
   const isDynamicDetail = matchPath("/community/:id", location.pathname);

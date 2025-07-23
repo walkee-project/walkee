@@ -42,15 +42,15 @@ const PostCard: React.FC<Props> = ({ post }) => {
 
   return (
     <div className="postList_card">
-      <div className="postcard_imgDiv">
-        {post.postUploadImg && (
+      {post.postUploadImg && (
+        <div className="postcard_imgDiv">
           <img
             src={`${__API_URL__}/${post.postUploadImg}`}
             alt="thumbnail"
             className="postcard_img"
           />
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="postcard-container">
         <div className="postcard-contentInfo">

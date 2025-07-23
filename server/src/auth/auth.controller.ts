@@ -39,7 +39,7 @@ export class AuthController {
     });
 
     return res.redirect(
-      'https://d1i3d05ur40jbn.cloudfront.net/home',
+      `https://d1i3d05ur40jbn.cloudfront.net/home?accessToken=${result.accessToken}`,
     );
   }
 
@@ -64,7 +64,7 @@ export class AuthController {
     });
 
     return res.redirect(
-      'https://d1i3d05ur40jbn.cloudfront.net/home',
+      `https://d1i3d05ur40jbn.cloudfront.net/home?accessToken=${result.accessToken}`,
     );
   }
 
@@ -88,7 +88,7 @@ export class AuthController {
     });
 
     return res.redirect(
-      'https://d1i3d05ur40jbn.cloudfront.net/home',
+      `https://d1i3d05ur40jbn.cloudfront.net/home?accessToken=${result.accessToken}`,
     );
   }
 

@@ -29,6 +29,7 @@ export class PostsService {
   async findOne(id: number, userIdx?: number) {
     const post = await this.postRepository.findOne({
       where: { postIdx: id, postDeletedAt: IsNull() },
+      relations: ['user'],
     });
     if (!post) return null;
     // userIdx가 있으면 isLiked 포함
@@ -36,11 +37,16 @@ export class PostsService {
     if (userIdx) {
       const like = await this.postRepository.manager.query(
         'SELECT 1 FROM post_likes WHERE user_idx = ? AND post_idx = ? LIMIT 1',
-        [userIdx, id]
+        [userIdx, id],
       );
       isLiked = like.length > 0;
     }
-    return { ...post, isLiked };
+    return {
+      ...post,
+      userName: post.user?.userName,
+      userProfile: post.user?.userProfile,
+      isLiked,
+    };
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
@@ -68,7 +74,7 @@ export class PostsService {
       posts.map(async (post) => {
         const likeCount = await this.getLikeCount(post.postIdx);
         return { ...post, likeCount };
-      })
+      }),
     );
 
     return postsWithLikes;
