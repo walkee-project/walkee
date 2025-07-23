@@ -87,7 +87,7 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
       }
       // 좋아요 토글 후 서버에서 최신 posts 다시 받아오기
       dispatch(fetchCommunityPostsThunk());
-    } catch (err) {
+    } catch {
       alert("좋아요 처리 중 오류가 발생했습니다.");
     }
   };
@@ -137,7 +137,7 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
             <div className="post-actions">
               <Community_Stats
                 views={post.postCount}
-                comments={0}
+                comments={post.commentCount || 0}
                 likeCount={post.likeCount}
                 postId={post.postIdx}
                 isLiked={post.isLiked}

@@ -17,6 +17,7 @@ interface CommentType {
   user: CommentUser;
   commentContent: string;
   commentCreatedAt: string;
+  postIdx: number | string; // 추가
 }
 
 const Community_detail = () => {
@@ -140,7 +141,11 @@ const Community_detail = () => {
       );
       if (commentsRes.ok) {
         const commentsData = await commentsRes.json();
-        setComments(commentsData);
+        setComments(
+          commentsData.filter(
+            (c: CommentType) => String(c.postIdx) === String(post.postIdx)
+          )
+        );
       }
       setCommentInput("");
     } catch (err) {
@@ -174,7 +179,12 @@ const Community_detail = () => {
       })
       .then(([postData, commentsData]) => {
         setPost(postData);
-        setComments(commentsData);
+        // postIdx가 현재 게시글 id와 같은 댓글만 남김
+        setComments(
+          commentsData.filter(
+            (c: CommentType) => String(c.postIdx) === String(id)
+          )
+        );
       })
       .catch(() => setError("오류가 발생했습니다."))
       .finally(() => setLoading(false));

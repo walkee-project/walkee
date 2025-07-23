@@ -59,7 +59,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     super({
       clientID,
       clientSecret,
-      callbackURL: 'https://walkee.duckdns.org/auth/naver/callback',
+      callbackURL: 'https://walkeeee.cloud/auth/naver/callback',
     });
   }
 
@@ -74,8 +74,6 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     const user = {
       email: _json.email,
       name: getRandomKoreanName(),
-      picture:
-        'https://d1i3d05ur40jbn.cloudfront.net/src/assets/profile.png',
       provider: 'naver',
       providerId: _json.id,
     };

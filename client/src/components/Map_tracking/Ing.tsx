@@ -16,6 +16,9 @@ export default function Ing() {
   const location = useLocation();
   const tab = location.state?.tab; // "basic" | "course"
   const routeToFollow = location.state?.route; // 따라갈 경로 정보
+  const goalType = location.state?.goalType;
+  const distanceGoal = Number(location.state?.distanceGoal);
+  const timeGoal = Number(location.state?.timeGoal);
 
   const trackingOptions = {
     mode: tab || "basic",
@@ -31,7 +34,10 @@ export default function Ing() {
   const [isFinish, setIsFinish] = useState(false);
 
   // 쉬는 중 마지막 위치 저장
-  const [pauseLocation, setPauseLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [pauseLocation, setPauseLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [isTooFar, setIsTooFar] = useState(false);
   const DIST_THRESHOLD = 20; // 미터
 
@@ -41,12 +47,32 @@ export default function Ing() {
 
   const {
     totalDistance,
-    elapsedTime,
+    // elapsedTime,
     startTracking,
     stopTracking,
     trackedPoints,
     isFollowingActive,
   } = useGpsTracking(markerRef, mapInstance, trackingOptions);
+
+  const [internalElapsedTime, setInternalElapsedTime] = useState(0);
+
+  // 목표 달성 체크 (이 부분만 남기기)
+  const [goalAchieved, setGoalAchieved] = useState(false);
+  useEffect(() => {
+    if (
+      goalType === "거리 설정" &&
+      totalDistance / 1000 >= distanceGoal &&
+      distanceGoal > 0
+    ) {
+      setGoalAchieved(true);
+    } else if (
+      goalType === "시간 설정" &&
+      internalElapsedTime / 60 >= timeGoal &&
+      timeGoal > 0
+    ) {
+      setGoalAchieved(true);
+    }
+  }, [goalType, distanceGoal, timeGoal, totalDistance, internalElapsedTime]);
 
   const userPolylineRef = useRef<kakao.maps.Polyline | null>(null);
   const targetPolylineRef = useRef<kakao.maps.Polyline | null>(null);
@@ -169,8 +195,8 @@ export default function Ing() {
   }, [tab, routeToFollow, trackedPoints, loading]);
 
   // 트래킹/타이머 제어용
-  const [internalElapsedTime, setInternalElapsedTime] = useState(0);
-  const [pauseStartTime, setPauseStartTime] = useState<number | null>(null);
+  // const [internalElapsedTime, setInternalElapsedTime] = useState(0);
+  // const [pauseStartTime, setPauseStartTime] = useState<number | null>(null);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
   // 타이머 동작 제어
@@ -192,14 +218,14 @@ export default function Ing() {
   }, [isPause, isFinish, loading]);
 
   // 쉬기 시작할 때 시간 저장
-  useEffect(() => {
-    if (loading) return;
-    if (isPause) {
-      setPauseStartTime(Date.now());
-    } else {
-      setPauseStartTime(null);
-    }
-  }, [isPause, loading]);
+  // useEffect(() => {
+  //   if (loading) return;
+  //   if (isPause) {
+  //     setPauseStartTime(Date.now());
+  //   } else {
+  //     setPauseStartTime(null);
+  //   }
+  // }, [isPause, loading]);
 
   // elapsedTime이 바뀔 때(트래킹 재시작 등) internalElapsedTime을 리셋하지 않도록 기존 useEffect 제거
 
@@ -247,7 +273,10 @@ export default function Ing() {
 
   // 속도 7km/h 초과 경고
   useEffect(() => {
-    const speed = internalElapsedTime > 0 ? (totalDistance / 1000) / (internalElapsedTime / 3600) : 0;
+    const speed =
+      internalElapsedTime > 0
+        ? totalDistance / 1000 / (internalElapsedTime / 3600)
+        : 0;
     setSpeedWarning(speed > 7);
   }, [totalDistance, internalElapsedTime]);
 
@@ -288,15 +317,21 @@ export default function Ing() {
 
   if (loading) {
     return (
-      <div style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#2196f3"
-      }}>
-        <img src={loadingGif} alt="지도 로딩중" style={{ width: 120, height: 120 }} />
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#2196f3",
+        }}
+      >
+        <img
+          src={loadingGif}
+          alt="지도 로딩중"
+          style={{ width: "100%", height: "100%" }}
+        />
       </div>
     );
   }
@@ -311,7 +346,11 @@ export default function Ing() {
           formatTime={formatTime}
           tab={tab}
           completion={tab === "course" ? completion : undefined}
-          routeIdx={tab === "course" && routeToFollow ? routeToFollow.routeIdx : undefined}
+          routeIdx={
+            tab === "course" && routeToFollow
+              ? routeToFollow.routeIdx
+              : undefined
+          }
         />
       ) : (
         <>
@@ -329,6 +368,11 @@ export default function Ing() {
               <div>시작 지점으로 이동해주세요.</div>
             </div>
           )}
+          {goalAchieved && (
+            <div className="info_box">
+              <div>목표를 달성하셨습니다!</div>
+            </div>
+          )}
           {isPause && isTooFar && (
             <div className="info_box">
               <div>마지막 지점으로 이동해주세요.</div>
@@ -343,7 +387,14 @@ export default function Ing() {
 
           <div className="state_wrapper">
             {speedWarning && (
-              <div className="info_box" style={{ color: "#e74c3c", fontWeight: "bold", marginBottom: 8 }}>
+              <div
+                className="info_box"
+                style={{
+                  color: "#e74c3c",
+                  fontWeight: "bold",
+                  marginBottom: 8,
+                }}
+              >
                 속도가 너무 빠릅니다. 운전 도중에는 사용하지 마세요.
               </div>
             )}
@@ -355,7 +406,11 @@ export default function Ing() {
               <div className="state_kmh">
                 <span>
                   {internalElapsedTime > 0
-                    ? (totalDistance / 1000 / (internalElapsedTime / 3600)).toFixed(2)
+                    ? (
+                        totalDistance /
+                        1000 /
+                        (internalElapsedTime / 3600)
+                      ).toFixed(2)
                     : "0.00"}
                 </span>
                 <span className="unit"> km/h</span>

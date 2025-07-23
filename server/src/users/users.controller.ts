@@ -75,7 +75,7 @@ export class UsersController {
     if (!file) {
       throw new Error('파일이 업로드되지 않았습니다.');
     }
-    const url = `https://walkee.duckdns.org/public/profile-images/${file.filename}`;
+    const url = `https://walkeeee.cloud/public/profile-images/${file.filename}`;
     // DB 업데이트까지 하려면 아래 주석 해제
     // await this.usersService.update(+id, { userProfile: url });
     return { url };

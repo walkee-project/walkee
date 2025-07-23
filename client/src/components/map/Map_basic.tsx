@@ -213,7 +213,14 @@ export default function Map_basic() {
         <button
           className="btn_two btn basic_btn"
           onClick={() => {
-            navigate("/map/ing", { state: { tab: "basic" } });
+            navigate("/map/ing", {
+              state: {
+                tab: "basic",
+                goalType,
+                distanceGoal,
+                timeGoal,
+              },
+            });
           }}
         >
           시작
