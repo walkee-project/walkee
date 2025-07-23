@@ -55,7 +55,7 @@ function First() {
               style={{ cursor: "pointer" }}
             >
               <img src={google_login} alt="구글 로그인" />
-            </div> */}
+            </div>  */}
             <div
               className="first_btn kakao_btn"
               onClick={() => handleSocialLogin("kakao")}
