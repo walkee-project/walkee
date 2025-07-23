@@ -18,9 +18,13 @@ import CourseList from "./components/CourseList";
 import Community_write from "./components/community/Community_write";
 import Community_detail from "./components/community/Community_detail";
 import Community_Rules from "./components/community/Community_rules";
+import useBackHandler from "./components/hooks/useBackHandle";
+import ConfirmExitModal from "./components/ConfirmExitModal";
 
 import { useState } from "react";
 import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   fetchUser,
@@ -35,6 +39,25 @@ function AppContent() {
   const isDynamicDetail = matchPath("/community/:id", location.pathname);
   const isNavHidden =
     hideNavRoutes.includes(location.pathname) || !!isDynamicDetail;
+
+  const backHandler = useBackHandler();
+
+  const { handleBack, showExitModal } = backHandler;
+
+  useEffect(() => {
+    // popstate 이벤트에 handleBack 연결
+    const onPopState = () => {
+      handleBack();
+
+      // 뒤로가기를 막고 싶으면 아래 코드 사용
+      window.history.pushState(null, "", window.location.pathname);
+    };
+
+    window.history.pushState(null, "", window.location.pathname);
+    window.addEventListener("popstate", onPopState);
+
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [handleBack, location.pathname]);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
@@ -82,13 +105,24 @@ function AppContent() {
         <Route path="/community/rules" element={<Community_Rules />} />
 
         <Route path="/map" element={<Map />} />
-        <Route path="/map/ing" element={<Ing />} />
+        <Route
+          path="/map/ing"
+          element={<Ing isMapModalOpen={backHandler.ismapModalOpen} />}
+        />
         <Route path="/store" element={<Store />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
         <Route path="/courseList" element={<CourseList />} />
       </Routes>
 
+      <ToastContainer position="bottom-center" autoClose={1000} />
       {!isNavHidden && <Navigation onResetKey={handleResetKey} />}
+      {showExitModal && backHandler.exitFrom && (
+        <ConfirmExitModal
+          where={backHandler.exitFrom === "Map" ? "map" : "Community"}
+          onCancel={backHandler.handleCancelModal}
+          onConfirm={backHandler.handleConfirmModal}
+        />
+      )}
     </>
   );
 }
