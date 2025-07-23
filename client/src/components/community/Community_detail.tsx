@@ -14,7 +14,7 @@ interface CommentUser {
 }
 interface CommentType {
   commentIdx: number;
-  userIdx: string;
+  userIdx: number;
   user: CommentUser;
   commentContent: string;
   commentCreatedAt: string;
@@ -358,9 +358,7 @@ const Community_detail = () => {
             </p>
           ) : (
             comments.map((c, idx) => {
-              if (!userIdx) return null;
-
-              const isMine = c.userIdx === String(userIdx);
+              const isMine = c.userIdx === userIdx;
               const isEditing = editCommentId === c.commentIdx;
               return (
                 <div key={idx} className="comment-in">

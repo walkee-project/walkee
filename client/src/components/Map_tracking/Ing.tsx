@@ -10,7 +10,11 @@ import { decodePolyline } from "../../utils/decodePolyline";
 import { calculateDistance } from "../../utils/gpsUtils";
 import loadingGif from "../../assets/map_loading.gif";
 
-export default function Ing() {
+interface Prop {
+  isMapModalOpen: boolean;
+}
+
+export default function Ing({ isMapModalOpen }: Prop) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,6 +36,12 @@ export default function Ing() {
 
   const [isPause, setIsPause] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
+
+  useEffect(() => {
+    if (isMapModalOpen) {
+      setIsPause(true);
+    }
+  }, [isMapModalOpen]);
 
   // 쉬는 중 마지막 위치 저장
   const [pauseLocation, setPauseLocation] = useState<{
