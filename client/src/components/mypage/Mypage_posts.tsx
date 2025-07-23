@@ -13,27 +13,6 @@ const Mypage_posts: React.FC<mypage_props> = ({ onChangeSection }) => {
 
   const postsList = summary?.userPost ?? [];
   console.log(postsList);
-  // const postsList = [
-  //   {
-  //     postIdx: 1,
-  //     userIdx: 1,
-  //     postContent:
-  //       "아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로아 살려줘 진심으로",
-  //     postTitle: "친구랑 같이 하트 그리기 성공 💖",
-  //     postCreatedAt: "2025-07-18 17:07:37",
-  //     postUploadImg: "../assets/map_ex4.png",
-  //     postCount: 298,
-  //   },
-  //   {
-  //     postIdx: 2,
-  //     userIdx: 1,
-  //     postContent: "아 살려줘 진심으로",
-  //     postTitle: "친구랑 같이 하트 그리기 실패 💖",
-  //     postCreatedAt: "2025-07-18 1:07:37",
-  //     postUploadImg: "../assets/map_ex4.png",
-  //     postCount: 298,
-  //   },
-  // ];
 
   const handleBack = () => {
     onChangeSection("main");
@@ -56,7 +35,7 @@ const Mypage_posts: React.FC<mypage_props> = ({ onChangeSection }) => {
               <div
                 key={post.postIdx}
                 onClick={() =>
-                  navigate("/community/detail", {
+                  navigate(`/community/${post.postIdx}`, {
                     state: {
                       post: post,
                       from: "postList",

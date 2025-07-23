@@ -76,7 +76,7 @@ const Community = () => {
     .sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0))
     .slice(0, 3);
   // 최근 게시물
-  const recentPosts = safePosts;
+  const recentPosts = safePosts.slice(0, 5);
 
   // 좋아요 토글 핸들러
   const handleLikeToggle = async (e: React.MouseEvent, postIdx: number) => {
