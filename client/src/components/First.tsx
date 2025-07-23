@@ -48,6 +48,13 @@ function First() {
             <img src={mascot_short} alt="마스코트" />
           </div>
           <div className="button-group">
+            {/* <div
+              className="first_btn google_btn"
+              onClick={() => handleSocialLogin("google")}
+              style={{ cursor: "pointer" }}
+            >
+              <img src={google_login} alt="구글 로그인" />
+            </div>  */}
             <div
               className="first_btn kakao_btn"
               onClick={() => handleSocialLogin("kakao")}
