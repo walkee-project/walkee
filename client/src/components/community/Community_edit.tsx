@@ -123,9 +123,9 @@ const Community_edit = () => {
     <div className="write-container">
       {showConfirm && (
         <ConfirmExitModal
-          where="Community" // 또는 상황에 맞는 문자열
+          where="community" // 또는 상황에 맞는 문자열
           onCancel={() => setShowConfirm(false)}
-          onConfirm={() => navigate(-1)}
+          onConfirm={() => navigate("/community")}
         />
       )}
 

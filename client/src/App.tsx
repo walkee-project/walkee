@@ -139,7 +139,7 @@ function AppContent() {
       {!isNavHidden && <Navigation onResetKey={handleResetKey} />}
       {showExitModal && backHandler.exitFrom && (
         <ConfirmExitModal
-          where={backHandler.exitFrom === "Map" ? "map" : "Community"}
+          where={backHandler.exitFrom === "Map" ? "map" : "community"}
           onCancel={backHandler.handleCancelModal}
           onConfirm={backHandler.handleConfirmModal}
         />

@@ -132,9 +132,9 @@ const Community_write = () => {
     <div className="write-container">
       {showConfirm && (
         <ConfirmExitModal
-          where="Community"
+          where="community"
           onCancel={() => setShowConfirm(false)}
-          onConfirm={() => navigate("/home")}
+          onConfirm={() => navigate("/community")}
         />
       )}
 
