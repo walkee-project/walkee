@@ -14,7 +14,7 @@ export default defineConfig({
     ],
     // proxy: {
     //   "/api": {
-    //     target: "https://walkee.duckdns.org",
+    //     target: "https://walkeeee.cloud",
     //     changeOrigin: true,
     //     rewrite: (path) => path.replace(/^\/api/, ""),
     //   },
@@ -22,9 +22,7 @@ export default defineConfig({
   },
   define: {
     __API_URL__: JSON.stringify(
-      process.env.NODE_ENV === "production"
-        ? "https://walkee.duckdns.org"
-        : "/api"
+      process.env.NODE_ENV === "production" ? "https://walkeeee.cloud" : "/api"
     ),
     "process.env.VITE_KAKAO_APP_KEY": JSON.stringify(
       process.env.VITE_KAKAO_APP_KEY

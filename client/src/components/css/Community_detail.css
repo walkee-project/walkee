@@ -104,6 +104,8 @@ body {
 
 .detail-image {
   width: 100%;
+  aspect-ratio: 1 / 1; /* 정사각형 비율 */
+  object-fit: cover; /* 이미지가 잘리지 않게/채우게 */
   border-radius: 10px;
   margin: 10px 0;
 }

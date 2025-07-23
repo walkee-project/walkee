@@ -64,7 +64,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     super({
       clientID,
       clientSecret,
-      callbackURL: 'https://walkee.duckdns.org/auth/kakao/callback',
+      callbackURL: 'https://walkeeee.cloud/auth/kakao/callback',
     });
   }
 
@@ -78,8 +78,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const user = {
       email: _json.kakao_account?.email || '',
       name: getRandomKoreanName(),
-      picture:
-        'https://d1i3d05ur40jbn.cloudfront.net/src/assets/profile.png',
       provider: 'kakao',
       providerId: profile.id,
     };

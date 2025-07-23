@@ -35,7 +35,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
       await fetch(`${__API_URL__}/users/${user.userIdx}`, { method: "DELETE" });
       // 로그아웃 처리 및 메인/로그인 페이지로 이동
       navigate("/");
-    } catch (err) {
+    } catch {
       alert("회원탈퇴 처리 중 오류가 발생했습니다.");
     }
   };
@@ -44,7 +44,7 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
     try {
       await api.logout();
       navigate("/"); // 로그아웃 후 메인/로그인 페이지로 이동
-    } catch (err) {
+    } catch {
       alert("로그아웃 처리 중 오류가 발생했습니다.");
     }
   };

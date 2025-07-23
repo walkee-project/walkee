@@ -5,6 +5,7 @@ import "./css/PostCard.css";
 import viewsIcon from "../assets/viewsIcon.png";
 import goodIcon from "../assets/goodIcon.png";
 import { useAppSelector } from "../store/hooks";
+import profile from "../assets/profile.png";
 
 interface Props {
   post: postsItem;
@@ -42,7 +43,13 @@ const PostCard: React.FC<Props> = ({ post }) => {
   return (
     <div className="postList_card">
       <div className="postcard_imgDiv">
-        <img src={`${__API_URL__}/${post.postUploadImg}`} alt="thumbnail" className="postcard_img" />
+        {post.postUploadImg && (
+          <img
+            src={`${__API_URL__}/${post.postUploadImg}`}
+            alt="thumbnail"
+            className="postcard_img"
+          />
+        )}
       </div>
 
       <div className="postcard-container">
@@ -56,7 +63,11 @@ const PostCard: React.FC<Props> = ({ post }) => {
       <div className="postcard-footer">
         <div className="postcard-interactions">
           <div className="postcard-profileDiv">
-            <img src={`${__API_URL__}/${user?.userProfile}`} alt="user" className="postcard-profile" />
+            <img
+              src={user?.userProfile || profile}
+              alt="user"
+              className="postcard-profile"
+            />
           </div>
           <div className="postcard_username">{user?.userName}</div>
           <div className="postcard-footerInfo">

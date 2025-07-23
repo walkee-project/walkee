@@ -57,9 +57,10 @@
 
 .map-image {
   width: 100%;
-  height: auto;
   border-radius: 8px;
   margin-bottom: 10px;
+  height: 318px;
+  object-fit: cover;
 }
 
 .post-actions {

@@ -117,6 +117,7 @@ body {
   overflow: hidden;
   gap: 5px;
   padding-bottom: 12px;
+  justify-content: space-between;
 }
 
 /* 프로필 + 닉네임 라인 */
