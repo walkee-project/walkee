@@ -119,7 +119,7 @@ const Community = () => {
   };
 
   const handleCardClick = (postId: number) => {
-    navigate(`/community/${postId}`);
+    navigate(`/community/${postId}`, { state: { from: "main" } });
   };
 
   return (
@@ -188,12 +188,6 @@ const Community = () => {
                           <span className="username">{post.userName}</span>
                         </div>
                         {post.postUploadImg && (
-                          // <img
-                          //   src={`${
-                          //     import.meta.env.VITE_APP_API_URL
-                          //   }/api/public${post.postUploadImg}`}
-                          //   className="map-image"
-                          // />
                           <img
                             src={`${__API_URL__}/public${post.postUploadImg}`}
                             alt="게시글 이미지"

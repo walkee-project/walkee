@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../css/Community_detail.css";
 import profile from "../../assets/profile.png";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ interface CommentUser {
   userProfile?: string; // 필요 시 추가
 }
 interface CommentType {
+  commentIdx: number;
   userIdx: string;
   user: CommentUser;
   commentContent: string;
@@ -22,6 +23,18 @@ interface CommentType {
 const Community_detail = () => {
   const { id } = useParams(); // 게시물 ID
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
+
+  const handleBack = () => {
+    // 🔥 추가
+    if (from === "all") {
+      navigate("/community/all");
+    } else {
+      navigate("/community");
+    }
+  };
+
   const [post, setPost] = useState<{
     postIdx: number;
     userName: string;
@@ -43,6 +56,8 @@ const Community_detail = () => {
   // 💬 댓글 관련 state
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState<CommentType[]>([]);
+  const [editCommentId, setEditCommentId] = useState<number | null>(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
 
   function formatRelativeDate(dateString: string) {
     if (!dateString) return "";
@@ -156,6 +171,51 @@ const Community_detail = () => {
     }
   };
 
+  //댓글 수정 등록
+  const handleEditSubmit = async (commentIdx: number) => {
+    try {
+      const res = await fetch(`${__API_URL__}/comments/${commentIdx}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commentContent: editCommentContent }),
+      });
+      if (!res.ok) throw new Error("댓글 수정 실패");
+
+      const updated = await fetch(
+        `${__API_URL__}/comments?postIdx=${post?.postIdx}`
+      );
+      const commentsData = await updated.json();
+      setComments(commentsData);
+
+      setEditCommentId(null);
+      setEditCommentContent("");
+    } catch (err) {
+      alert("댓글 수정 중 오류 발생");
+      console.error(err);
+    }
+  };
+  //댓글 삭제
+  const handleDelete = async (commentIdx: number) => {
+    const ok = window.confirm("댓글을 삭제할까요?");
+    if (!ok) return;
+
+    try {
+      const res = await fetch(`${__API_URL__}/comments/${commentIdx}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("댓글 삭제 실패");
+
+      const updated = await fetch(
+        `${__API_URL__}/comments?postIdx=${post?.postIdx}`
+      );
+      const commentsData = await updated.json();
+      setComments(commentsData);
+    } catch (err) {
+      alert("댓글 삭제 중 오류 발생");
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
     setLoading(true);
@@ -190,7 +250,7 @@ const Community_detail = () => {
   return (
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
+        <button className="back-btn" onClick={handleBack}>
           <img
             src={back}
             alt="뒤로가기"
@@ -246,19 +306,73 @@ const Community_detail = () => {
               가장 먼저 댓글을 남겨보세요.
             </p>
           ) : (
-            comments.map((c, idx) => (
-              <div key={idx} className="comment-in">
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <strong>{c.user.userName || c.userIdx}</strong>
-                  <span style={{ color: "#888", fontSize: "13px" }}>
-                    {formatRelativeDate(c.commentCreatedAt)}
-                  </span>
+            comments.map((c, idx) => {
+              if (!userIdx) return null;
+
+              const isMine = c.userIdx === String(userIdx);
+              const isEditing = editCommentId === c.commentIdx;
+              return (
+                <div key={idx} className="comment-in">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <strong>{c.user.userName || c.userIdx}</strong>
+                    <span style={{ color: "#888", fontSize: "13px" }}>
+                      {formatRelativeDate(c.commentCreatedAt)}
+                    </span>
+                  </div>
+
+                  {isEditing ? (
+                    <div
+                      style={{ display: "flex", gap: "6px", marginTop: "4px" }}
+                    >
+                      <input
+                        value={editCommentContent}
+                        onChange={(e) => setEditCommentContent(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleEditSubmit(c.commentIdx);
+                        }}
+                        style={{ flex: 1 }}
+                      />
+                      <button onClick={() => handleEditSubmit(c.commentIdx)}>
+                        완료
+                      </button>
+                      <button onClick={() => setEditCommentId(null)}>
+                        취소
+                      </button>
+                    </div>
+                  ) : (
+                    <p>{c.commentContent}</p>
+                  )}
+
+                  {isMine && !isEditing && (
+                    <div
+                      style={{ display: "flex", gap: "6px", marginTop: "4px" }}
+                    >
+                      <button
+                        style={{ fontSize: "12px" }}
+                        onClick={() => {
+                          setEditCommentId(c.commentIdx);
+                          setEditCommentContent(c.commentContent);
+                        }}
+                      >
+                        수정
+                      </button>
+                      <button
+                        style={{ fontSize: "12px", color: "red" }}
+                        onClick={() => handleDelete(c.commentIdx)}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <p>{c.commentContent}</p>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </main>

@@ -58,7 +58,7 @@ const CommunityAll = ({ onBack }: { onBack: () => void }) => {
   // 좋아요 버튼 등은 필요시 구현
 
   const handleCardClick = (postId: number) => {
-    navigate(`/community/${postId}`);
+    navigate(`/community/${postId}`, { state: { from: "all" } });
   };
 
   // 좋아요 토글 핸들러
