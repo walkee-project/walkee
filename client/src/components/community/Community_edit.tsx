@@ -29,7 +29,9 @@ const Community_edit = () => {
       setTitle(data.postTitle);
       setContent(data.postContent);
       setLocationText(data.postLocation || "");
-      setImagePreview(`${__API_URL__}/public${data.postUploadImg}` || "");
+      setImagePreview(
+        data.postUploadImg ? `${__API_URL__}/public${data.postUploadImg}` : ""
+      );
     };
 
     if (id) fetchPost();
