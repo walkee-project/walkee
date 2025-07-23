@@ -16,7 +16,10 @@ function useBackHandler() {
       setExitFrom("Map");
       setShowExitModal(true);
       setIsMapModalOpen(true);
-    } else if (location.pathname === "/community/write") {
+    } else if (
+      location.pathname === "/community/write" ||
+      location.pathname === "/community/edit"
+    ) {
       setExitFrom("Community");
       setShowExitModal(true);
     } else if (location.pathname !== "/home" && location.pathname !== "/") {

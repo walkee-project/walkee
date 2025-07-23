@@ -134,7 +134,7 @@ const Community_write = () => {
         <ConfirmExitModal
           where="Community"
           onCancel={() => setShowConfirm(false)}
-          onConfirm={() => navigate(-1)}
+          onConfirm={() => navigate("/home")}
         />
       )}
 
