@@ -5,7 +5,7 @@ import "../css/Community_write.css";
 import photo from "../../assets/photo.svg";
 import location from "../../assets/location.svg";
 import useKeyboardAwareToolbar from "../hooks/useKeyboardAwareToolbar";
-import ConfirmExitModal from "./ConfirmExitModal";
+import ConfirmExitModal from "../ConfirmExitModal";
 
 const Community_edit = () => {
   useKeyboardAwareToolbar();
@@ -123,6 +123,7 @@ const Community_edit = () => {
     <div className="write-container">
       {showConfirm && (
         <ConfirmExitModal
+          where="Community" // 또는 상황에 맞는 문자열
           onCancel={() => setShowConfirm(false)}
           onConfirm={() => navigate(-1)}
         />
