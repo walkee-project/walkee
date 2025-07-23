@@ -9,6 +9,7 @@ import { formatTime } from "../../utils/gpsUtils";
 import { decodePolyline } from "../../utils/decodePolyline";
 import { calculateDistance } from "../../utils/gpsUtils";
 import loadingGif from "../../assets/map_loading.gif";
+import ConfirmExitModal from "../ConfirmExitModal";
 
 interface Prop {
   isMapModalOpen: boolean;
@@ -23,6 +24,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
   const goalType = location.state?.goalType;
   const distanceGoal = Number(location.state?.distanceGoal);
   const timeGoal = Number(location.state?.timeGoal);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   const trackingOptions = {
     mode: tab || "basic",
@@ -292,7 +294,8 @@ export default function Ing({ isMapModalOpen }: Prop) {
 
   const handleFinish = () => {
     if (totalDistance < 1000) {
-      alert("경로가 너무 짧습니다. 1km 이상 기록해야 저장할 수 있습니다.");
+      setShowExitModal(true);
+      setIsPause(true);
       return;
     }
     stopTracking();
@@ -348,6 +351,16 @@ export default function Ing({ isMapModalOpen }: Prop) {
 
   return (
     <div className="ing_section">
+      {showExitModal && (
+        <ConfirmExitModal
+          where="finish"
+          onCancel={() => {
+            setShowExitModal(false);
+            setIsPause(false);
+          }}
+          onConfirm={() => navigate("/home")}
+        />
+      )}
       {isFinish ? (
         <Ing_finish
           totalDistance={totalDistance}
