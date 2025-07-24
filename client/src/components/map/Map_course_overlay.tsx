@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import MapOverlayView from "./MapOverlayView";
 import { decodePolyline } from "../../utils/decodePolyline";
-import useBackHandler from "../hooks/useBackHandle";
 
 export default function Map_course_overlay({
   route,
@@ -19,14 +18,13 @@ export default function Map_course_overlay({
   from?: string;
 }) {
   const navigate = useNavigate();
-  const { handleBack } = useBackHandler();
 
   const handleBackBtn = () => {
-    handleBack({
-      section: "mapOverlay",
-      from: from,
-      handleVoid: handleHideOverlay,
-    });
+    if (from === "courseList") {
+      navigate(-1);
+    } else {
+      handleHideOverlay();
+    }
   };
 
   // 🚀 polyline 디코딩을 useMemo로 최적화

@@ -2,12 +2,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
-interface Props {
-  section?: string;
-  from?: string;
-  handleVoid?: () => void | null;
-}
-
 function useBackHandler() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,38 +11,29 @@ function useBackHandler() {
   const [backKeyPressedTime, setBackKeyPressedTime] = useState(0);
   const [ismapModalOpen, setIsMapModalOpen] = useState(false);
 
-  const handleBack = useCallback(
-    ({ section, from, handleVoid }: Props = {}) => {
-      if (section === "mapOverlay") {
-        if (from === "courseList") {
-          navigate(-1);
-        } else if (handleVoid) {
-          handleVoid();
-        }
-      } else if (location.pathname === "/map/ing") {
-        setExitFrom("Map");
-        setShowExitModal(true);
-        setIsMapModalOpen(true);
-      } else if (
-        location.pathname === "/community/write" ||
-        location.pathname === "/community/edit"
-      ) {
-        setExitFrom("community");
-        setShowExitModal(true);
-      } else if (location.pathname !== "/home" && location.pathname !== "/") {
-        navigate("/home");
+  const handleBack = useCallback(() => {
+    if (location.pathname === "/map/ing") {
+      setExitFrom("Map");
+      setShowExitModal(true);
+      setIsMapModalOpen(true);
+    } else if (
+      location.pathname === "/community/write" ||
+      location.pathname === "/community/edit"
+    ) {
+      setExitFrom("community");
+      setShowExitModal(true);
+    } else if (location.pathname !== "/home" && location.pathname !== "/") {
+      navigate("/home");
+    } else {
+      const now = Date.now();
+      if (now - backKeyPressedTime < 1000) {
+        window.ReactNativeWebView?.postMessage("EXIT_APP");
       } else {
-        const now = Date.now();
-        if (now - backKeyPressedTime < 1000) {
-          window.ReactNativeWebView?.postMessage("EXIT_APP");
-        } else {
-          setBackKeyPressedTime(now);
-          toast("뒤로 가기 버튼을 한 번 더 누르시면 종료됩니다.");
-        }
+        setBackKeyPressedTime(now);
+        toast("뒤로 가기 버튼을 한 번 더 누르시면 종료됩니다.");
       }
-    },
-    [location.pathname, navigate, backKeyPressedTime]
-  );
+    }
+  }, [location.pathname, navigate, backKeyPressedTime]);
 
   useEffect(() => {
     const onAndroidBack = () => {

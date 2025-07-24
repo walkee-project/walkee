@@ -161,8 +161,9 @@ export default function Map_course({
               <div
                 className="btn btn_two"
                 onClick={() =>
-                  userRouteList.length > 0 &&
-                  handleShowOverlay(userRouteList[0], "최근 경로 달리기")
+                  userRouteList.length > 0
+                    ? handleShowOverlay(userRouteList[0], "최근 경로 달리기")
+                    : alert("경로 기록이 없습니다.")
                 }
               >
                 최근 경로 달리기
