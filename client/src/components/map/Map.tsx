@@ -44,11 +44,31 @@ function Map() {
           style={{ left: activeTab === "basic" ? "15%" : "65%" }}
         />
       </div>
-      <div className="section_container">
-        <div style={{ display: activeTab === "basic" ? "block" : "none" }}>
+      <div className="section_container" style={{ position: "relative" }}>
+        <div
+          style={{
+            display: activeTab === "basic" ? "block" : "none",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: activeTab === "basic" ? 2 : 1,
+          }}
+        >
           <Map_basic />
         </div>
-        <div style={{ display: activeTab === "course" ? "block" : "none" }}>
+        <div
+          style={{
+            display: activeTab === "course" ? "block" : "none",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: activeTab === "course" ? 2 : 1,
+          }}
+        >
           <Map_course
             isActive={activeTab === "course"}
             routeList={routeList}

@@ -79,8 +79,6 @@
   width: 5%;
   margin: 4px 0;
   z-index: 5;
-  min-height: 44px;
-  min-width: 44px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }

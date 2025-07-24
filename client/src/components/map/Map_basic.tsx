@@ -16,6 +16,7 @@ export default function Map_basic() {
   const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
   const userLocationWatchId = useRef<number | null>(null);
   const markerAnimationRef = useRef<number | null>(null);
+  const [gpsReady, setGpsReady] = useState(false);
 
   const handleGoalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGoalType(e.target.value);
@@ -48,6 +49,7 @@ export default function Map_basic() {
   }, [mapInstance]);
 
   const updateUserLocation = (position: GeolocationPosition) => {
+    setGpsReady(true); // 위치가 잡히면 무조건 true
     if (!mapInstance) return;
 
     const lat = position.coords.latitude;
@@ -232,8 +234,9 @@ export default function Map_basic() {
               },
             });
           }}
+          disabled={!gpsReady}
         >
-          시작
+          {gpsReady ? "시작" : "위치 잡는 중..."}
         </button>
       </div>
     </div>

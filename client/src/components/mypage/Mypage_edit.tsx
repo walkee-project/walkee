@@ -97,11 +97,6 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
         onClick={() => onChangeSection("main")}
         onTouchStart={() => onChangeSection("main")}
         className="back_btn"
-        style={{
-          minHeight: "44px",
-          minWidth: "44px",
-          touchAction: "manipulation",
-        }}
       >
         <img src={arrow_back} alt="back_arrow" />
       </button>

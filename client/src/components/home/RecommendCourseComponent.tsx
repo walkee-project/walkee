@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type { RouteItem } from "../types/courseList_type";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { addRouteLikeThunk, removeRouteLikeThunk } from "../../store/userSlice";
-import heart from "../../assets/heart.png";
 import refreshIcon from "../../assets/refresh.png";
 
 interface Props {
@@ -13,15 +12,22 @@ interface Props {
 }
 
 // 두 좌표 간의 거리를 계산하는 함수 (하버사인 공식)
-const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
   const R = 6371; // 지구의 반지름 (km)
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c; // km 단위
   return distance * 1000; // m 단위로 변환
 };
@@ -30,10 +36,14 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState<RouteItem | null>(null);
-  const [userLocation, setUserLocation] = useState<{lat: number, lon: number} | null>(null);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
   const [nearbyRoutes, setNearbyRoutes] = useState<RouteItem[]>([]);
   const user = useAppSelector((state) => state.user.user);
-  const userRouteLike = useAppSelector((state) => state.user.summary?.userRouteLike) ?? [];
+  const userRouteLike =
+    useAppSelector((state) => state.user.summary?.userRouteLike) ?? [];
   const dispatch = useAppDispatch();
 
   // 사용자 위치 가져오기
@@ -43,7 +53,7 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
         (position) => {
           setUserLocation({
             lat: position.coords.latitude,
-            lon: position.coords.longitude
+            lon: position.coords.longitude,
           });
         },
         (error) => {
@@ -62,7 +72,7 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   // 사용자 위치 기반으로 1500m 이내 경로 필터링
   useEffect(() => {
     if (userLocation && routeList && routeList.length > 0) {
-      const filtered = routeList.filter(route => {
+      const filtered = routeList.filter((route) => {
         // RouteItem의 routeStartLat, routeStartLng 사용
         if (route.routeStartLat && route.routeStartLng) {
           const distance = calculateDistance(
@@ -71,7 +81,7 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
             route.routeStartLat,
             route.routeStartLng
           );
-          return distance <= 1500; // 1500m 이내
+          return distance <= 10000; // 1500m 이내
         }
         return false;
       });
@@ -85,7 +95,8 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   // 1500m 이내 경로에서만 랜덤 추천
   useEffect(() => {
     if (nearbyRoutes && nearbyRoutes.length > 0) {
-      const random = nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
+      const random =
+        nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
       setCurrentRoute(random);
     } else {
       setCurrentRoute(null);
@@ -95,7 +106,9 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   if (!currentRoute) {
     return (
       <div className="recommend_section empty">
-        {userLocation ? "근처 1500m 이내에 추천코스가 없습니다." : "위치 정보를 확인 중입니다..."}
+        {userLocation
+          ? "근처 1500m 이내에 추천코스가 없습니다."
+          : "위치 정보를 확인 중입니다..."}
       </div>
     );
   }
@@ -106,16 +119,21 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   const seconds = totalSeconds % 60;
 
   // 찜 상태
-  const liked = userRouteLike.some((item) => item.routeIdx === currentRoute.routeIdx);
+  const liked = userRouteLike.some(
+    (item) => item.routeIdx === currentRoute.routeIdx
+  );
 
   // 새로고침 핸들러 (1500m 이내 경로 중에서만 랜덤)
   const handleRefresh = () => {
     if (!nearbyRoutes || nearbyRoutes.length === 0) return;
     // 현재 추천 제외, 랜덤 추천
-    const candidates = nearbyRoutes.filter((r) => r.routeIdx !== currentRoute?.routeIdx);
+    const candidates = nearbyRoutes.filter(
+      (r) => r.routeIdx !== currentRoute?.routeIdx
+    );
     if (candidates.length === 0) {
       // 후보가 없으면 현재 경로 유지하거나 다시 선택
-      const random = nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
+      const random =
+        nearbyRoutes[Math.floor(Math.random() * nearbyRoutes.length)];
       setCurrentRoute(random);
       return;
     }
@@ -130,9 +148,19 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
       return;
     }
     if (!liked) {
-      dispatch(addRouteLikeThunk({ userIdx: user.userIdx, routeIdx: currentRoute.routeIdx }));
+      dispatch(
+        addRouteLikeThunk({
+          userIdx: user.userIdx,
+          routeIdx: currentRoute.routeIdx,
+        })
+      );
     } else {
-      dispatch(removeRouteLikeThunk({ userIdx: user.userIdx, routeIdx: currentRoute.routeIdx }));
+      dispatch(
+        removeRouteLikeThunk({
+          userIdx: user.userIdx,
+          routeIdx: currentRoute.routeIdx,
+        })
+      );
     }
   };
 
@@ -167,15 +195,41 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
                 handleRefresh();
               }}
             />
-            <img
-              src={heart}
-              alt="찜"
-              style={{ filter: liked ? "" : "brightness(0) saturate(100%)" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike();
-              }}
-            />
+            {/* 하트 아이콘 SVG로 명확히 구분 */}
+            {liked ? (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="#e74c3c"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike();
+                }}
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            ) : (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike();
+                }}
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            )}
           </div>
           {/* 오른쪽에 기존 정보 */}
           <div className="recommend-info">
@@ -201,8 +255,8 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
         )}
       </div>
       {/* 디버깅용 - 개발 완료 후 제거 */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+      {process.env.NODE_ENV === "development" && (
+        <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
           근처 경로: {nearbyRoutes.length}개 / 전체: {routeList.length}개
         </div>
       )}
