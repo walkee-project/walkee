@@ -21,7 +21,7 @@ function DrawingSectionComponent() {
     <div className="drawing_section">
       <div className="drawing_card">
         <div className="drawing_img">
-          <MapComponent />
+          <MapComponent onMapReady={() => console.log("홈 지도 로딩 완료")} />
         </div>
         <div
           className="btn btn_one home_btn"
