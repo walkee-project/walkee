@@ -22,6 +22,8 @@ function useBackHandler() {
     ) {
       setExitFrom("community");
       setShowExitModal(true);
+    } else if (location.pathname === "map") {
+      navigate(-1);
     } else if (location.pathname !== "/home" && location.pathname !== "/") {
       navigate("/home");
     } else {

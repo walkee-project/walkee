@@ -4,6 +4,7 @@ import type { RouteItem } from "../types/courseList_type";
 import { useNavigate } from "react-router-dom";
 import MapOverlayView from "./MapOverlayView";
 import { decodePolyline } from "../../utils/decodePolyline";
+import useBackHandler from "../hooks/useBackHandle";
 
 export default function Map_course_overlay({
   route,
@@ -17,10 +18,11 @@ export default function Map_course_overlay({
   from?: string;
 }) {
   const navigate = useNavigate();
+  const { handleBack } = useBackHandler();
 
-  const handleBack = () => {
+  const handleBackBtn = () => {
     if (from === "courseList") {
-      navigate(-1);
+      handleBack();
     } else {
       handleHideOverlay();
     }
@@ -39,7 +41,7 @@ export default function Map_course_overlay({
         />
       </div>
       <div className="overlay_wrapper">
-        <div className="arrow_back" onClick={handleBack}>
+        <div className="arrow_back" onClick={handleBackBtn}>
           <img src={arrow_back} alt="뒤로가기" />
         </div>
         <div className="overlay_title">
