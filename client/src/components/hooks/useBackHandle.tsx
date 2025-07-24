@@ -53,7 +53,7 @@ function useBackHandler() {
     setIsMapModalOpen(false);
     navigate("/home");
     if (exitFrom === "Map") {
-      navigate("/home");
+      navigate("/map");
     } else {
       navigate("/community");
     }
