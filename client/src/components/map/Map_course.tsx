@@ -147,14 +147,14 @@ export default function Map_course({
                 <p>지금 바로 저장해보세요!</p>
               </div>
             ) : (
-              routeList.map((item) => (
-                <div
-                  key={item.routeIdx}
-                  onClick={() => handleShowOverlay(item, "찜한 경로 달리기")}
-                >
-                  <RouteCard route={item} />
-                </div>
-              ))
+              <div
+                key={routeList[0].routeIdx}
+                onClick={() =>
+                  handleShowOverlay(routeList[0], "찜한 경로 달리기")
+                }
+              >
+                <RouteCard route={routeList[0]} />
+              </div>
             )}
 
             <div className="like_btns">

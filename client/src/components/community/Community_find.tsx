@@ -67,7 +67,7 @@ const Community_Find = ({ onBack }: { onBack?: () => void }) => {
           date: post.postCreatedAt,
         }));
         setResults(mapped);
-      } catch (err) {
+      } catch {
         setResults([]);
         setShowError(true);
       }
