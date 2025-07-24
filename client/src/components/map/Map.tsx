@@ -45,15 +45,17 @@ function Map() {
         />
       </div>
       <div className="section_container">
-        {activeTab === "basic" && <Map_basic />}
-        {activeTab === "course" && (
+        <div style={{ display: activeTab === "basic" ? "block" : "none" }}>
+          <Map_basic />
+        </div>
+        <div style={{ display: activeTab === "course" ? "block" : "none" }}>
           <Map_course
             isActive={activeTab === "course"}
             routeList={routeList}
             userRouteList={userRouteList}
             from={state?.from}
           />
-        )}
+        </div>
       </div>
     </div>
   );

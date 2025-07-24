@@ -267,7 +267,16 @@ const Community_detail = () => {
   return (
     <div className="detail-container" style={{ paddingBottom: "70px" }}>
       <header className="detail-header">
-        <button className="back-btn" onClick={handleBack}>
+        <button
+          className="back-btn"
+          onClick={handleBack}
+          onTouchStart={handleBack}
+          style={{
+            minHeight: "44px",
+            minWidth: "44px",
+            touchAction: "manipulation",
+          }}
+        >
           <img
             src={back}
             alt="뒤로가기"
@@ -304,7 +313,16 @@ const Community_detail = () => {
           >
             <button
               onClick={() => navigate(`/community/edit/${post.postIdx}`)}
-              style={{ fontSize: "14px", border: "none", background: "none", cursor: "pointer" }}
+              onTouchStart={() => navigate(`/community/edit/${post.postIdx}`)}
+              style={{
+                fontSize: "14px",
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                minHeight: "44px",
+                minWidth: "44px",
+                touchAction: "manipulation",
+              }}
             >
               ✏️ 수정
             </button>
@@ -328,7 +346,35 @@ const Community_detail = () => {
                   console.error(err);
                 }
               }}
-              style={{ fontSize: "14px", color: "red", border: "none", background: "none", cursor: "pointer" }}
+              onTouchStart={async () => {
+                const ok = window.confirm("게시글을 삭제할까요?");
+                if (!ok) return;
+
+                try {
+                  const res = await fetch(
+                    `${__API_URL__}/posts/${post.postIdx}`,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+                  if (!res.ok) throw new Error("삭제 실패");
+                  alert("삭제 완료!");
+                  navigate(from === "all" ? "/community/all" : "/community");
+                } catch (err) {
+                  alert("삭제 중 오류 발생");
+                  console.error(err);
+                }
+              }}
+              style={{
+                fontSize: "14px",
+                color: "red",
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                minHeight: "44px",
+                minWidth: "44px",
+                touchAction: "manipulation",
+              }}
             >
               🗑 삭제
             </button>
@@ -395,10 +441,26 @@ const Community_detail = () => {
                         }}
                         style={{ flex: 1 }}
                       />
-                      <button onClick={() => handleEditSubmit(c.commentIdx)}>
+                      <button
+                        onClick={() => handleEditSubmit(c.commentIdx)}
+                        onTouchStart={() => handleEditSubmit(c.commentIdx)}
+                        style={{
+                          minHeight: "44px",
+                          minWidth: "44px",
+                          touchAction: "manipulation",
+                        }}
+                      >
                         완료
                       </button>
-                      <button onClick={() => setEditCommentId(null)}>
+                      <button
+                        onClick={() => setEditCommentId(null)}
+                        onTouchStart={() => setEditCommentId(null)}
+                        style={{
+                          minHeight: "44px",
+                          minWidth: "44px",
+                          touchAction: "manipulation",
+                        }}
+                      >
                         취소
                       </button>
                     </div>
@@ -408,11 +470,28 @@ const Community_detail = () => {
 
                   {isMine && !isEditing && (
                     <div
-                      style={{ display: "flex", gap: "6px", marginTop: "4px", justifyContent: "flex-end" }}
+                      style={{
+                        display: "flex",
+                        gap: "6px",
+                        marginTop: "4px",
+                        justifyContent: "flex-end",
+                      }}
                     >
                       <button
-                        style={{ fontSize: "12px", border: "none", background: "none", cursor: "pointer" }}
+                        style={{
+                          fontSize: "12px",
+                          border: "none",
+                          background: "none",
+                          cursor: "pointer",
+                          minHeight: "44px",
+                          minWidth: "44px",
+                          touchAction: "manipulation",
+                        }}
                         onClick={() => {
+                          setEditCommentId(c.commentIdx);
+                          setEditCommentContent(c.commentContent);
+                        }}
+                        onTouchStart={() => {
                           setEditCommentId(c.commentIdx);
                           setEditCommentContent(c.commentContent);
                         }}
@@ -420,8 +499,18 @@ const Community_detail = () => {
                         수정
                       </button>
                       <button
-                        style={{ fontSize: "12px", color: "red", border: "none", background: "none", cursor: "pointer" }}
+                        style={{
+                          fontSize: "12px",
+                          color: "red",
+                          border: "none",
+                          background: "none",
+                          cursor: "pointer",
+                          minHeight: "44px",
+                          minWidth: "44px",
+                          touchAction: "manipulation",
+                        }}
                         onClick={() => handleDelete(c.commentIdx)}
+                        onTouchStart={() => handleDelete(c.commentIdx)}
                       >
                         삭제
                       </button>
@@ -446,6 +535,7 @@ const Community_detail = () => {
         />
         <button
           onClick={handleCommentSubmit}
+          onTouchStart={handleCommentSubmit}
           disabled={!commentInput.trim()}
           className={`comment-submit ${commentInput.trim() ? "active" : ""}`}
         >

@@ -93,7 +93,16 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
 
   return (
     <div className="edit">
-      <button onClick={() => onChangeSection("main")} className="back_btn">
+      <button
+        onClick={() => onChangeSection("main")}
+        onTouchStart={() => onChangeSection("main")}
+        className="back_btn"
+        style={{
+          minHeight: "44px",
+          minWidth: "44px",
+          touchAction: "manipulation",
+        }}
+      >
         <img src={arrow_back} alt="back_arrow" />
       </button>
       <div className="edit_header">
@@ -112,7 +121,13 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
               <div
                 className="camera_div"
                 onClick={() => fileInputRef.current?.click()}
-                style={{ cursor: "pointer" }}
+                onTouchStart={() => fileInputRef.current?.click()}
+                style={{
+                  cursor: "pointer",
+                  minHeight: "44px",
+                  minWidth: "44px",
+                  touchAction: "manipulation",
+                }}
               >
                 <img
                   src={cameraIcon}
@@ -150,7 +165,12 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
         <button
           className="submit_btn"
           onClick={handleSave}
+          onTouchStart={handleSave}
           disabled={uploading}
+          style={{
+            minHeight: "44px",
+            touchAction: "manipulation",
+          }}
         >
           {uploading ? "업로드 중..." : "수정하기"}
         </button>

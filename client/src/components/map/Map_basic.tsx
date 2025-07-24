@@ -37,6 +37,16 @@ export default function Map_basic() {
     }
   };
 
+  // 🚀 마커 렌더링을 별도 useEffect로 분리
+  useEffect(() => {
+    if (!mapInstance || !window.currentMarker) return;
+
+    // 기존 마커가 있으면 재사용
+    if (window.currentMarker) {
+      markerRef.current = window.currentMarker;
+    }
+  }, [mapInstance]);
+
   const updateUserLocation = (position: GeolocationPosition) => {
     if (!mapInstance) return;
 

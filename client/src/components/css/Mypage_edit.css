@@ -45,6 +45,10 @@
   padding: 6px;
   background-color: #5d5d5d;
   border-radius: 50%;
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .camera_icon {

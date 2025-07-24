@@ -35,7 +35,7 @@
   transform-origin: 50% 50%; /* 중앙 회전 */
   transform: translate(-50%, -50%) rotate(0deg); /* 중심 정렬 후 회전 */
   transition: transform 0.3s ease-out;
-  pointer-events: none;
+  pointer-events: auto; /* 터치 이벤트 허용 */
 }
 
 /* 현재 위치 이동 버튼*/

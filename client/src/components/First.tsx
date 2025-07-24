@@ -3,8 +3,6 @@ import "./css/First.css";
 import logo_big from "../assets/logo_big.png";
 import logo_small from "../assets/logo_small.png";
 import mascot_short from "../assets/mascot_short.png";
-// import google_login from "../assets/google_login.png";
-import naver_login from "../assets/naver_login.png";
 import kakao_login from "../assets/kakao_login.png";
 import { api } from "../utils/api";
 
@@ -54,13 +52,6 @@ function First() {
               style={{ cursor: "pointer" }}
             >
               <img src={kakao_login} alt="카카오 로그인" />
-            </div>
-            <div
-              className="first_btn naver_btn"
-              onClick={() => handleSocialLogin("naver")}
-              style={{ cursor: "pointer" }}
-            >
-              <img src={naver_login} alt="네이버 로그인" />
             </div>
           </div>
         </div>

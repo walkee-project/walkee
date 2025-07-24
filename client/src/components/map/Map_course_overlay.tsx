@@ -2,6 +2,7 @@ import "../css/Map_course_overlay.css";
 import arrow_back from "../../assets/arrow_back.png";
 import type { RouteItem } from "../types/courseList_type";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import MapOverlayView from "./MapOverlayView";
 import { decodePolyline } from "../../utils/decodePolyline";
 
@@ -26,8 +27,13 @@ export default function Map_course_overlay({
     }
   };
 
-  // polyline 디코딩
-  const path = decodePolyline(route.routePolyline);
+  // 🚀 polyline 디코딩을 useMemo로 최적화
+  const path = useMemo(() => {
+    console.time("polyline-decode");
+    const result = decodePolyline(route.routePolyline);
+    console.timeEnd("polyline-decode");
+    return result;
+  }, [route.routePolyline]);
 
   return (
     <div className="overlay_section">

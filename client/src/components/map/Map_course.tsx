@@ -20,13 +20,13 @@ export default function Map_course({
 }) {
   console.log("찜한 경로:", routeList);
   console.log("전체 경로:", userRouteList);
-  
+
   const navigate = useNavigate();
   const location = useLocation() as any;
-  
+
   // Redux에서 전체 경로 가져오기 (fallback)
   const allRoutes = useAppSelector((state) => state.user.allRoute) || [];
-  
+
   const state = location.state as {
     route?: RouteItem | null;
     openOverlay?: boolean;
@@ -41,7 +41,8 @@ export default function Map_course({
     if (state?.openOverlay && state?.route) {
       let btnTitle = "오늘의 추천 경로";
       if (state.sectionType === "wishlist") btnTitle = "찜한 경로 달리기";
-      else if (state.sectionType === "mycourse" || state.activeTab === "myruns") btnTitle = "경로 따라 달리기";
+      else if (state.sectionType === "mycourse" || state.activeTab === "myruns")
+        btnTitle = "경로 따라 달리기";
       setShowOverlay(true);
       setSelectedRoute(state.route);
       setSelectedBtn(btnTitle);
@@ -73,7 +74,11 @@ export default function Map_course({
 
   const handleShowOverlay = (
     route: RouteItem,
-    btnTitle: "오늘의 추천 경로" | "경로 따라 달리기" | "최근 경로 달리기" | "찜한 경로 달리기"
+    btnTitle:
+      | "오늘의 추천 경로"
+      | "경로 따라 달리기"
+      | "최근 경로 달리기"
+      | "찜한 경로 달리기"
   ) => {
     setSelectedBtn(btnTitle);
     setShowOverlay(true);
@@ -90,7 +95,12 @@ export default function Map_course({
   }, [isActive]);
 
   // 추천용 경로 리스트 결정 (우선순위: userRouteList > allRoutes)
-  const recommendRouteList = userRouteList.length > 0 ? userRouteList : allRoutes;
+  const recommendRouteList =
+    userRouteList.length > 0 ? userRouteList : allRoutes;
+
+  // 🚩 사용자가 선택한 추천 경로 상태 추가
+  const [selectedRecommendRoute, setSelectedRecommendRoute] =
+    useState<RouteItem | null>(null);
 
   console.log("추천에 사용할 경로 개수:", recommendRouteList.length);
 
@@ -106,16 +116,20 @@ export default function Map_course({
       ) : (
         <>
           <div className="recommend_course">
-            {/* 전체 경로에서 추천 (찜한 경로가 아닌) */}
+            {/* 주변 경로에서 추천 */}
             <RecommendCourseComponent
               routeList={recommendRouteList}
-              onViewRoute={(route) => handleShowOverlay(route, "오늘의 추천 경로")}
+              onViewRoute={(route) => {
+                setSelectedRecommendRoute(route);
+                handleShowOverlay(route, "오늘의 추천 경로");
+              }}
             />
             <div
               className="recommend_btn btn btn_two"
               onClick={() => {
-                // 추천 경로가 있을 때만 첫 번째 경로 표시
-                if (recommendRouteList.length > 0) {
+                if (selectedRecommendRoute) {
+                  handleShowOverlay(selectedRecommendRoute, "오늘의 추천 경로");
+                } else if (recommendRouteList.length > 0) {
                   handleShowOverlay(recommendRouteList[0], "오늘의 추천 경로");
                 }
               }}
@@ -134,7 +148,10 @@ export default function Map_course({
               </div>
             ) : (
               routeList.map((item) => (
-                <div key={item.routeIdx} onClick={() => handleShowOverlay(item, "찜한 경로 달리기") }>
+                <div
+                  key={item.routeIdx}
+                  onClick={() => handleShowOverlay(item, "찜한 경로 달리기")}
+                >
                   <RouteCard route={item} />
                 </div>
               ))
@@ -155,20 +172,22 @@ export default function Map_course({
               </div>
             </div>
           </div>
-          
+
           {/* 디버깅 정보 - 개발 완료 후 제거 */}
-          {process.env.NODE_ENV === 'development' && (
-            <div style={{ 
-              position: 'fixed', 
-              bottom: '10px', 
-              right: '10px', 
-              background: 'rgba(0,0,0,0.7)', 
-              color: 'white', 
-              padding: '8px', 
-              fontSize: '12px',
-              borderRadius: '4px',
-              zIndex: 9999
-            }}>
+          {process.env.NODE_ENV === "development" && (
+            <div
+              style={{
+                position: "fixed",
+                bottom: "10px",
+                right: "10px",
+                background: "rgba(0,0,0,0.7)",
+                color: "white",
+                padding: "8px",
+                fontSize: "12px",
+                borderRadius: "4px",
+                zIndex: 9999,
+              }}
+            >
               <div>찜한경로: {routeList.length}개</div>
               <div>전체경로: {userRouteList.length}개</div>
               <div>Redux경로: {allRoutes.length}개</div>
