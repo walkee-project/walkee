@@ -7,7 +7,7 @@ function useBackHandler() {
   const navigate = useNavigate();
 
   const [showExitModal, setShowExitModal] = useState(false);
-  const [exitFrom, setExitFrom] = useState<"Community" | "Map" | null>(null);
+  const [exitFrom, setExitFrom] = useState<"community" | "Map" | null>(null);
   const [backKeyPressedTime, setBackKeyPressedTime] = useState(0);
   const [ismapModalOpen, setIsMapModalOpen] = useState(false);
 
@@ -20,7 +20,7 @@ function useBackHandler() {
       location.pathname === "/community/write" ||
       location.pathname === "/community/edit"
     ) {
-      setExitFrom("Community");
+      setExitFrom("community");
       setShowExitModal(true);
     } else if (location.pathname !== "/home" && location.pathname !== "/") {
       navigate("/home");

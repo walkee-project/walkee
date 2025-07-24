@@ -11,7 +11,7 @@ const ConfirmExitModal = ({ where, onCancel, onConfirm }: Props) => {
     <div className="modal-overlay" onClick={onCancel}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
         <p className="modal-text">
-          {where === "Community"
+          {where === "community"
             ? "지금 나가면 작성한 내용이 사라집니다."
             : where === "map"
             ? "지금 나가면 경로가 저장이 불가합니다."
