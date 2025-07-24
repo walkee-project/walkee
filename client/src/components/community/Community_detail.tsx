@@ -2,7 +2,6 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../css/Community_detail.css";
 import profile from "../../assets/profile.png";
 import { useEffect, useState } from "react";
-import type { KeyboardEvent } from "react";
 import { useAppSelector } from "../../store/hooks";
 import Community_Stats from "./Community_stats";
 import arrow from "../../assets/arrow_top.png";
@@ -152,29 +151,11 @@ const Community_detail = () => {
         }),
       });
       if (!res.ok) throw new Error("댓글 등록 실패");
-      // 댓글 등록 후 최신 댓글 목록 다시 fetch
-      const commentsRes = await fetch(
-        `${__API_URL__}/comments?postIdx=${post.postIdx}`
-      );
-      if (commentsRes.ok) {
-        const commentsData = await commentsRes.json();
-        setComments(
-          commentsData.filter(
-            (c: CommentType) => String(c.postIdx) === String(post.postIdx)
-          )
-        );
-      }
       setCommentInput("");
+      setLoading(true); // 트리거
     } catch (err) {
       console.error(err);
       alert("댓글 등록 중 오류가 발생했습니다.");
-    }
-  };
-
-  // 댓글 입력창에서 Enter로 등록
-  const handleCommentKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && commentInput.trim()) {
-      handleCommentSubmit();
     }
   };
 
@@ -340,7 +321,9 @@ const Community_detail = () => {
                   );
                   if (!res.ok) throw new Error("삭제 실패");
                   alert("삭제 완료!");
-                  navigate(from === "all" ? "/community/all" : "/community");
+                  navigate(from === "all" ? "/community/all" : "/community", {
+                    replace: true,
+                  });
                 } catch (err) {
                   alert("삭제 중 오류 발생");
                   console.error(err);
@@ -359,7 +342,9 @@ const Community_detail = () => {
                   );
                   if (!res.ok) throw new Error("삭제 실패");
                   alert("삭제 완료!");
-                  navigate(from === "all" ? "/community/all" : "/community");
+                  navigate(from === "all" ? "/community/all" : "/community", {
+                    replace: true,
+                  });
                 } catch (err) {
                   alert("삭제 중 오류 발생");
                   console.error(err);
@@ -525,22 +510,26 @@ const Community_detail = () => {
 
       {/* 댓글 입력창 */}
       <footer className="detail-footer">
-        <input
-          type="text"
-          placeholder="댓글을 입력해 주세요"
-          value={commentInput}
-          onChange={(e) => setCommentInput(e.target.value)}
-          onKeyDown={handleCommentKeyDown}
-          className="comment-input"
-        />
-        <button
-          onClick={handleCommentSubmit}
-          onTouchStart={handleCommentSubmit}
-          disabled={!commentInput.trim()}
-          className={`comment-submit ${commentInput.trim() ? "active" : ""}`}
+        <form
+          onSubmit={handleCommentSubmit}
+          className="comment-form"
+          style={{ display: "flex", width: "100%" }}
         >
-          <img src={arrow} alt="submit" />
-        </button>
+          <input
+            type="text"
+            placeholder="댓글을 입력해 주세요"
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            className="comment-input"
+          />
+          <button
+            type="submit"
+            disabled={!commentInput.trim()}
+            className={`comment-submit ${commentInput.trim() ? "active" : ""}`}
+          >
+            <img src={arrow} alt="submit" />
+          </button>
+        </form>
       </footer>
     </div>
   );

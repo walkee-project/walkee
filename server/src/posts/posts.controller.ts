@@ -66,7 +66,10 @@ export class PostsController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @Query('userIdx') userIdx?: string) {
-    return this.postsService.findOne(+id, userIdx ? Number(userIdx) : undefined);
+    return this.postsService.findOne(
+      +id,
+      userIdx ? Number(userIdx) : undefined,
+    );
   }
 
   @Patch(':id')

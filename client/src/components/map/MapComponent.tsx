@@ -17,9 +17,9 @@ interface MapComponentProps {
 function MapComponent({ onMapReady, markerRef }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
-  // 기본 위치 (서울)
-  const DEFAULT_LAT = 37.5665;
-  const DEFAULT_LON = 126.978;
+  // 기본 위치 (대구)
+  const DEFAULT_LAT = 35.87539;
+  const DEFAULT_LON = 128.68155;
 
   useEffect(() => {
     waitForKakaoSdk()

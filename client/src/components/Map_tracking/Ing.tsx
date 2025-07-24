@@ -9,6 +9,7 @@ import { formatTime } from "../../utils/gpsUtils";
 import { decodePolyline } from "../../utils/decodePolyline";
 import { calculateDistance } from "../../utils/gpsUtils";
 import ConfirmExitModal from "../ConfirmExitModal";
+import loadingGif from "../../assets/map_loading.gif";
 
 interface Prop {
   isMapModalOpen: boolean;
@@ -330,7 +331,27 @@ export default function Ing({ isMapModalOpen }: Prop) {
     }
   }, [loading]);
 
-  if (loading || waitingForLocation) {
+  if (loading) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#2196f3",
+        }}
+      >
+        <img
+          src={loadingGif}
+          alt="321 카운트다운"
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
+    );
+  }
+  if (waitingForLocation) {
     return (
       <div
         style={{
@@ -343,7 +364,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
         }}
       >
         <span style={{ color: "#fff", fontSize: "1.2rem" }}>
-          {loading ? null : "위치 잡는 중..."}
+          위치 잡는 중...
         </span>
       </div>
     );
