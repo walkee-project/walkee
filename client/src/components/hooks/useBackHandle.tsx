@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
+  section?: string;
   from?: string;
   handleVoid?: () => void | null;
 }
@@ -17,8 +18,14 @@ function useBackHandler() {
   const [ismapModalOpen, setIsMapModalOpen] = useState(false);
 
   const handleBack = useCallback(
-    ({ from, handleVoid }: Props = {}) => {
-      if (location.pathname === "/map/ing") {
+    ({ section, from, handleVoid }: Props = {}) => {
+      if (section === "mapOverlay") {
+        if (from === "courseList") {
+          navigate(-1);
+        } else if (handleVoid) {
+          handleVoid();
+        }
+      } else if (location.pathname === "/map/ing") {
         setExitFrom("Map");
         setShowExitModal(true);
         setIsMapModalOpen(true);
@@ -28,12 +35,6 @@ function useBackHandler() {
       ) {
         setExitFrom("community");
         setShowExitModal(true);
-      } else if (location.pathname === "/map") {
-        if (from === "courseList") {
-          navigate(-1);
-        } else if (handleVoid) {
-          handleVoid();
-        }
       } else if (location.pathname !== "/home" && location.pathname !== "/") {
         navigate("/home");
       } else {
