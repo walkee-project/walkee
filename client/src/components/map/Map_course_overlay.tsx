@@ -22,11 +22,7 @@ export default function Map_course_overlay({
   const { handleBack } = useBackHandler();
 
   const handleBackBtn = () => {
-    if (from === "courseList") {
-      handleBack();
-    } else {
-      handleHideOverlay();
-    }
+    handleBack(from: from handleVoid: handleHideOverlay);
   };
 
   // 🚀 polyline 디코딩을 useMemo로 최적화
