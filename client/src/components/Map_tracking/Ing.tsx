@@ -8,7 +8,6 @@ import useGpsTracking from "../../utils/useGpsTracking";
 import { formatTime } from "../../utils/gpsUtils";
 import { decodePolyline } from "../../utils/decodePolyline";
 import { calculateDistance } from "../../utils/gpsUtils";
-import loadingGif from "../../assets/map_loading.gif";
 import ConfirmExitModal from "../ConfirmExitModal";
 
 interface Prop {
@@ -322,7 +321,16 @@ export default function Ing({ isMapModalOpen }: Prop) {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
+  const [waitingForLocation, setWaitingForLocation] = useState(false);
+  useEffect(() => {
+    if (!loading) {
+      setWaitingForLocation(true);
+      const timer = setTimeout(() => setWaitingForLocation(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (loading || waitingForLocation) {
     return (
       <div
         style={{
@@ -334,11 +342,9 @@ export default function Ing({ isMapModalOpen }: Prop) {
           background: "#2196f3",
         }}
       >
-        <img
-          src={loadingGif}
-          alt="지도 로딩중"
-          style={{ width: "100%", height: "100%" }}
-        />
+        <span style={{ color: "#fff", fontSize: "1.2rem" }}>
+          {loading ? null : "위치 잡는 중..."}
+        </span>
       </div>
     );
   }

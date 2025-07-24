@@ -49,6 +49,7 @@ export default function Map_basic() {
   }, [mapInstance]);
 
   const updateUserLocation = (position: GeolocationPosition) => {
+    console.log("updateUserLocation called", position);
     setGpsReady(true); // 위치가 잡히면 무조건 true
     if (!mapInstance) return;
 
@@ -71,8 +72,9 @@ export default function Map_basic() {
   };
 
   const startContinuousLocationTracking = () => {
+    console.log("startContinuousLocationTracking called");
     if (!navigator.geolocation) {
-      console.error("Geolocation을 지원하지 않는 브라우저입니다.");
+      setGpsReady(true); // 위치 못 잡아도 지도 띄움
       return;
     }
 
@@ -86,6 +88,7 @@ export default function Map_basic() {
       },
       (error) => {
         console.warn("초기 위치 가져오기 실패, 고정밀도로 재시도:", error);
+        setGpsReady(true); // 실패해도 지도 띄움
         navigator.geolocation.getCurrentPosition(
           (position) => {
             updateUserLocation(position);
@@ -96,12 +99,13 @@ export default function Map_basic() {
           },
           (fallbackError) => {
             console.error("모든 초기 위치 가져오기 실패:", fallbackError);
+            setGpsReady(true); // 실패해도 지도 띄움
             startHighAccuracyTracking();
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+          { enableHighAccuracy: true, timeout: 7000, maximumAge: 60000 }
         );
       },
-      { enableHighAccuracy: false, timeout: 5000, maximumAge: 30000 }
+      { enableHighAccuracy: false, timeout: 7000, maximumAge: 30000 }
     );
   };
 
@@ -123,10 +127,11 @@ export default function Map_basic() {
         } else {
           console.warn("GPS 추적 오류:", error);
         }
+        setGpsReady(true); // 실패해도 지도 띄움
       },
       {
         enableHighAccuracy: true,
-        timeout: 20000,
+        timeout: 7000,
         maximumAge: 10000,
       }
     );
@@ -136,6 +141,7 @@ export default function Map_basic() {
   };
 
   useEffect(() => {
+    console.log("mapInstance changed", mapInstance);
     if (!mapInstance) return;
 
     startContinuousLocationTracking();

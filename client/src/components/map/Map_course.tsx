@@ -99,7 +99,7 @@ export default function Map_course({
     userRouteList.length > 0 ? userRouteList : allRoutes;
 
   // 🚩 사용자가 선택한 추천 경로 상태 추가
-  const [selectedRecommendRoute, setSelectedRecommendRoute] =
+  const [currentRecommendRoute, setCurrentRecommendRoute] =
     useState<RouteItem | null>(null);
 
   console.log("추천에 사용할 경로 개수:", recommendRouteList.length);
@@ -120,17 +120,15 @@ export default function Map_course({
             <RecommendCourseComponent
               routeList={recommendRouteList}
               onViewRoute={(route) => {
-                setSelectedRecommendRoute(route);
                 handleShowOverlay(route, "오늘의 추천 경로");
               }}
+              onCurrentRouteChange={setCurrentRecommendRoute}
             />
             <div
               className="recommend_btn btn btn_two"
               onClick={() => {
-                if (selectedRecommendRoute) {
-                  handleShowOverlay(selectedRecommendRoute, "오늘의 추천 경로");
-                } else if (recommendRouteList.length > 0) {
-                  handleShowOverlay(recommendRouteList[0], "오늘의 추천 경로");
+                if (currentRecommendRoute) {
+                  handleShowOverlay(currentRecommendRoute, "오늘의 추천 경로");
                 }
               }}
             >

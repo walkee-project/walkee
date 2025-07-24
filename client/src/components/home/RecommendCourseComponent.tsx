@@ -9,6 +9,7 @@ import refreshIcon from "../../assets/refresh.png";
 interface Props {
   routeList: RouteItem[];
   onViewRoute?: (route: RouteItem) => void;
+  onCurrentRouteChange?: (route: RouteItem) => void;
 }
 
 // 두 좌표 간의 거리를 계산하는 함수 (하버사인 공식)
@@ -32,7 +33,11 @@ const calculateDistance = (
   return distance * 1000; // m 단위로 변환
 };
 
-function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
+function RecommendCourseComponent({
+  routeList,
+  onViewRoute,
+  onCurrentRouteChange,
+}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState<RouteItem | null>(null);
@@ -73,15 +78,17 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
   useEffect(() => {
     if (userLocation && routeList && routeList.length > 0) {
       const filtered = routeList.filter((route) => {
-        // RouteItem의 routeStartLat, routeStartLng 사용
-        if (route.routeStartLat && route.routeStartLng) {
+        if (
+          typeof route.routeStartLat === "number" &&
+          typeof route.routeStartLng === "number"
+        ) {
           const distance = calculateDistance(
             userLocation.lat,
             userLocation.lon,
             route.routeStartLat,
             route.routeStartLng
           );
-          return distance <= 10000; // 1500m 이내
+          return distance <= 10000; // 10km 이내
         }
         return false;
       });
@@ -102,6 +109,12 @@ function RecommendCourseComponent({ routeList, onViewRoute }: Props) {
       setCurrentRoute(null);
     }
   }, [nearbyRoutes]);
+
+  useEffect(() => {
+    if (currentRoute && onCurrentRouteChange) {
+      onCurrentRouteChange(currentRoute);
+    }
+  }, [currentRoute, onCurrentRouteChange]);
 
   if (!currentRoute) {
     return (

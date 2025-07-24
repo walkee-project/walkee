@@ -90,7 +90,7 @@ const Community_write = () => {
         // 이미지 업로드 (엔드포인트는 예시)
         const formData = new FormData();
         formData.append("file", imageFile);
-        const res = await fetch(`${__API_URL__}/public/posts/upload-image`, {
+        const res = await fetch(`${__API_URL__}/posts/upload-image`, {
           method: "POST",
           body: formData,
         });
