@@ -28,7 +28,7 @@ function useBackHandler() {
       ) {
         setExitFrom("community");
         setShowExitModal(true);
-      } else if (location.pathname === "map") {
+      } else if (location.pathname === "/map") {
         if (from === "courseList") {
           navigate(-1);
         } else if (handleVoid) {
