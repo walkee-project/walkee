@@ -26,7 +26,7 @@ function useBackHandler() {
       navigate("/home");
     } else {
       const now = Date.now();
-      if (now - backKeyPressedTime < 1000) {
+      if (now - backKeyPressedTime < 2000) {
         window.AndroidBridge?.postMessage("EXIT_APP");
       } else {
         setBackKeyPressedTime(now);
@@ -51,7 +51,7 @@ function useBackHandler() {
     setShowExitModal(false);
     setExitFrom(null);
     setIsMapModalOpen(false);
-    navigate("/home");
+
     if (exitFrom === "Map") {
       navigate("/map");
     } else {

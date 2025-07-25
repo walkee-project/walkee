@@ -18,91 +18,86 @@ import CourseList from "./components/CourseList";
 import Community_write from "./components/community/Community_write";
 import Community_detail from "./components/community/Community_detail";
 import Community_Rules from "./components/community/Community_rules";
-import useBackHandler from "./components/hooks/useBackHandle";
-import ConfirmExitModal from "./components/ConfirmExitModal";
 import Community_edit from "./components/community/Community_edit";
+import ConfirmExitModal from "./components/ConfirmExitModal";
 import { DeleteAccountPage } from "./components/DeleteAccountPage";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useBackHandler from "./components/hooks/useBackHandle";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   fetchUser,
   fetchUserSummaryThunk,
   fetchAllRouteThunk,
 } from "./store/userSlice";
-
 import { api } from "./utils/api";
 
-// ✅ Router 안에서 useLocation을 쓰는 내부 컴포넌트
 function AppContent() {
-  useEffect(() => {
-    // URL에서 토큰 추출 및 저장
-    api.initializeToken();
-  }, []);
-  useEffect(() => {
-    // URL에서 토큰 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("accessToken");
-
-    if (accessToken) {
-      // localStorage에 저장
-      localStorage.setItem("access_token", accessToken);
-
-      // URL을 깔끔하게 정리
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
-
-      console.log("토큰 저장 완료:", accessToken);
-    }
-  }, []);
   const location = useLocation();
-  const hideNavRoutes = ["/", "/map/ing", "/courseList", "/community/write"]; // 네비게이션 숨길 경로
+
+  // ✅ 뒤로가기 훅 (Router 안에서 호출해야 location 사용 가능)
+  const backHandler = useBackHandler();
+  const {
+    handleBack,
+    showExitModal,
+    exitFrom,
+    handleCancelModal,
+    handleConfirmModal,
+    ismapModalOpen,
+  } = backHandler;
+
+  // ✅ 네비게이션 숨김 조건
+  const hideNavRoutes = ["/", "/map/ing", "/courseList", "/community/write"];
   const isDynamicDetail = matchPath("/community/:id", location.pathname);
-
   const isEdit = matchPath("/community/edit/:id", location.pathname);
-
   const isNavHidden =
     hideNavRoutes.includes(location.pathname) || !!isDynamicDetail || !!isEdit;
 
-  const backHandler = useBackHandler();
-
-  const { handleBack, showExitModal } = backHandler;
-
+  // ✅ 뒤로가기 (popstate) 이벤트 연결
   useEffect(() => {
-    // popstate 이벤트에 handleBack 연결
     const onPopState = () => {
       handleBack();
-
-      // 뒤로가기를 막고 싶으면 아래 코드 사용
       window.history.pushState(null, "", window.location.pathname);
     };
 
     window.history.pushState(null, "", window.location.pathname);
     window.addEventListener("popstate", onPopState);
-
     return () => window.removeEventListener("popstate", onPopState);
   }, [handleBack, location.pathname]);
 
+  // ✅ 토큰 초기화 및 저장
+  useEffect(() => {
+    api.initializeToken();
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("accessToken");
+
+    if (accessToken) {
+      localStorage.setItem("access_token", accessToken);
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+      console.log("토큰 저장 완료:", accessToken);
+    }
+  }, []);
+
+  // ✅ user 및 전체 경로 초기 불러오기
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
 
-  // 1. user 정보 한 번만 불러오기
   useEffect(() => {
     if (location.pathname === "/") return;
     dispatch(fetchUser());
-    dispatch(fetchAllRouteThunk()); // 전체 경로 리스트도 한 번만 불러오기
+    dispatch(fetchAllRouteThunk());
   }, [dispatch, location.pathname]);
 
-  // 2. user 정보가 있으면 summary 한 번만 불러오기
   useEffect(() => {
     if (user?.userIdx) {
       dispatch(fetchUserSummaryThunk(user.userIdx));
     }
   }, [user?.userIdx, dispatch]);
 
+  // ✅ 커뮤니티/스토어/마이페이지 새로고침용 키 관리
   const [resetKey, setResetKey] = useState({
     community: 0,
     store: 0,
@@ -137,7 +132,7 @@ function AppContent() {
         <Route path="/map" element={<Map />} />
         <Route
           path="/map/ing"
-          element={<Ing isMapModalOpen={backHandler.ismapModalOpen} />}
+          element={<Ing isMapModalOpen={ismapModalOpen} />}
         />
         <Route path="/store" element={<Store />} />
         <Route path="/mypage" element={<Mypage key={resetKey.mypage} />} />
@@ -146,11 +141,11 @@ function AppContent() {
 
       <ToastContainer position="bottom-center" autoClose={1000} />
       {!isNavHidden && <Navigation onResetKey={handleResetKey} />}
-      {showExitModal && backHandler.exitFrom && (
+      {showExitModal && exitFrom && (
         <ConfirmExitModal
-          where={backHandler.exitFrom === "Map" ? "map" : "community"}
-          onCancel={backHandler.handleCancelModal}
-          onConfirm={backHandler.handleConfirmModal}
+          where={exitFrom === "Map" ? "map" : "community"}
+          onCancel={handleCancelModal}
+          onConfirm={handleConfirmModal}
         />
       )}
     </>
