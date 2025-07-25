@@ -9,6 +9,7 @@ declare global {
       postMessage: (message: string) => void;
     };
     AndroidBridge?: {
+      logTest: (msg: string) => void;
       postMessage: (message: string) => void;
     };
   }

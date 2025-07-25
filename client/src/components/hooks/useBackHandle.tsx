@@ -27,6 +27,8 @@ function useBackHandler() {
     } else {
       const now = Date.now();
       if (now - backKeyPressedTime < 2000) {
+        window.AndroidBridge?.logTest("테스트 로그");
+
         window.AndroidBridge?.postMessage("EXIT_APP");
       } else {
         setBackKeyPressedTime(now);
