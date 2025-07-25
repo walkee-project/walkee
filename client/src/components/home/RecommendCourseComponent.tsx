@@ -3,7 +3,11 @@ import arrow_right from "../../assets/arrow_right.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { RouteItem } from "../types/courseList_type";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import { addRouteLikeThunk, removeRouteLikeThunk } from "../../store/userSlice";
+import {
+  addRouteLikeThunk,
+  removeRouteLikeThunk,
+  fetchUserSummaryThunk,
+} from "../../store/userSlice";
 import refreshIcon from "../../assets/refresh.png";
 
 interface Props {
@@ -88,7 +92,7 @@ function RecommendCourseComponent({
             route.routeStartLat,
             route.routeStartLng
           );
-          return distance <= 10000; // 10km 이내
+          return distance <= 1500; // 1,5km 이내
         }
         return false;
       });
@@ -161,20 +165,22 @@ function RecommendCourseComponent({
       return;
     }
     if (!liked) {
-      dispatch(
+      await dispatch(
         addRouteLikeThunk({
           userIdx: user.userIdx,
           routeIdx: currentRoute.routeIdx,
         })
       );
     } else {
-      dispatch(
+      await dispatch(
         removeRouteLikeThunk({
           userIdx: user.userIdx,
           routeIdx: currentRoute.routeIdx,
         })
       );
     }
+    // 찜 상태 변경 후 반드시 최신 summary를 다시 받아옴
+    await dispatch(fetchUserSummaryThunk(user.userIdx));
   };
 
   return (

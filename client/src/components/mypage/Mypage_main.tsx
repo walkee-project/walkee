@@ -131,10 +131,10 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
           <p>게시글</p>
           <img src={arrow} alt="화살표" />
         </div>
-        <div className="menu_item" onClick={() => onChangeSection("purchase")}>
+        {/* <div className="menu_item" onClick={() => onChangeSection("purchase")}>
           <p>구매목록</p>
           <img src={arrow} alt="화살표" />
-        </div>
+        </div> */}
       </div>
 
       <div className="bottom_links">

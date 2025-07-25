@@ -115,11 +115,11 @@
   gap: 10px;
 }
 
-.recommend-icons img:first-child{
+.recommend-icons img:first-child {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-top: 2px;
 }
 .recommend-icon:last-child {
   margin-bottom: 0;
