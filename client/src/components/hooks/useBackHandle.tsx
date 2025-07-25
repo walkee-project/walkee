@@ -27,7 +27,7 @@ function useBackHandler() {
     } else {
       const now = Date.now();
       if (now - backKeyPressedTime < 1000) {
-        window.ReactNativeWebView?.postMessage("EXIT_APP");
+        window.AndroidBridge?.postMessage("EXIT_APP");
       } else {
         setBackKeyPressedTime(now);
         toast("뒤로 가기 버튼을 한 번 더 누르시면 종료됩니다.");

@@ -8,6 +8,9 @@ declare global {
     ReactNativeWebView?: {
       postMessage: (message: string) => void;
     };
+    AndroidBridge?: {
+      postMessage: (message: string) => void;
+    };
   }
 
   namespace kakao {
