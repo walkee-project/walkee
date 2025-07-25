@@ -3,8 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import homeIcon from "../assets/homeIcon.png";
 import communityIcon from "../assets/communityIcon.png";
 import mapIcon from "../assets/mapIcon.png";
-import storeIcon from "../assets/storeIcon.png";
+// import storeIcon from "../assets/storeIcon.png";
 import mypageIcon from "../assets/mypageIcon.png";
+import heart from "../assets/heart.png";
 
 function Navigation({
   onResetKey,
@@ -23,7 +24,14 @@ function Navigation({
       sectionKey: "community",
     },
     { name: "맵", icon: mapIcon, path: "/map", center: true },
-    { name: "스토어", icon: storeIcon, path: "/store", sectionKey: "store" },
+    // { name: "스토어", icon: storeIcon, path: "/store", sectionKey: "store" },
+    {
+      name: "찜한목록",
+      icon: heart,
+      path: "/courseList",
+      sectionType: "wishlist",
+      sectionKey: "courseList",
+    },
     {
       name: "마이워키",
       icon: mypageIcon,
@@ -37,7 +45,12 @@ function Navigation({
     if (item.sectionKey) {
       onResetKey(item.sectionKey as "community" | "store" | "mypage");
     }
-    navigate(item.path);
+
+    if (item.sectionKey === "courseList") {
+      navigate(item.path, { state: { sectionType: item.sectionType } });
+    } else {
+      navigate(item.path);
+    }
   };
 
   return (
