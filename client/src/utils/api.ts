@@ -18,34 +18,34 @@ export interface LoginResponse {
 const TokenManager = {
   // 토큰 저장
   setToken: (token: string) => {
-    localStorage.setItem('access_token', token);
+    localStorage.setItem("access_token", token);
   },
 
   // 토큰 가져오기
   getToken: (): string | null => {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem("access_token");
   },
 
   // 토큰 삭제
   removeToken: () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem("access_token");
   },
 
   // 토큰 헤더 생성
   getAuthHeaders: () => {
     const token = TokenManager.getToken();
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  }
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  },
 };
 
 // 인증이 필요한 fetch 요청을 위한 헬퍼 함수
 async function authenticatedFetch(url: string, options: RequestInit = {}) {
   const authHeaders = TokenManager.getAuthHeaders();
-  
+
   return fetch(url, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...authHeaders,
       ...(options.headers as Record<string, string>),
     } as HeadersInit,
@@ -55,23 +55,25 @@ async function authenticatedFetch(url: string, options: RequestInit = {}) {
 // 페이지 로드 시 URL에서 토큰 추출 및 저장
 export function initializeTokenFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  const accessToken = urlParams.get('accessToken');
-  
+  const accessToken = urlParams.get("accessToken");
+
   if (accessToken) {
     TokenManager.setToken(accessToken);
-    
+
     // URL에서 토큰 제거
     const newUrl = window.location.pathname;
     window.history.replaceState({}, document.title, newUrl);
-    
-    console.log('토큰이 localStorage에 저장되었습니다');
+
+    console.log("토큰이 localStorage에 저장되었습니다");
     return true;
   }
   return false;
 }
 
 export async function fetchUserSummary(userId: number) {
-  const res = await authenticatedFetch(`${API_BASE_URL}/users/${userId}/summary`);
+  const res = await authenticatedFetch(
+    `${API_BASE_URL}/users/${userId}/summary`
+  );
   if (!res.ok) throw new Error("유저 요약 정보를 불러올 수 없습니다.");
   return res.json();
 }
@@ -85,7 +87,7 @@ export async function fetchAllRoutes() {
 export const api = {
   // 토큰 관리 함수들 노출
   TokenManager,
-  
+
   // 토큰 초기화 (앱 시작 시 호출)
   initializeToken: initializeTokenFromURL,
 
@@ -98,9 +100,9 @@ export const api = {
   // 토큰으로 사용자 정보 가져오기 (쿠키 대신 Authorization 헤더 사용)
   getUserInfo: async () => {
     const token = TokenManager.getToken();
-    
+
     if (!token) {
-      console.warn('토큰이 없습니다. 로그인 페이지로 이동합니다.');
+      console.warn("토큰이 없습니다. 로그인 페이지로 이동합니다.");
       window.location.href = "/";
       throw new Error("No access token found");
     }
@@ -108,14 +110,14 @@ export const api = {
     const response = await authenticatedFetch(`${API_BASE_URL}/users/profile`);
 
     if (!response.ok) {
-      console.error('사용자 정보 가져오기 실패:', response.status);
-      
+      console.error("사용자 정보 가져오기 실패:", response.status);
+
       // 토큰이 만료되었거나 유효하지 않은 경우
       if (response.status === 401) {
         TokenManager.removeToken();
         window.location.href = "/";
       }
-      
+
       throw new Error("Failed to fetch user info");
     }
 
@@ -128,7 +130,7 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ userIdx, routeIdx }),
     });
-    
+
     if (!response.ok) throw new Error("찜 추가 실패");
     return response.json();
   },
@@ -139,7 +141,7 @@ export const api = {
       method: "DELETE",
       body: JSON.stringify({ userIdx, routeIdx }),
     });
-    
+
     if (!response.ok) throw new Error("찜 삭제 실패");
     return response.json();
   },
@@ -162,15 +164,18 @@ export const api = {
 
   // 회원탈퇴
   deleteUser: async (userIdx: number) => {
-    const response = await authenticatedFetch(`${API_BASE_URL}/users/${userIdx}`, {
-      method: "DELETE",
-    });
-    
+    const response = await authenticatedFetch(
+      `${API_BASE_URL}/users/${userIdx}`,
+      {
+        method: "DELETE",
+      }
+    );
+
     if (response.ok) {
       // 회원탈퇴 성공 시 토큰 삭제
       TokenManager.removeToken();
     }
-    
+
     if (!response.ok) {
       throw new Error("회원탈퇴 실패");
     }
@@ -182,7 +187,7 @@ export const api = {
     try {
       await api.getUserInfo();
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   },

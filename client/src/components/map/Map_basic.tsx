@@ -38,15 +38,38 @@ export default function Map_basic() {
     }
   };
 
-  // 🚀 마커 렌더링을 별도 useEffect로 분리
+  // 최초 위치 요청 및 마커 생성, 트래킹 시작
   useEffect(() => {
-    if (!mapInstance || !window.currentMarker) return;
-
-    // 기존 마커가 있으면 재사용
-    if (window.currentMarker) {
-      markerRef.current = window.currentMarker;
+    if (!mapInstance) return;
+    if (!navigator.geolocation) {
+      setGpsReady(true);
+      return;
     }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        // 지도 중심 이동
+        mapInstance.setCenter(new window.kakao.maps.LatLng(lat, lng));
+        // 마커 생성
+        if (!markerRef.current) {
+          markerRef.current = createUserMarker(
+            mapInstance,
+            new window.kakao.maps.LatLng(lat, lng)
+          );
+        }
+        setGpsReady(true);
+        startHighAccuracyTracking();
+      },
+      () => {
+        setGpsReady(true); // 실패해도 지도 띄움
+        startHighAccuracyTracking();
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
   }, [mapInstance]);
+
+  // 마커 렌더링 useEffect 제거 (중복 방지)
 
   const updateUserLocation = (position: GeolocationPosition) => {
     console.log("updateUserLocation called", position);
@@ -177,7 +200,7 @@ export default function Map_basic() {
   return (
     <div className="basic_section">
       <div className="map_container">
-        <MapComponent markerRef={markerRef} onMapReady={handleMapReady} />
+        <MapComponent onMapReady={handleMapReady} />
         <MapTools
           heading={heading}
           markerRef={markerRef}

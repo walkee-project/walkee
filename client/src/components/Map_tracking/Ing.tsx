@@ -10,6 +10,7 @@ import { decodePolyline } from "../../utils/decodePolyline";
 import { calculateDistance } from "../../utils/gpsUtils";
 import ConfirmExitModal from "../ConfirmExitModal";
 import loadingGif from "../../assets/map_loading.gif";
+import { createUserMarker } from "../../utils/createUserMarker";
 
 interface Prop {
   isMapModalOpen: boolean;
@@ -64,7 +65,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
     stopTracking,
     trackedPoints,
     isFollowingActive,
-  } = useGpsTracking(markerRef, mapInstance, trackingOptions, isPause);
+  } = useGpsTracking(markerRef, trackingOptions, isPause);
 
   const [internalElapsedTime, setInternalElapsedTime] = useState(0);
 
@@ -331,6 +332,18 @@ export default function Ing({ isMapModalOpen }: Prop) {
     }
   }, [loading]);
 
+  useEffect(() => {
+    if (loading) return;
+    if (!mapInstance) return;
+    // 마커가 없으면 생성
+    if (!markerRef.current && trackedPoints.length > 0) {
+      markerRef.current = createUserMarker(
+        mapInstance,
+        trackedPoints[trackedPoints.length - 1]
+      );
+    }
+  }, [mapInstance, trackedPoints, loading]);
+
   if (loading) {
     return (
       <div
@@ -399,7 +412,7 @@ export default function Ing({ isMapModalOpen }: Prop) {
       ) : (
         <>
           <div className="map_container">
-            <MapComponent markerRef={markerRef} onMapReady={handleMapReady} />
+            <MapComponent onMapReady={handleMapReady} />
             <MapTools
               heading={heading}
               markerRef={markerRef}

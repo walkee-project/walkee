@@ -21,6 +21,7 @@ import Community_Rules from "./components/community/Community_rules";
 import useBackHandler from "./components/hooks/useBackHandle";
 import ConfirmExitModal from "./components/ConfirmExitModal";
 import Community_edit from "./components/community/Community_edit";
+import { DeleteAccountPage } from "./components/DeleteAccountPage";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -90,9 +91,10 @@ function AppContent() {
 
   // 1. user 정보 한 번만 불러오기
   useEffect(() => {
+    if (location.pathname === "/") return;
     dispatch(fetchUser());
     dispatch(fetchAllRouteThunk()); // 전체 경로 리스트도 한 번만 불러오기
-  }, [dispatch]);
+  }, [dispatch, location.pathname]);
 
   // 2. user 정보가 있으면 summary 한 번만 불러오기
   useEffect(() => {
@@ -119,6 +121,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<First />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/delete-account" element={<DeleteAccountPage />} />
         <Route
           path="/community"
           element={<Community key={resetKey.community} />}

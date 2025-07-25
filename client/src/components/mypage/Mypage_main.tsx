@@ -39,15 +39,8 @@ export default function Mypage_main({ onChangeSection }: mypage_props) {
     return <div className="main">사용자 정보를 불러올 수 없습니다.</div>;
   }
 
-  const handleUserOut = async () => {
-    if (!window.confirm("정말로 회원탈퇴 하시겠습니까?")) return;
-    try {
-      await fetch(`${__API_URL__}/users/${user.userIdx}`, { method: "DELETE" });
-      // 로그아웃 처리 및 메인/로그인 페이지로 이동
-      navigate("/");
-    } catch {
-      alert("회원탈퇴 처리 중 오류가 발생했습니다.");
-    }
+  const handleUserOut = () => {
+    navigate("/delete-account");
   };
 
   const handleLogout = async () => {

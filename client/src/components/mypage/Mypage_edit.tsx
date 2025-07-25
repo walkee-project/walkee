@@ -46,7 +46,7 @@ export default function Mypage_edit({ onChangeSection }: mypage_props) {
 
   const handleSave = async () => {
     if (!user) {
-      window.location.href = "/";
+      alert("로그인 정보가 없습니다. 로그인 후 이용해 주세요.");
       return;
     }
     let profileImageUrl = user.userProfile;

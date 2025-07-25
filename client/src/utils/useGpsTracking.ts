@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { calculateDistance, animateMarker } from "./gpsUtils";
-import { createUserMarker } from "./createUserMarker";
 
 interface GpsTrackingOptions {
   mode: "basic" | "course";
@@ -9,7 +8,6 @@ interface GpsTrackingOptions {
 
 export default function useGpsTracking(
   markerRef: React.MutableRefObject<kakao.maps.Marker | null>,
-  mapInstance: kakao.maps.Map | null,
   options: GpsTrackingOptions,
   isPause: boolean = false
 ) {
@@ -61,95 +59,70 @@ export default function useGpsTracking(
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const newPosition = new window.kakao.maps.LatLng(lat, lng);
+    // 최초 위치 요청 제거, 바로 watchPosition만 실행
+    const id = navigator.geolocation.watchPosition(
+      (pos) => {
+        const newLat = pos.coords.latitude;
+        const newLng = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+        const currentPosition = new window.kakao.maps.LatLng(newLat, newLng);
 
-        if (!markerRef.current && mapInstance) {
-          markerRef.current = createUserMarker(mapInstance, newPosition);
+        if (accuracy > 50) return;
+
+        if (markerRef.current) {
+          // setPosition 대신 animateMarker 사용
+          animateMarker(markerRef.current, newLat, newLng, 1000);
         }
 
-        if (options.mode === "basic") {
-          lastPositionRef.current = { lat, lng };
-          setTrackedPoints([newPosition]);
-          setStartTime(new Date());
+        if (options.mode === "course" && !isFollowingActiveRef.current) {
+          const distanceToStart = calculateDistance(
+            newLat,
+            newLng,
+            options.targetStartPoint!.lat,
+            options.targetStartPoint!.lng
+          );
+
+          if (distanceToStart <= 20) {
+            setAndRefIsFollowingActive(true);
+            setStartTime(new Date());
+            setTotalDistance(0);
+            setElapsedTime(0);
+            lastPositionRef.current = { lat: newLat, lng: newLng };
+            setTrackedPoints([currentPosition]);
+          }
+          return;
         }
 
-        setIsTracking(true);
-
-        const id = navigator.geolocation.watchPosition(
-          (pos) => {
-            const newLat = pos.coords.latitude;
-            const newLng = pos.coords.longitude;
-            const accuracy = pos.coords.accuracy;
-            const currentPosition = new window.kakao.maps.LatLng(
+        if (isFollowingActiveRef.current) {
+          if (isPauseRef.current) return;
+          if (lastPositionRef.current) {
+            const distance = calculateDistance(
+              lastPositionRef.current.lat,
+              lastPositionRef.current.lng,
               newLat,
               newLng
             );
 
-            if (accuracy > 50) return;
+            if (distance < 2) return;
+            if (distance > 100) return;
 
-            if (markerRef.current) {
-              // setPosition 대신 animateMarker 사용
-              animateMarker(markerRef.current, newLat, newLng, 1000);
-            }
-
-            if (options.mode === "course" && !isFollowingActiveRef.current) {
-              const distanceToStart = calculateDistance(
-                newLat,
-                newLng,
-                options.targetStartPoint!.lat,
-                options.targetStartPoint!.lng
-              );
-
-              if (distanceToStart <= 20) {
-                setAndRefIsFollowingActive(true);
-                setStartTime(new Date());
-                setTotalDistance(0);
-                setElapsedTime(0);
-                lastPositionRef.current = { lat: newLat, lng: newLng };
-                setTrackedPoints([currentPosition]);
-              }
-              return;
-            }
-
-            if (isFollowingActiveRef.current) {
-              if (isPauseRef.current) return;
-              if (lastPositionRef.current) {
-                const distance = calculateDistance(
-                  lastPositionRef.current.lat,
-                  lastPositionRef.current.lng,
-                  newLat,
-                  newLng
-                );
-
-                if (distance < 2) return;
-                if (distance > 100) return;
-
-                setTotalDistance((prevDist) => prevDist + distance);
-              }
-              lastPositionRef.current = { lat: newLat, lng: newLng };
-              setTrackedPoints((prev) => [...prev, currentPosition]);
-            }
-          },
-          () => {
-            alert("위치 정보를 사용할 수 없습니다.");
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 2000,
+            setTotalDistance((prevDist) => prevDist + distance);
           }
-        );
-        setWatchId(id);
+          lastPositionRef.current = { lat: newLat, lng: newLng };
+          setTrackedPoints((prev) => [...prev, currentPosition]);
+        }
       },
-      (error) => {
-        console.error("초기 위치를 가져올 수 없습니다:", error);
-        alert("초기 위치를 가져올 수 없습니다.");
+      () => {
+        alert("위치 정보를 사용할 수 없습니다.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 2000,
       }
     );
+    setWatchId(id);
+    setIsTracking(true);
   };
 
   const stopTracking = () => {

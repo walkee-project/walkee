@@ -226,11 +226,12 @@ export default function Ing_finish({
           <div
             style={{
               width: "100%",
-              height: "200px",
+              height: "100%",
               background: "#eee",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              zIndex: "-1",
             }}
           >
             썸네일 생성 중...
