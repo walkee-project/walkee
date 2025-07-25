@@ -59,18 +59,34 @@ export default function Ing({ isMapModalOpen }: Prop) {
   const [mapInstance, setMapInstance] = useState<kakao.maps.Map | null>(null);
 
   const {
-    totalDistance,
     // elapsedTime,
     startTracking,
     stopTracking,
     trackedPoints,
-    isFollowingActive,
   } = useGpsTracking(markerRef, trackingOptions, isPause);
 
   const [internalElapsedTime, setInternalElapsedTime] = useState(0);
 
   // 목표 달성 체크 (이 부분만 남기기)
   const [goalAchieved, setGoalAchieved] = useState(false);
+  // totalDistance 계산: trackedPoints 누적 거리
+  const totalDistance =
+    trackedPoints.length > 1
+      ? trackedPoints.reduce((acc, cur, idx, arr) => {
+          if (idx === 0) return 0;
+          const prev = arr[idx - 1];
+          return (
+            acc +
+            calculateDistance(
+              prev.getLat(),
+              prev.getLng(),
+              cur.getLat(),
+              cur.getLng()
+            )
+          );
+        }, 0)
+      : 0;
+
   useEffect(() => {
     if (
       goalType === "거리 설정" &&
@@ -181,6 +197,20 @@ export default function Ing({ isMapModalOpen }: Prop) {
 
   // 완성도 계산 (경로 따라가기 모드에서만)
   const [completion, setCompletion] = useState<number>(0);
+  // isFollowingActive 대체: 코스 모드에서 시작점 30m 이내 진입 여부
+  const isFollowingActive = (() => {
+    if (tab !== "course" || !routeToFollow || trackedPoints.length === 0)
+      return true;
+    const first = trackedPoints[0];
+    const dist = calculateDistance(
+      first.getLat(),
+      first.getLng(),
+      routeToFollow.routeStartLat,
+      routeToFollow.routeStartLng
+    );
+    return dist < 30;
+  })();
+
   useEffect(() => {
     if (loading) return;
     if (tab === "course" && routeToFollow && trackedPoints.length > 0) {
@@ -344,45 +374,6 @@ export default function Ing({ isMapModalOpen }: Prop) {
     }
   }, [mapInstance, trackedPoints, loading]);
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#2196f3",
-        }}
-      >
-        <img
-          src={loadingGif}
-          alt="321 카운트다운"
-          style={{ width: "100%", height: "100%" }}
-        />
-      </div>
-    );
-  }
-  if (waitingForLocation) {
-    return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#2196f3",
-        }}
-      >
-        <span style={{ color: "#fff", fontSize: "1.2rem" }}>
-          위치 잡는 중...
-        </span>
-      </div>
-    );
-  }
-
   return (
     <div className="ing_section">
       {showExitModal && (
@@ -411,13 +402,63 @@ export default function Ing({ isMapModalOpen }: Prop) {
         />
       ) : (
         <>
-          <div className="map_container">
+          <div className="map_container" style={{ position: "relative" }}>
             <MapComponent onMapReady={handleMapReady} />
             <MapTools
               heading={heading}
               markerRef={markerRef}
               mapInstance={mapInstance}
             />
+            {loading && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "#2196f3",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 1000,
+                }}
+              >
+                <img
+                  src={loadingGif}
+                  alt="321 카운트다운"
+                  style={{
+                    width: "100vw",
+                    height: "100vh",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
+            {waitingForLocation && !loading && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "#2196f3",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 1000,
+                }}
+              >
+                <span style={{ color: "#fff", fontSize: "1.2rem" }}>
+                  위치 잡는 중...
+                </span>
+              </div>
+            )}
           </div>
 
           {tab === "course" && !isFollowingActive && (

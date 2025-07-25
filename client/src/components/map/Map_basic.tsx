@@ -45,6 +45,7 @@ export default function Map_basic() {
       setGpsReady(true);
       return;
     }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const lat = position.coords.latitude;

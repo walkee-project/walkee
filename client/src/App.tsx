@@ -35,6 +35,27 @@ import {
 import { api } from "./utils/api";
 
 function AppContent() {
+  useEffect(() => {
+    // URL에서 토큰 추출 및 저장
+    api.initializeToken();
+  }, []);
+  useEffect(() => {
+    // URL에서 토큰 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("accessToken");
+
+    if (accessToken) {
+      // localStorage에 저장
+      localStorage.setItem("access_token", accessToken);
+
+      // URL을 깔끔하게 정리
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+
+      console.log("토큰 저장 완료:", accessToken);
+    }
+  }, []);
+
   const location = useLocation();
 
   // ✅ 뒤로가기 훅 (Router 안에서 호출해야 location 사용 가능)
@@ -66,20 +87,6 @@ function AppContent() {
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, [handleBack, location.pathname]);
-
-  // ✅ 토큰 초기화 및 저장
-  useEffect(() => {
-    api.initializeToken();
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("accessToken");
-
-    if (accessToken) {
-      localStorage.setItem("access_token", accessToken);
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
-      console.log("토큰 저장 완료:", accessToken);
-    }
-  }, []);
 
   // ✅ user 및 전체 경로 초기 불러오기
   const dispatch = useAppDispatch();

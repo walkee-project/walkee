@@ -99,13 +99,13 @@ export const api = {
 
   // 토큰으로 사용자 정보 가져오기 (쿠키 대신 Authorization 헤더 사용)
   getUserInfo: async () => {
-    const token = TokenManager.getToken();
+    // const token = TokenManager.getToken();
 
-    if (!token) {
-      console.warn("토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      window.location.href = "/";
-      throw new Error("No access token found");
-    }
+    // if (!token) {
+    //   console.warn("토큰이 없습니다. 로그인 페이지로 이동합니다.");
+    //   window.location.href = "/";
+    //   throw new Error("No access token found");
+    // }
 
     const response = await authenticatedFetch(`${API_BASE_URL}/users/profile`);
 

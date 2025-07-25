@@ -5,10 +5,17 @@ import logo_small from "../assets/logo_small.png";
 import mascot_short from "../assets/mascot_short.png";
 import kakao_login from "../assets/kakao_login.png";
 import { api } from "../utils/api";
+import { useAppSelector } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
 
 function First() {
   const [shrink, setShrink] = useState(false);
   const [showAfter, setShowAfter] = useState(false);
+  const user = useAppSelector((state) => state.user.user);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) navigate("/home");
+  }, [user, navigate]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShrink(true), 1500);

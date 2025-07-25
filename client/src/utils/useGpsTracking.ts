@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { calculateDistance, animateMarker } from "./gpsUtils";
+import { createUserMarker } from "./createUserMarker";
 
 interface GpsTrackingOptions {
   mode: "basic" | "course";
@@ -12,22 +13,13 @@ export default function useGpsTracking(
   isPause: boolean = false
 ) {
   const [isTracking, setIsTracking] = useState(false);
-  const [totalDistance, setTotalDistance] = useState(0);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [watchId, setWatchId] = useState<number | null>(null);
-  const lastPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   const [trackedPoints, setTrackedPoints] = useState<kakao.maps.LatLng[]>([]);
 
   // "경로 따라가기" 모드의 활성화 상태
-  const [isFollowingActive, setIsFollowingActive] = useState(
-    options.mode === "basic"
-  );
   const isFollowingActiveRef = useRef(options.mode === "basic");
-  const setAndRefIsFollowingActive = (val: boolean) => {
-    isFollowingActiveRef.current = val;
-    setIsFollowingActive(val);
-  };
 
   // isPause 최신값을 항상 참조하도록 useRef 사용
   const isPauseRef = useRef(isPause);
@@ -59,9 +51,13 @@ export default function useGpsTracking(
       return;
     }
 
-    // 최초 위치 요청 제거, 바로 watchPosition만 실행
+    let firstPositionReceived = false;
+    const DEFAULT_LAT = 35.87539;
+    const DEFAULT_LON = 128.68155;
+
     const id = navigator.geolocation.watchPosition(
       (pos) => {
+        firstPositionReceived = true;
         const newLat = pos.coords.latitude;
         const newLng = pos.coords.longitude;
         const accuracy = pos.coords.accuracy;
@@ -81,48 +77,41 @@ export default function useGpsTracking(
             options.targetStartPoint!.lat,
             options.targetStartPoint!.lng
           );
-
-          if (distanceToStart <= 20) {
-            setAndRefIsFollowingActive(true);
-            setStartTime(new Date());
-            setTotalDistance(0);
-            setElapsedTime(0);
-            lastPositionRef.current = { lat: newLat, lng: newLng };
-            setTrackedPoints([currentPosition]);
+          if (distanceToStart < 30) {
+            isFollowingActiveRef.current = true;
           }
-          return;
         }
 
-        if (isFollowingActiveRef.current) {
-          if (isPauseRef.current) return;
-          if (lastPositionRef.current) {
-            const distance = calculateDistance(
-              lastPositionRef.current.lat,
-              lastPositionRef.current.lng,
-              newLat,
-              newLng
-            );
-
-            if (distance < 2) return;
-            if (distance > 100) return;
-
-            setTotalDistance((prevDist) => prevDist + distance);
-          }
-          lastPositionRef.current = { lat: newLat, lng: newLng };
-          setTrackedPoints((prev) => [...prev, currentPosition]);
-        }
+        setTrackedPoints((prev) => [...prev, currentPosition]);
+        if (!startTime) setStartTime(new Date());
+        setIsTracking(true);
       },
       () => {
-        alert("위치 정보를 사용할 수 없습니다.");
+        if (!firstPositionReceived) {
+          // 최초 위치 못 잡으면 기본 위치로 마커/지도 표시
+          if (markerRef.current && window.kakaoMapInstance) {
+            markerRef.current.setPosition(
+              new window.kakao.maps.LatLng(DEFAULT_LAT, DEFAULT_LON)
+            );
+          } else if (window.kakaoMapInstance) {
+            markerRef.current = createUserMarker(
+              window.kakaoMapInstance,
+              new window.kakao.maps.LatLng(DEFAULT_LAT, DEFAULT_LON)
+            );
+          }
+          window.kakaoMapInstance.setCenter(
+            new window.kakao.maps.LatLng(DEFAULT_LAT, DEFAULT_LON)
+          );
+        }
+        setIsTracking(true);
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 2000,
+        timeout: 20000,
+        maximumAge: 30000,
       }
     );
     setWatchId(id);
-    setIsTracking(true);
   };
 
   const stopTracking = () => {
@@ -143,11 +132,9 @@ export default function useGpsTracking(
 
   return {
     isTracking,
-    totalDistance,
     elapsedTime,
     startTracking,
     stopTracking,
     trackedPoints,
-    isFollowingActive,
   };
 }
